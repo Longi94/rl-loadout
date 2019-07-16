@@ -20,9 +20,9 @@ export class StaticSkin {
 
   private update() {
     for (let i = 0; i < this.data.length; i += 4) {
+      let color = new Color(0, 0, 0);
       if (this.rgbaMap[i] == 255) {
-
-        let color = this.primary;
+        color = this.primary;
 
         if (this.rgbaMap[i + 3] > 0) {
           color = blendColors(this.primary, 255, this.accent, this.rgbaMap[i + 3]).color;
