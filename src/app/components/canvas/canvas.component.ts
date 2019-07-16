@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { AmbientLight, DirectionalLight, PerspectiveCamera, Scene, Camera, Renderer, WebGLRenderer } from "three";
 
 @Component({
   selector: 'app-canvas',
@@ -12,47 +13,52 @@ export class CanvasComponent implements OnInit {
   @ViewChild('canvas', {static: true})
   canvas: ElementRef;
 
-  private camera;
-  private scene;
-  private geometry;
-  private material;
-  private mesh;
-  private renderer;
-  private controls;
+  private camera: Camera;
+  private scene: Scene;
+  private renderer: Renderer;
+  private controls: OrbitControls;
+  private loader: GLTFLoader;
 
   constructor() {
   }
 
   ngOnInit() {
-    this.camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 10);
-    this.camera.position.z = 1;
+    this.camera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 400);
+    this.camera.position.z = 200;
 
-    this.scene = new THREE.Scene();
+    this.scene = new Scene();
 
-    this.geometry = new THREE.BoxGeometry(0.2, 0.2, 0.2);
-    this.material = new THREE.MeshNormalMaterial();
-
-    this.mesh = new THREE.Mesh(this.geometry, this.material);
-    this.scene.add(this.mesh);
-
-    this.renderer = new THREE.WebGLRenderer({canvas: this.canvas.nativeElement, antialias: true});
+    this.renderer = new WebGLRenderer({canvas: this.canvas.nativeElement, antialias: true});
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this.renderer.domElement);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.enablePan = false;
     this.controls.update();
 
+    this.addLights();
+
     this.animate();
+
+    this.loader = new GLTFLoader();
+    this.loader.load('assets/models/Body_Dominus_PremiumSkin_SK.glb', gltf => {
+      this.scene.add(gltf.scene);
+    }, undefined, error => {
+      console.error(error);
+    });
+  }
+
+  addLights() {
+    let light = new AmbientLight(0xFFFFFF, 0.3); // soft white light
+    this.scene.add(light);
+
+    let dirLight = new DirectionalLight(0xFFFFFF, 0.8 * Math.PI);
+    dirLight.position.set(0.5, 0, 0.866); // ~60º
+    this.scene.add(dirLight)
   }
 
   animate() {
-
     requestAnimationFrame(() => this.animate());
-
-    this.mesh.rotation.x += 0.01;
-    this.mesh.rotation.y += 0.02;
-
     this.renderer.render(this.scene, this.camera);
-
   }
 }
