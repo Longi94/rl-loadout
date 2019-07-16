@@ -9,7 +9,8 @@ import {
   Camera,
   Renderer,
   WebGLRenderer,
-  Mesh, MeshStandardMaterial
+  Mesh,
+  MeshPhongMaterial
 } from "three";
 import { TGALoader } from "three/examples/jsm/loaders/TGALoader";
 import { PromiseLoader } from "../utils/loader";
@@ -58,17 +59,26 @@ export class CanvasComponent implements OnInit {
     Promise.all([
       this.loader.load('assets/models/Body_Dominus_PremiumSkin_SK.glb'),
       this.textureLoader.load('assets/textures/MuscleCar_Chassis_D.tga'),
-      this.textureLoader.load('assets/textures/MuscleCar_Chassis_N.tga')
+      this.textureLoader.load('assets/textures/MuscleCar_Chassis_N.tga'),
+      this.textureLoader.load('assets/textures/MuscleCar_RGB.tga')
     ]).then(values => {
       let gltf = values[0];
       let diffuseMap = values[1];
       let normalMap = values[2];
+      let skinMap = values[3];
 
       let mesh: Mesh = <Mesh>gltf.scene.children[0];
-      let material = <MeshStandardMaterial>mesh.material;
+      let material = new MeshPhongMaterial();
+      mesh.material = material;
 
       material.map = diffuseMap;
       material.normalMap = normalMap;
+
+      mesh = <Mesh>gltf.scene.children[1];
+      material = new MeshPhongMaterial();
+      mesh.material = material;
+      material.map = skinMap;
+
       this.scene.add(gltf.scene);
     }).catch(console.error);
   }

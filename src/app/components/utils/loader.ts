@@ -1,5 +1,3 @@
-import { Loader } from "three";
-
 export class PromiseLoader {
 
   private loader: any;
