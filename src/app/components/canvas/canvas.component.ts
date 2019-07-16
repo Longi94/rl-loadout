@@ -10,7 +10,7 @@ import {
   Renderer,
   WebGLRenderer,
   Mesh,
-  MeshPhongMaterial, Texture, Color
+  MeshPhongMaterial, Texture, Color, Material
 } from "three";
 import { TGALoader } from "three/examples/jsm/loaders/TGALoader";
 import { PromiseLoader } from "../utils/loader";
@@ -34,6 +34,13 @@ export class CanvasComponent implements OnInit {
   private loader: PromiseLoader;
   private textureLoader: PromiseLoader;
   private rgbaLoader: PromiseLoader;
+
+  // colors
+  primary = "#0000FF";
+  accent = "#FFFFFF";
+  private skinMaterial: MeshPhongMaterial;
+  private skin;
+  private skinMap: Texture;
 
   constructor() {
   }
@@ -70,10 +77,10 @@ export class CanvasComponent implements OnInit {
       let diffuseMap = values[1];
       let normalMap = values[2];
 
-      let skin = new StaticSkin(values[3].width, values[3].height, values[3].data);
-      let skinMap = new Texture();
-      skinMap.image = skin.toTexture();
-      skinMap.needsUpdate= true;
+      this.skin = new StaticSkin(values[3].width, values[3].height, values[3].data);
+      this.skinMap = new Texture();
+      this.skinMap.image = this.skin.toTexture();
+      this.skinMap.needsUpdate = true;
 
       let mesh: Mesh = <Mesh>gltf.scene.children[0];
       let material = new MeshPhongMaterial();
@@ -83,9 +90,9 @@ export class CanvasComponent implements OnInit {
       material.normalMap = normalMap;
 
       mesh = <Mesh>gltf.scene.children[1];
-      material = new MeshPhongMaterial();
-      mesh.material = material;
-      material.map = skinMap;
+      this.skinMaterial = new MeshPhongMaterial();
+      mesh.material = this.skinMaterial;
+      this.skinMaterial.map = this.skinMap;
 
       this.scene.add(gltf.scene);
     }).catch(console.error);
@@ -103,5 +110,15 @@ export class CanvasComponent implements OnInit {
   animate() {
     requestAnimationFrame(() => this.animate());
     this.renderer.render(this.scene, this.camera);
+  }
+
+  colorChanged() {
+    this.skin.primary = new Color(this.primary);
+    this.skin.accent = new Color(this.accent);
+    this.skin.update();
+
+    this.skinMap.image = this.skin.toTexture();
+    this.skinMap.needsUpdate = true;
+    this.skinMaterial.needsUpdate = true;
   }
 }

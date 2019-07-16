@@ -1,15 +1,9 @@
 import { Color } from "three";
 
-export function blendColors(color1: Color, alpha1: number, color2: Color, alpha2: number) {
-  alpha1 = alpha1 / 255;
-  alpha2 = alpha2 / 255;
-  let alpha = 1 - (1 - alpha2) * (1 - alpha1);
-  let r = Math.round((color2.r * alpha2 / alpha) + (color1.r * alpha1 * (1 - alpha2) / alpha)); // red
-  let g = Math.round((color2.g * alpha2 / alpha) + (color1.g * alpha1 * (1 - alpha2) / alpha)); // green
-  let b = Math.round((color2.b * alpha2 / alpha) + (color1.b * alpha1 * (1 - alpha2) / alpha)); // blue
-
-  return {
-    color: new Color(r, g, b),
-    alpha: alpha * 255
-  }
+export function overBlendColors(foreground: Color, background: Color, foregroundAlpha: number): Color {
+  foregroundAlpha = foregroundAlpha / 255;
+  let r = (foreground.r * foregroundAlpha) + (background.r * (1.0 - foregroundAlpha));
+  let g = (foreground.g * foregroundAlpha) + (background.g * (1.0 - foregroundAlpha));
+  let b = (foreground.b * foregroundAlpha) + (background.b * (1.0 - foregroundAlpha));
+  return new Color(r, g, b);
 }

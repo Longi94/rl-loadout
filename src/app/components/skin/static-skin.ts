@@ -1,5 +1,5 @@
 import { Color } from "three";
-import { blendColors } from "../utils/color";
+import { overBlendColors } from "../utils/color";
 
 export class StaticSkin {
   width: number;
@@ -7,8 +7,8 @@ export class StaticSkin {
   rgbaMap: Uint8ClampedArray;
   data: Uint8ClampedArray;
 
-  primary: Color = new Color(0, 0, 255);
-  accent: Color = new Color(255, 255, 255);
+  primary: Color = new Color(0, 0, 1);
+  accent: Color = new Color(1, 1, 1);
 
   constructor(width: number, height: number, rgbaMap: Uint8ClampedArray) {
     this.width = width;
@@ -25,12 +25,12 @@ export class StaticSkin {
         color = this.primary;
 
         if (this.rgbaMap[i + 3] > 0) {
-          color = blendColors(this.primary, 255, this.accent, this.rgbaMap[i + 3]).color;
+          color = overBlendColors(this.accent, this.primary, this.rgbaMap[i + 3]);
         }
 
-        this.data[i] = color.r;
-        this.data[i + 1] = color.g;
-        this.data[i + 2] = color.b;
+        this.data[i] = color.r * 255;
+        this.data[i + 1] = color.g * 255;
+        this.data[i + 2] = color.b * 255;
         this.data[i + 3] = 255;
       }
     }
