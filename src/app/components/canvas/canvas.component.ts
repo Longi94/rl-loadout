@@ -1,7 +1,18 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { AmbientLight, DirectionalLight, PerspectiveCamera, Scene, Camera, Renderer, WebGLRenderer } from "three";
+import {
+  AmbientLight,
+  DirectionalLight,
+  PerspectiveCamera,
+  Scene,
+  Camera,
+  Renderer,
+  WebGLRenderer,
+  Mesh, MeshStandardMaterial
+} from "three";
+import { TGALoader } from "three/examples/jsm/loaders/TGALoader";
+import { PromiseLoader } from "../utils/loader";
 
 @Component({
   selector: 'app-canvas',
@@ -17,7 +28,8 @@ export class CanvasComponent implements OnInit {
   private scene: Scene;
   private renderer: Renderer;
   private controls: OrbitControls;
-  private loader: GLTFLoader;
+  private loader: PromiseLoader;
+  private textureLoader: PromiseLoader;
 
   constructor() {
   }
@@ -40,12 +52,25 @@ export class CanvasComponent implements OnInit {
 
     this.animate();
 
-    this.loader = new GLTFLoader();
-    this.loader.load('assets/models/Body_Dominus_PremiumSkin_SK.glb', gltf => {
+    this.loader = new PromiseLoader(new GLTFLoader());
+    this.textureLoader = new PromiseLoader(new TGALoader());
+
+    Promise.all([
+      this.loader.load('assets/models/Body_Dominus_PremiumSkin_SK.glb'),
+      this.textureLoader.load('assets/textures/MuscleCar_Chassis_D.tga'),
+      this.textureLoader.load('assets/textures/MuscleCar_Chassis_N.tga')
+    ]).then(values => {
+      let gltf = values[0];
+      let diffuseMap = values[1];
+      let normalMap = values[2];
+
+      let mesh: Mesh = <Mesh>gltf.scene.children[0];
+      let material = <MeshStandardMaterial>mesh.material;
+
+      material.map = diffuseMap;
+      material.normalMap = normalMap;
       this.scene.add(gltf.scene);
-    }, undefined, error => {
-      console.error(error);
-    });
+    }).catch(console.error);
   }
 
   addLights() {
