@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import * as THREE from 'three';
-import { animate } from "@angular/animations";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 @Component({
   selector: 'app-canvas',
@@ -18,7 +18,7 @@ export class CanvasComponent implements OnInit {
   private material;
   private mesh;
   private renderer;
-
+  private controls;
 
   constructor() {
   }
@@ -38,6 +38,9 @@ export class CanvasComponent implements OnInit {
     this.renderer = new THREE.WebGLRenderer({canvas: this.canvas.nativeElement, antialias: true});
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this.renderer.domElement);
+
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.update();
 
     this.animate();
   }
