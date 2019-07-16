@@ -10,10 +10,12 @@ import {
   Renderer,
   WebGLRenderer,
   Mesh,
-  MeshPhongMaterial
+  MeshPhongMaterial, Texture, Color
 } from "three";
 import { TGALoader } from "three/examples/jsm/loaders/TGALoader";
 import { PromiseLoader } from "../utils/loader";
+import { TgaRgbaLoader } from "../utils/tga-rgba-loader";
+import { StaticSkin } from "../skin/static-skin";
 
 @Component({
   selector: 'app-canvas',
@@ -31,6 +33,7 @@ export class CanvasComponent implements OnInit {
   private controls: OrbitControls;
   private loader: PromiseLoader;
   private textureLoader: PromiseLoader;
+  private rgbaLoader: PromiseLoader;
 
   constructor() {
   }
@@ -55,17 +58,22 @@ export class CanvasComponent implements OnInit {
 
     this.loader = new PromiseLoader(new GLTFLoader());
     this.textureLoader = new PromiseLoader(new TGALoader());
+    this.rgbaLoader = new PromiseLoader(new TgaRgbaLoader());
 
     Promise.all([
       this.loader.load('assets/models/Body_Dominus_PremiumSkin_SK.glb'),
       this.textureLoader.load('assets/textures/MuscleCar_Chassis_D.tga'),
       this.textureLoader.load('assets/textures/MuscleCar_Chassis_N.tga'),
-      this.textureLoader.load('assets/textures/MuscleCar_RGB.tga')
+      this.rgbaLoader.load('assets/textures/MuscleCar_RGB.tga')
     ]).then(values => {
       let gltf = values[0];
       let diffuseMap = values[1];
       let normalMap = values[2];
-      let skinMap = values[3];
+
+      let skin = new StaticSkin(values[3].width, values[3].height, values[3].data);
+      let skinMap = new Texture();
+      skinMap.image = skin.toTexture();
+      skinMap.needsUpdate= true;
 
       let mesh: Mesh = <Mesh>gltf.scene.children[0];
       let material = new MeshPhongMaterial();
