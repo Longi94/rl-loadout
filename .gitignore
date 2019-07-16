@@ -1,35 +1,46 @@
-# Created by .ignore support plugin (hsz.mobi)
-### JetBrains template
-# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
-# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
+# See http://help.github.com/ignore-files/ for more about ignoring files.
 
-# User-specific stuff
-.idea/
+# compiled output
+/dist
+/tmp
+/out-tsc
+# Only exists if Bazel was run
+/bazel-out
 
-# Gradle and Maven with auto-import
-# When using Gradle or Maven with auto-import, you should exclude module files,
-# since they will be recreated, and may cause churn.  Uncomment if using
-# auto-import.
-*.iml
-*.ipr
+# dependencies
+/node_modules
 
-# CMake
-cmake-build-*/
+# profiling files
+chrome-profiler-events.json
+speed-measure-plugin.json
 
-# File-based project format
-*.iws
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
 
-# IntelliJ
-out/
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/*
 
-# mpeltonen/sbt-idea plugin
-.idea_modules/
+# misc
+/.sass-cache
+/connect.lock
+/coverage
+/libpeerconnection.log
+npm-debug.log
+yarn-error.log
+testem.log
+/typings
 
-# JIRA plugin
-atlassian-ide-plugin.xml
-
-# Crashlytics plugin (for Android Studio and IntelliJ)
-com_crashlytics_export_strings.xml
-crashlytics.properties
-crashlytics-build.properties
-fabric.properties
+# System Files
+.DS_Store
+Thumbs.db
