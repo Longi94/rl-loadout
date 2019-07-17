@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from "@angular/material";
 
 @Component({
   selector: 'app-loadout-toolbar',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoadoutToolbarComponent implements OnInit {
 
-  constructor() { }
+  constructor(private _snackBar: MatSnackBar) {
+  }
 
   ngOnInit() {
   }
 
+  showUnsupported(type: string) {
+    this._snackBar.open(`${type} are not currently supported.`, undefined, {duration: 2000});
+  }
 }

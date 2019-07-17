@@ -59,6 +59,8 @@ export class CanvasComponent implements OnInit {
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enablePan = false;
+    this.controls.minDistance = 100;
+    this.controls.maxDistance = 300;
     this.controls.update();
 
     this.addLights();

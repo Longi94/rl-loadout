@@ -1,4 +1,4 @@
-@import "~@angular/material/prebuilt-themes/deeppurple-amber.css";
+@import "theme.scss";
 
 html, body {
   width: 100%;
@@ -6,5 +6,6 @@ html, body {
 }
 
 body {
+  color: white;
   margin: 0;
 }

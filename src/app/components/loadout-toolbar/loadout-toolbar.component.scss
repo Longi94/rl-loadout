@@ -1,0 +1,19 @@
+@import "../../../theme";
+
+.toolbar {
+  height: 100%  ;
+  display: flex;
+  flex-flow: column;
+  background-color: $background;
+  overflow-y: auto;
+}
+
+.toolbar-button {
+  cursor: pointer;
+  padding: 0 8px;
+}
+
+.toolbar-button img {
+  width: 48px;
+  height: 48px;
+}

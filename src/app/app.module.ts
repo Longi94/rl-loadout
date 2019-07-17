@@ -8,6 +8,7 @@ import { ColorPickerModule } from "ngx-color-picker";
 import { HomeComponent } from './components/home/home.component';
 import { LoadoutToolbarComponent } from './components/loadout-toolbar/loadout-toolbar.component';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { MatButtonModule, MatRippleModule, MatTooltipModule, MatSnackBarModule } from "@angular/material";
 
 @NgModule({
   declarations: [
@@ -20,7 +21,11 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    ColorPickerModule
+    ColorPickerModule,
+    MatButtonModule,
+    MatRippleModule,
+    MatSnackBarModule,
+    MatTooltipModule
   ],
   providers: [],
   bootstrap: [AppComponent]
