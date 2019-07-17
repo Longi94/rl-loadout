@@ -104,12 +104,12 @@ export class CanvasComponent implements OnInit {
   }
 
   addLights() {
-    let light = new AmbientLight(0xFFFFFF, 1); // soft white light
+    let light = new AmbientLight(0xFFFFFF, 0.6); // soft white light
     this.scene.add(light);
 
-    // let dirLight = new DirectionalLight(0xFFFFFF, 0.8 * Math.PI);
-    // dirLight.position.set(0.5, 30, 0.866); // ~60º
-    // this.scene.add(dirLight);
+    let dirLight = new DirectionalLight(0xFFFFFF, 0.4 * Math.PI);
+    dirLight.position.set(0.5, 30, 0.866); // ~60º
+    this.scene.add(dirLight);
   }
 
   animate() {
