@@ -3,6 +3,8 @@
 .grid-container {
   background-color: $background;
   height: 100%;
+  padding: 10px;
+  box-shadow: -12px 0px 35px 15px rgba(0,0,0,0.4);
 }
 
 mat-grid-list {

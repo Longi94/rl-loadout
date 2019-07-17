@@ -13,6 +13,8 @@
   flex-flow: column;
   background-color: $background;
   overflow-y: auto;
+  z-index: 100;
+  box-shadow: -12px 0px 35px 15px rgba(0,0,0,0.4);
 }
 
 .toolbar-button {
