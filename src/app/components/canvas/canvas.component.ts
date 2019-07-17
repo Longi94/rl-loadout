@@ -15,9 +15,9 @@ import {
   Color
 } from "three";
 import { TGALoader } from "three/examples/jsm/loaders/TGALoader";
-import { PromiseLoader } from "../utils/loader";
-import { TgaRgbaLoader } from "../utils/tga-rgba-loader";
-import { StaticSkin } from "../skin/static-skin";
+import { PromiseLoader } from "../../utils/loader";
+import { TgaRgbaLoader } from "../../utils/tga-rgba-loader";
+import { StaticSkin } from "../../skin/static-skin";
 
 @Component({
   selector: 'app-canvas',
@@ -56,7 +56,6 @@ export class CanvasComponent implements OnInit {
 
     this.renderer = new WebGLRenderer({canvas: this.canvas.nativeElement, antialias: true});
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(this.renderer.domElement);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enablePan = false;
