@@ -1,4 +1,3 @@
-<input [(colorPicker)]="primary" [style.background]="primary" (colorPickerChange)="colorChanged()"/>
-<input [(colorPicker)]="accent" [style.background]="accent" (colorPickerChange)="colorChanged()"/>
-<input [(colorPicker)]="paint" [style.background]="paint" (colorPickerChange)="colorChanged()"/>
-<canvas #canvas></canvas>
+<div class="canvas-container" #canvasContainer>
+  <canvas #canvas></canvas>
+</div>

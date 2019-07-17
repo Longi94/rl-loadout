@@ -29,6 +29,9 @@ export class CanvasComponent implements OnInit {
   @ViewChild('canvas', {static: true})
   canvas: ElementRef;
 
+  @ViewChild('canvasContainer', {static: true})
+  canvasContainer: ElementRef;
+
   private camera: Camera;
   private scene: Scene;
   private renderer: Renderer;
@@ -38,9 +41,6 @@ export class CanvasComponent implements OnInit {
   private rgbaLoader: PromiseLoader;
 
   // colors
-  primary = "#0000FF";
-  accent = "#FFFFFF";
-  paint = "#FF0000";
   private skinMaterial: MeshPhongMaterial;
   private skin;
   private skinMap: Texture;
@@ -49,13 +49,15 @@ export class CanvasComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.camera = new PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 400);
+    let width = this.canvasContainer.nativeElement.offsetWidth;
+    let height = this.canvasContainer.nativeElement.offsetHeight;
+    this.camera = new PerspectiveCamera(70, width / height, 0.01, 400);
     this.camera.position.z = 200;
 
     this.scene = new Scene();
 
     this.renderer = new WebGLRenderer({canvas: this.canvas.nativeElement, antialias: true});
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setSize(width, height);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enablePan = false;
@@ -116,14 +118,14 @@ export class CanvasComponent implements OnInit {
     this.renderer.render(this.scene, this.camera);
   }
 
-  colorChanged() {
-    this.skin.primary = new Color(this.primary);
-    this.skin.accent = new Color(this.accent);
-    this.skin.paint = new Color(this.paint);
-    this.skin.update();
-
-    this.skinMap.image = this.skin.toTexture();
-    this.skinMap.needsUpdate = true;
-    this.skinMaterial.needsUpdate = true;
-  }
+  // colorChanged() {
+  //   this.skin.primary = new Color(this.primary);
+  //   this.skin.accent = new Color(this.accent);
+  //   this.skin.paint = new Color(this.paint);
+  //   this.skin.update();
+  //
+  //   this.skinMap.image = this.skin.toTexture();
+  //   this.skinMap.needsUpdate = true;
+  //   this.skinMaterial.needsUpdate = true;
+  // }
 }
