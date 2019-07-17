@@ -1,15 +1,13 @@
 .main-container {
   width: 100%;
   height: 100%;
-  display: flex;
-  flex-flow: row;
 }
 
 app-canvas {
   height: 100%;
-  flex-grow: 1;
 }
 
 app-loadout-toolbar {
   height: 100%;
+  float: left;
 }

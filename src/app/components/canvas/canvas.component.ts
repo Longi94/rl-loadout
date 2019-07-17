@@ -6,7 +6,6 @@ import {
   DirectionalLight,
   PerspectiveCamera,
   Scene,
-  Camera,
   Renderer,
   WebGLRenderer,
   Mesh,
@@ -32,7 +31,7 @@ export class CanvasComponent implements OnInit {
   @ViewChild('canvasContainer', {static: true})
   canvasContainer: ElementRef;
 
-  private camera: Camera;
+  private camera: PerspectiveCamera;
   private scene: Scene;
   private renderer: Renderer;
   private controls: OrbitControls;
@@ -49,14 +48,14 @@ export class CanvasComponent implements OnInit {
   }
 
   ngOnInit() {
-    let width = this.canvasContainer.nativeElement.offsetWidth;
-    let height = this.canvasContainer.nativeElement.offsetHeight;
+    const width = this.canvasContainer.nativeElement.offsetWidth;
+    const height = this.canvasContainer.nativeElement.offsetHeight;
     this.camera = new PerspectiveCamera(70, width / height, 0.01, 400);
     this.camera.position.z = 200;
 
     this.scene = new Scene();
 
-    this.renderer = new WebGLRenderer({canvas: this.canvas.nativeElement, antialias: true});
+      this.renderer = new WebGLRenderer({canvas: this.canvas.nativeElement, antialias: true});
     this.renderer.setSize(width, height);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -115,7 +114,20 @@ export class CanvasComponent implements OnInit {
 
   animate() {
     requestAnimationFrame(() => this.animate());
+
+    this.resizeCanvas();
     this.renderer.render(this.scene, this.camera);
+  }
+
+  resizeCanvas() {
+    const width = this.canvasContainer.nativeElement.offsetWidth;
+    const height = this.canvasContainer.nativeElement.offsetHeight;
+
+    if (this.canvas.nativeElement.width !== width || this.canvas.nativeElement.height !== height) {
+      this.renderer.setSize(width, height, false);
+      this.camera.aspect = width / height;
+      this.camera.updateProjectionMatrix();
+    }
   }
 
   // colorChanged() {
