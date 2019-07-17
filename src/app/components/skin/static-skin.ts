@@ -9,6 +9,7 @@ export class StaticSkin {
 
   primary: Color = new Color(0, 0, 1);
   accent: Color = new Color(1, 1, 1);
+  paint: Color = new Color(1, 0, 0);
 
   constructor(width: number, height: number, rgbaMap: Uint8ClampedArray) {
     this.width = width;
@@ -28,6 +29,10 @@ export class StaticSkin {
           color = overBlendColors(this.accent, this.primary, this.rgbaMap[i + 3]);
         }
 
+        if (this.rgbaMap[i + 1] > 0) {
+          color = overBlendColors(this.paint, this.primary, this.rgbaMap[i + 3]);
+        }
+
         this.data[i] = color.r * 255;
         this.data[i + 1] = color.g * 255;
         this.data[i + 2] = color.b * 255;
@@ -38,17 +43,17 @@ export class StaticSkin {
 
   toTexture() {
     // @ts-ignore
-    var useOffscreen = typeof OffscreenCanvas !== 'undefined';
+    const useOffscreen = typeof OffscreenCanvas !== 'undefined';
 
     // @ts-ignore
-    var canvas = useOffscreen ? new OffscreenCanvas(this.width, this.height) : document.createElement('canvas');
-    let ctx = canvas.getContext('2d');
+    const canvas = useOffscreen ? new OffscreenCanvas(this.width, this.height) : document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
 
     canvas.width = this.width;
     canvas.height = this.height;
 
     // create imageData object
-    let imageData = ctx.createImageData(this.width, this.height);
+    const imageData = ctx.createImageData(this.width, this.height);
 
     // set our buffer as source
     imageData.data.set(this.data);

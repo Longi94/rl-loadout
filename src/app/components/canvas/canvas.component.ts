@@ -10,7 +10,9 @@ import {
   Renderer,
   WebGLRenderer,
   Mesh,
-  MeshPhongMaterial, Texture, Color, Material
+  MeshPhongMaterial,
+  Texture,
+  Color
 } from "three";
 import { TGALoader } from "three/examples/jsm/loaders/TGALoader";
 import { PromiseLoader } from "../utils/loader";
@@ -38,6 +40,7 @@ export class CanvasComponent implements OnInit {
   // colors
   primary = "#0000FF";
   accent = "#FFFFFF";
+  paint = "#FF0000";
   private skinMaterial: MeshPhongMaterial;
   private skin;
   private skinMap: Texture;
@@ -71,7 +74,7 @@ export class CanvasComponent implements OnInit {
       this.loader.load('assets/models/Body_Dominus_PremiumSkin_SK.glb'),
       this.textureLoader.load('assets/textures/MuscleCar_Chassis_D.tga'),
       this.textureLoader.load('assets/textures/MuscleCar_Chassis_N.tga'),
-      this.rgbaLoader.load('assets/textures/MuscleCar_RGB.tga')
+      this.rgbaLoader.load('assets/textures/Dominus_funnybook.tga')
     ]).then(values => {
       let gltf = values[0];
       let diffuseMap = values[1];
@@ -115,6 +118,7 @@ export class CanvasComponent implements OnInit {
   colorChanged() {
     this.skin.primary = new Color(this.primary);
     this.skin.accent = new Color(this.accent);
+    this.skin.paint = new Color(this.paint);
     this.skin.update();
 
     this.skinMap.image = this.skin.toTexture();
