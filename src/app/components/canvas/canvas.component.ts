@@ -17,6 +17,8 @@ import { TGALoader } from "three/examples/jsm/loaders/TGALoader";
 import { PromiseLoader } from "../../utils/loader";
 import { TgaRgbaLoader } from "../../utils/tga-rgba-loader";
 import { StaticSkin } from "../../skin/static-skin";
+import { LoadoutService } from "../../service/loadout.service";
+import { Decal } from "../../model/decal";
 
 @Component({
   selector: 'app-canvas',
@@ -44,7 +46,8 @@ export class CanvasComponent implements OnInit {
   private skin;
   private skinMap: Texture;
 
-  constructor() {
+  constructor(private loadoutService: LoadoutService) {
+    this.loadoutService.decalChanged$.subscribe(decal => this.changeDecal(decal));
   }
 
   ngOnInit() {
@@ -128,6 +131,15 @@ export class CanvasComponent implements OnInit {
       this.camera.aspect = width / height;
       this.camera.updateProjectionMatrix();
     }
+  }
+
+  changeDecal(decal: Decal) {
+    this.rgbaLoader.load(decal.texture).then(texture => {
+      this.skin = new StaticSkin(texture.width, texture.height, texture.data);
+      this.skinMap.image = this.skin.toTexture();
+      this.skinMap.needsUpdate = true;
+      this.skinMaterial.needsUpdate = true;
+    });
   }
 
   // colorChanged() {

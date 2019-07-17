@@ -36,7 +36,7 @@ export class StaticSkin {
     this.imageData = this.context.createImageData(this.width, this.height);
   }
 
-  private update() {
+  update() {
     for (let i = 0; i < this.data.length; i += 4) {
       let color = new Color(0, 0, 0);
 

@@ -11,9 +11,17 @@ export class LoadoutGridSelectorComponent implements OnInit {
   @Input('items')
   items: Item[];
 
+  @Input('onSelect')
+  onSelect: (item: Item) => void;
+
   constructor() { }
 
   ngOnInit() {
   }
 
+  selectItem(item: Item) {
+    if (this.onSelect) {
+      this.onSelect(item);
+    }
+  }
 }

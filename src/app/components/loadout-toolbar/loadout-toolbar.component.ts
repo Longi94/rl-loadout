@@ -2,6 +2,8 @@ import { Component, ComponentFactoryResolver, OnInit, ViewChild, ViewContainerRe
 import { MatSnackBar } from "@angular/material";
 import { LoadoutGridSelectorComponent } from "../loadout-grid-selector/loadout-grid-selector.component";
 import { Quality } from "../../model/quality";
+import { Decal } from "../../model/decal";
+import { LoadoutService } from "../../service/loadout.service";
 
 @Component({
   selector: 'app-loadout-toolbar',
@@ -16,7 +18,8 @@ export class LoadoutToolbarComponent implements OnInit {
   selected: string = undefined;
 
   constructor(private _snackBar: MatSnackBar,
-              private componentFactoryResolver: ComponentFactoryResolver) {
+              private componentFactoryResolver: ComponentFactoryResolver,
+              private loadoutService: LoadoutService) {
   }
 
   ngOnInit() {
@@ -37,17 +40,23 @@ export class LoadoutToolbarComponent implements OnInit {
     const component = this.loadoutDropdown.createComponent(factory);
 
     component.instance.items = [
-      {
-        icon: 'assets/icons/Thumb_Skin_Flames.jpg',
-        name: 'Flames',
-        quality: Quality.UNCOMMON
-      },
-      {
-        icon: 'assets/icons/Thumb_Skin_Comic.jpg',
-        name: 'Funnybook',
-        quality: Quality.UNCOMMON
-      }
-    ]
+      new Decal(
+        'assets/icons/Thumb_Skin_Flames.jpg',
+        'Flames',
+        Quality.UNCOMMON,
+        'assets/textures/MuscleCar_Flames_RGB.tga',
+        false
+      ),
+      new Decal(
+        'assets/icons/Thumb_Skin_Comic.jpg',
+        'Funnybook',
+        Quality.UNCOMMON,
+        'assets/textures/Dominus_funnybook.tga',
+        true
+      )
+    ];
+
+    component.instance.onSelect = item => this.loadoutService.selectDecal(<Decal>item);
   }
 
   closeDropDown() {

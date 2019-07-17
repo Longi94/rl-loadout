@@ -1,6 +1,6 @@
 <div class="grid-container">
   <mat-grid-list cols="4" rowHeight="1:1" gutterSize="10">
-    <mat-grid-tile *ngFor="let item of items">
+    <mat-grid-tile *ngFor="let item of items" (click)="selectItem(item)">
       <img [src]="item.icon" alt="Icon"/>
       <mat-grid-tile-footer>{{item.name}}</mat-grid-tile-footer>
     </mat-grid-tile>
