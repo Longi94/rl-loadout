@@ -6,12 +6,14 @@ import { AppComponent } from './app.component';
 import { CanvasComponent } from './components/canvas/canvas.component';
 import { ColorPickerModule } from "ngx-color-picker";
 import { HomeComponent } from './components/home/home.component';
+import { LoadoutToolbarComponent } from './components/loadout-toolbar/loadout-toolbar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CanvasComponent,
-    HomeComponent
+    HomeComponent,
+    LoadoutToolbarComponent
   ],
   imports: [
     BrowserModule,
