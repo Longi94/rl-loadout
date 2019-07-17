@@ -1,7 +1,14 @@
 @import "../../../theme";
 
+.toolbar-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-flow: row;
+}
+
 .toolbar {
-  height: 100%  ;
+  height: 100%;
   display: flex;
   flex-flow: column;
   background-color: $background;
@@ -16,4 +23,8 @@
 .toolbar-button img {
   width: 48px;
   height: 48px;
+}
+
+.loadout-dropdown {
+  height: 100%;
 }

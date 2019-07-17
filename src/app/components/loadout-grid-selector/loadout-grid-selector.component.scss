@@ -1,0 +1,15 @@
+@import "../../../theme";
+
+.grid-container {
+  background-color: $background;
+  height: 100%;
+}
+
+mat-grid-list {
+  width: 500px;
+}
+
+mat-grid-tile img {
+  width: 100%;
+  height: 100%;
+}

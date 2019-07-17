@@ -1,34 +1,41 @@
-<div class="toolbar">
-  <button mat-button class="toolbar-button" matTooltip="Body" matTooltipPosition="right"
-          (click)="showUnsupported('Bodies')">
-    <img src="assets/icons/Vehicles-icon.png"/>
-  </button>
-  <button mat-button class="toolbar-button" matTooltip="Decal" matTooltipPosition="right"
-          (click)="showUnsupported('Decals')">
-    <img src="assets/icons/Decals-icon.png"/>
-  </button>
-  <button mat-button class="toolbar-button" matTooltip="Paint" matTooltipPosition="right"
-          (click)="showUnsupported('Paints')">
-    <img src="assets/icons/Paint-icon.png"/>
-  </button>
-  <button mat-button class="toolbar-button" matTooltip="Wheels" matTooltipPosition="right"
-          (click)="showUnsupported('Wheels')">
-    <img src="assets/icons/Wheels-icon.png"/>
-  </button>
-  <button mat-button class="toolbar-button" matTooltip="Boost" matTooltipPosition="right"
-          (click)="showUnsupported('Boosts')">
-    <img src="assets/icons/Trails-icon.png"/>
-  </button>
-  <button mat-button class="toolbar-button" matTooltip="Topper" matTooltipPosition="right"
-          (click)="showUnsupported('Toppers')">
-    <img src="assets/icons/Toppers-icon.png"/>
-  </button>
-  <button mat-button class="toolbar-button" matTooltip="Antenna" matTooltipPosition="right"
-          (click)="showUnsupported('Antennas')">
-    <img src="assets/icons/Antennas-icon.png"/>
-  </button>
-  <button mat-button class="toolbar-button" matTooltip="Trail" matTooltipPosition="right"
-          (click)="showUnsupported('Trails')">
-    <img src="assets/icons/Trail_garage_icon.png"/>
-  </button>
+<!--suppress HtmlUnknownTarget -->
+<div class="toolbar-container">
+  <div class="toolbar">
+    <button mat-button class="toolbar-button" matTooltip="Body" matTooltipPosition="right"
+            (click)="showUnsupported('Bodies')">
+      <img src="assets/icons/Vehicles-icon.png" alt="Bodies"/>
+    </button>
+    <button mat-button class="toolbar-button" matTooltip="Decal" matTooltipPosition="right"
+            (click)="openDecalsComponent()">
+      <img src="assets/icons/Decals-icon.png" alt="Decals"/>
+    </button>
+    <button mat-button class="toolbar-button" matTooltip="Paint" matTooltipPosition="right"
+            (click)="showUnsupported('Paints')">
+      <img src="assets/icons/Paint-icon.png" alt="Paints"/>
+    </button>
+    <button mat-button class="toolbar-button" matTooltip="Wheels" matTooltipPosition="right"
+            (click)="showUnsupported('Wheels')">
+      <img src="assets/icons/Wheels-icon.png" alt="Wheels"/>
+    </button>
+    <button mat-button class="toolbar-button" matTooltip="Boost" matTooltipPosition="right"
+            (click)="showUnsupported('Boosts')">
+      <img src="assets/icons/Trails-icon.png" alt="Boosts"/>
+    </button>
+    <button mat-button class="toolbar-button" matTooltip="Topper" matTooltipPosition="right"
+            (click)="showUnsupported('Toppers')">
+      <img src="assets/icons/Toppers-icon.png" alt="Toppers"/>
+    </button>
+    <button mat-button class="toolbar-button" matTooltip="Antenna" matTooltipPosition="right"
+            (click)="showUnsupported('Antennas')">
+      <img src="assets/icons/Antennas-icon.png" alt="Antenna"/>
+    </button>
+    <button mat-button class="toolbar-button" matTooltip="Trail" matTooltipPosition="right"
+            (click)="showUnsupported('Trails')">
+      <img src="assets/icons/Trail_garage_icon.png" alt="Trail"/>
+    </button>
+  </div>
+  <div class="loadout-dropdown">
+    <ng-template #loadoutDropdown>
+    </ng-template>
+  </div>
 </div>

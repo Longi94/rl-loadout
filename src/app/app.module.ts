@@ -8,14 +8,22 @@ import { ColorPickerModule } from "ngx-color-picker";
 import { HomeComponent } from './components/home/home.component';
 import { LoadoutToolbarComponent } from './components/loadout-toolbar/loadout-toolbar.component';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { MatButtonModule, MatRippleModule, MatTooltipModule, MatSnackBarModule } from "@angular/material";
+import {
+  MatButtonModule,
+  MatRippleModule,
+  MatTooltipModule,
+  MatSnackBarModule,
+  MatGridListModule
+} from "@angular/material";
+import { LoadoutGridSelectorComponent } from './components/loadout-grid-selector/loadout-grid-selector.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CanvasComponent,
     HomeComponent,
-    LoadoutToolbarComponent
+    LoadoutToolbarComponent,
+    LoadoutGridSelectorComponent
   ],
   imports: [
     BrowserModule,
@@ -23,11 +31,13 @@ import { MatButtonModule, MatRippleModule, MatTooltipModule, MatSnackBarModule }
     BrowserAnimationsModule,
     ColorPickerModule,
     MatButtonModule,
+    MatGridListModule,
     MatRippleModule,
     MatSnackBarModule,
     MatTooltipModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [LoadoutGridSelectorComponent]
 })
 export class AppModule { }
