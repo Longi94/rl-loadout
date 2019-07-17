@@ -7,6 +7,7 @@ import { CanvasComponent } from './components/canvas/canvas.component';
 import { ColorPickerModule } from "ngx-color-picker";
 import { HomeComponent } from './components/home/home.component';
 import { LoadoutToolbarComponent } from './components/loadout-toolbar/loadout-toolbar.component';
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { LoadoutToolbarComponent } from './components/loadout-toolbar/loadout-to
   imports: [
     BrowserModule,
     AppRoutingModule,
+    BrowserAnimationsModule,
     ColorPickerModule
   ],
   providers: [],
