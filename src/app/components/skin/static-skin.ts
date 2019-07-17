@@ -1,6 +1,9 @@
 import { Color } from "three";
 import { overBlendColors } from "../utils/color";
 
+// @ts-ignore
+const useOffscreen = typeof OffscreenCanvas !== 'undefined';
+
 export class StaticSkin {
   width: number;
   height: number;
@@ -11,12 +14,26 @@ export class StaticSkin {
   accent: Color = new Color(1, 1, 1);
   paint: Color = new Color(1, 0, 0);
 
+  // @ts-ignore
+  private readonly canvas: OffscreenCanvas | HTMLCanvasElement;
+  private context: CanvasRenderingContext2D;
+  private readonly imageData: ImageData;
+
   constructor(width: number, height: number, rgbaMap: Uint8ClampedArray) {
     this.width = width;
     this.height = height;
     this.rgbaMap = rgbaMap;
     this.data = new Uint8ClampedArray(rgbaMap);
     this.update();
+
+    // @ts-ignore
+    this.canvas = useOffscreen ? new OffscreenCanvas(width, height) : document.createElement('canvas');
+    this.canvas.width = width;
+    this.canvas.height = height;
+    this.context = this.canvas.getContext('2d');
+
+    // create imageData object
+    this.imageData = this.context.createImageData(this.width, this.height);
   }
 
   private update() {
@@ -43,24 +60,11 @@ export class StaticSkin {
   }
 
   toTexture() {
-    // @ts-ignore
-    const useOffscreen = typeof OffscreenCanvas !== 'undefined';
-
-    // @ts-ignore
-    const canvas = useOffscreen ? new OffscreenCanvas(this.width, this.height) : document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-
-    canvas.width = this.width;
-    canvas.height = this.height;
-
-    // create imageData object
-    const imageData = ctx.createImageData(this.width, this.height);
-
     // set our buffer as source
-    imageData.data.set(this.data);
+    this.imageData.data.set(this.data);
 
-    ctx.putImageData(imageData, 0, 0);
+    this.context.putImageData(this.imageData, 0, 0);
 
-    return useOffscreen ? canvas.transferToImageBitmap() : canvas;
+    return useOffscreen ? this.canvas.transferToImageBitmap() : this.canvas;
   }
 }
