@@ -19,17 +19,22 @@ export class StaticSkin {
   private context: CanvasRenderingContext2D;
   private readonly imageData: ImageData;
 
-  constructor(width: number, height: number, rgbaMap: Uint8ClampedArray) {
-    this.width = width;
-    this.height = height;
-    this.rgbaMap = rgbaMap;
-    this.data = new Uint8ClampedArray(rgbaMap);
+  constructor(tgaRgbaMap, paints) {
+    this.width = tgaRgbaMap.width;
+    this.height = tgaRgbaMap.height;
+    this.rgbaMap = tgaRgbaMap.data;
+    this.data = new Uint8ClampedArray(tgaRgbaMap.data);
+
+    this.primary = new Color(paints.primary);
+    this.accent = new Color(paints.accent);
+    this.paint = new Color(paints.decal);
+
     this.update();
 
     // @ts-ignore
-    this.canvas = useOffscreen ? new OffscreenCanvas(width, height) : document.createElement('canvas');
-    this.canvas.width = width;
-    this.canvas.height = height;
+    this.canvas = useOffscreen ? new OffscreenCanvas(this.width, this.height) : document.createElement('canvas');
+    this.canvas.width = this.width;
+    this.canvas.height = this.height;
     this.context = this.canvas.getContext('2d');
 
     // create imageData object

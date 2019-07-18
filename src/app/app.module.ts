@@ -16,6 +16,7 @@ import {
   MatGridListModule
 } from "@angular/material";
 import { LoadoutGridSelectorComponent } from './components/loadout-grid-selector/loadout-grid-selector.component';
+import { ColorSelectorComponent } from './components/color-selector/color-selector.component';
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import { LoadoutGridSelectorComponent } from './components/loadout-grid-selector
     CanvasComponent,
     HomeComponent,
     LoadoutToolbarComponent,
-    LoadoutGridSelectorComponent
+    LoadoutGridSelectorComponent,
+    ColorSelectorComponent
   ],
   imports: [
     BrowserModule,
@@ -38,6 +40,9 @@ import { LoadoutGridSelectorComponent } from './components/loadout-grid-selector
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [LoadoutGridSelectorComponent]
+  entryComponents: [
+    LoadoutGridSelectorComponent,
+    ColorSelectorComponent
+  ]
 })
 export class AppModule { }

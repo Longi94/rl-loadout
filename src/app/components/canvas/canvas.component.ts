@@ -48,6 +48,7 @@ export class CanvasComponent implements OnInit {
 
   constructor(private loadoutService: LoadoutService) {
     this.loadoutService.decalChanged$.subscribe(decal => this.changeDecal(decal));
+    this.loadoutService.paintChanged$.subscribe(paint => this.changePaint(paint));
   }
 
   ngOnInit() {
@@ -60,7 +61,7 @@ export class CanvasComponent implements OnInit {
 
     this.scene = new Scene();
 
-      this.renderer = new WebGLRenderer({canvas: this.canvas.nativeElement, antialias: true});
+    this.renderer = new WebGLRenderer({canvas: this.canvas.nativeElement, antialias: true});
     this.renderer.setSize(width, height);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -87,7 +88,7 @@ export class CanvasComponent implements OnInit {
       let diffuseMap = values[1];
       let normalMap = values[2];
 
-      this.skin = new StaticSkin(values[3].width, values[3].height, values[3].data);
+      this.skin = new StaticSkin(values[3], this.loadoutService.paints);
       this.skinMap = new Texture();
       this.skinMap.image = this.skin.toTexture();
       this.skinMap.needsUpdate = true;
@@ -135,23 +136,39 @@ export class CanvasComponent implements OnInit {
     }
   }
 
-  changeDecal(decal: Decal) {
+  private changeDecal(decal: Decal) {
     this.rgbaLoader.load(decal.texture).then(texture => {
-      this.skin = new StaticSkin(texture.width, texture.height, texture.data);
+      this.skin = new StaticSkin(texture, this.loadoutService.paints);
       this.skinMap.image = this.skin.toTexture();
       this.skinMap.needsUpdate = true;
       this.skinMaterial.needsUpdate = true;
     });
   }
 
-  // colorChanged() {
-  //   this.skin.primary = new Color(this.primary);
-  //   this.skin.accent = new Color(this.accent);
-  //   this.skin.paint = new Color(this.paint);
-  //   this.skin.update();
-  //
-  //   this.skinMap.image = this.skin.toTexture();
-  //   this.skinMap.needsUpdate = true;
-  //   this.skinMaterial.needsUpdate = true;
-  // }
+  private changePaint(paint) {
+    switch (paint.type) {
+      case 'primary':
+        this.skin.primary = new Color(paint.color);
+        this.refreshSkin();
+        break;
+      case 'accent':
+        this.skin.accent = new Color(paint.color);
+        this.refreshSkin();
+        break;
+      case 'decal':
+        this.skin.paint = new Color(paint.color);
+        this.refreshSkin();
+        break;
+      default:
+        console.error(`Unknown paint type ${paint.type}`);
+        return;
+    }
+  }
+
+  private refreshSkin() {
+    this.skin.update();
+    this.skinMap.image = this.skin.toTexture();
+    this.skinMap.needsUpdate = true;
+    this.skinMaterial.needsUpdate = true;
+  }
 }

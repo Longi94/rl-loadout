@@ -4,6 +4,7 @@ import { LoadoutGridSelectorComponent } from "../loadout-grid-selector/loadout-g
 import { Quality } from "../../model/quality";
 import { Decal } from "../../model/decal";
 import { LoadoutService } from "../../service/loadout.service";
+import { ColorSelectorComponent } from "../color-selector/color-selector.component";
 
 @Component({
   selector: 'app-loadout-toolbar',
@@ -15,7 +16,7 @@ export class LoadoutToolbarComponent implements OnInit {
   @ViewChild('loadoutDropdown', {static: true, read: ViewContainerRef})
   loadoutDropdown: ViewContainerRef;
 
-  selected: string = undefined;
+  selected: Toolbar = undefined;
 
   constructor(private _snackBar: MatSnackBar,
               private componentFactoryResolver: ComponentFactoryResolver,
@@ -31,11 +32,11 @@ export class LoadoutToolbarComponent implements OnInit {
 
   openDecalsComponent() {
     this.closeDropDown();
-    if (this.selected === 'decal') {
+    if (this.selected === Toolbar.DECAL) {
       this.selected = undefined;
       return;
     }
-    this.selected = 'decal';
+    this.selected = Toolbar.DECAL;
     const factory = this.componentFactoryResolver.resolveComponentFactory(LoadoutGridSelectorComponent);
     const component = this.loadoutDropdown.createComponent(factory);
 
@@ -59,7 +60,22 @@ export class LoadoutToolbarComponent implements OnInit {
     component.instance.onSelect = item => this.loadoutService.selectDecal(<Decal>item);
   }
 
+  openPaintsComponent() {
+    this.closeDropDown();
+    if (this.selected === Toolbar.PAINT) {
+      this.selected = undefined;
+      return;
+    }
+    this.selected = Toolbar.PAINT;
+    const factory = this.componentFactoryResolver.resolveComponentFactory(ColorSelectorComponent);
+    const component = this.loadoutDropdown.createComponent(factory);
+  }
+
   closeDropDown() {
     this.loadoutDropdown.clear();
   }
+}
+
+enum Toolbar {
+  DECAL, PAINT
 }

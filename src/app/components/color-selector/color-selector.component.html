@@ -1,0 +1,12 @@
+<div class="color-selector-container">
+  <table>
+    <tr *ngFor="let key of objectKeys(colors)">
+      <td><span class="color-label">{{colors[key].label}}</span></td>
+      <td>
+        <div class="color-picker-button" [(colorPicker)]="colors[key].value" [style.background]="colors[key].value"
+          (colorPickerChange)="colorChanged(colors[key].value, key)" cpAlphaChannel="disabled">
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
