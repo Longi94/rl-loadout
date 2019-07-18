@@ -76,6 +76,7 @@ export class LoadoutToolbarComponent implements OnInit {
         'assets/icons/wheel_oem_thumbnail.jpg',
         'OEM',
         Quality.COMMON,
+        'assets/models/wheel_oem.glb',
         'assets/textures/OEM_D.tga',
         'assets/textures/OEM_RGB.tga',
         false
@@ -84,6 +85,7 @@ export class LoadoutToolbarComponent implements OnInit {
         'assets/icons/wheel_chakram_thumbnail.jpg',
         'Chakram',
         Quality.RARE,
+        'assets/models/wheel_chakram.glb',
         'assets/textures/Rim_CarCar_CUSTOM.tga',
         'assets/textures/Rim_CarCar_RGB.tga',
         true

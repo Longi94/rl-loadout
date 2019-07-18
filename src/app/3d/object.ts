@@ -26,4 +26,8 @@ export abstract class AbstractObject {
   addToScene(scene: Scene) {
     scene.add(this.scene);
   }
+
+  removeFromScene(scene: Scene) {
+    scene.remove(this.scene);
+  }
 }

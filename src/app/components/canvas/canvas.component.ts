@@ -20,6 +20,7 @@ import { LoadoutService } from "../../service/loadout.service";
 import { Decal } from "../../model/decal";
 import { Body } from "../../3d/body";
 import { Wheels } from "../../3d/wheels";
+import { Wheel } from "../../model/wheel";
 
 @Component({
   selector: 'app-canvas',
@@ -53,6 +54,7 @@ export class CanvasComponent implements OnInit {
   constructor(private loadoutService: LoadoutService) {
     this.loadoutService.decalChanged$.subscribe(decal => this.changeDecal(decal));
     this.loadoutService.paintChanged$.subscribe(paint => this.changePaint(paint));
+    this.loadoutService.wheelChanged$.subscribe(wheel => this.changeWheel(wheel));
   }
 
   ngOnInit() {
@@ -143,6 +145,15 @@ export class CanvasComponent implements OnInit {
     this.rgbaLoader.load(decal.texture).then(texture => {
       this.skin = new StaticSkin(texture, this.loadoutService.paints);
       this.refreshSkin();
+    });
+  }
+
+  private changeWheel(wheel: Wheel) {
+    this.wheels.removeFromScene(this.scene);
+    this.wheels = new Wheels(wheel.model);
+    this.wheels.load().then(() => {
+      this.wheels.applyWheelPositions(this.body.getWheelPositions());
+      this.wheels.addToScene(this.scene);
     });
   }
 

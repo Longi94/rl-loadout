@@ -64,9 +64,10 @@ export class Wheels extends AbstractObject {
   }
 
   addToScene(scene: Scene) {
-    scene.add(this.wheels.fr);
-    scene.add(this.wheels.fl);
-    scene.add(this.wheels.br);
-    scene.add(this.wheels.bl);
+    scene.add(this.wheels.fr, this.wheels.fl, this.wheels.br, this.wheels.bl);
+  }
+
+  removeFromScene(scene: Scene) {
+    scene.remove(this.wheels.fr, this.wheels.fl, this.wheels.br, this.wheels.bl);
   }
 }
