@@ -92,14 +92,14 @@ export class CanvasComponent implements OnInit {
       this.skinMap.image = this.skin.toTexture();
       this.skinMap.needsUpdate = true;
 
-      let mesh: Mesh = <Mesh>gltf.scene.children[0];
+      let mesh: Mesh = <Mesh>gltf.scene.children[0].children[2];
       let material = new MeshPhongMaterial();
       mesh.material = material;
 
       material.map = diffuseMap;
       material.normalMap = normalMap;
 
-      mesh = <Mesh>gltf.scene.children[1];
+      mesh = <Mesh>gltf.scene.children[0].children[1];
       this.skinMaterial = new MeshPhongMaterial();
       mesh.material = this.skinMaterial;
       this.skinMaterial.map = this.skinMap;
