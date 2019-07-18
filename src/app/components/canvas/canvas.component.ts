@@ -19,6 +19,7 @@ import { StaticSkin } from "../../3d/static-skin";
 import { LoadoutService } from "../../service/loadout.service";
 import { Decal } from "../../model/decal";
 import { Body } from "../../3d/body";
+import { Wheels } from "../../3d/wheels";
 
 @Component({
   selector: 'app-canvas',
@@ -43,6 +44,7 @@ export class CanvasComponent implements OnInit {
 
   // 3D objects
   private body: Body;
+  private wheels: Wheels;
 
   // colors
   private skin;
@@ -68,7 +70,7 @@ export class CanvasComponent implements OnInit {
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enablePan = false;
-    this.controls.minDistance = 100;
+    //this.controls.minDistance = 100;
     this.controls.maxDistance = 300;
     this.controls.update();
 
@@ -81,28 +83,31 @@ export class CanvasComponent implements OnInit {
     this.rgbaLoader = new PromiseLoader(new TgaRgbaLoader());
 
     this.body = new Body('assets/models/Body_Dominus_PremiumSkin_SK.glb');
+    this.wheels = new Wheels('assets/models/wheels_oem.glb');
 
     Promise.all([
       this.body.load(),
       this.textureLoader.load('assets/textures/MuscleCar_Chassis_D.tga'),
       this.textureLoader.load('assets/textures/MuscleCar_Chassis_N.tga'),
       this.rgbaLoader.load('assets/textures/Dominus_funnybook.tga'),
-      this.loader.load('assets/models/wheels_oem.glb')
+      this.wheels.load()
     ]).then(values => {
-      let body = <Body>values[0];
       let diffuseMap = values[1];
       let normalMap = values[2];
 
-      body.applyChassisTexture(diffuseMap, normalMap);
+      this.body.applyChassisTexture(diffuseMap, normalMap);
 
       this.skin = new StaticSkin(values[3], this.loadoutService.paints);
       this.skinMap = new Texture();
       this.skinMap.image = this.skin.toTexture();
       this.skinMap.needsUpdate = true;
 
-      body.applyBodyTexture(this.skinMap);
+      this.body.applyBodyTexture(this.skinMap);
 
-      body.addToScene(this.scene);
+      this.wheels.applyWheelPositions(this.body.getWheelPositions());
+
+      this.body.addToScene(this.scene);
+      this.wheels.addToScene(this.scene);
     }).catch(console.error);
   }
 

@@ -1,11 +1,11 @@
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { Object3D, Scene } from "three";
+import { Scene } from "three";
 
 export abstract class AbstractObject {
 
   url: string;
   loader: GLTFLoader = new GLTFLoader();
-  object: Object3D;
+  scene: Scene;
 
   protected constructor(modelUrl: string) {
     this.url = modelUrl;
@@ -14,16 +14,16 @@ export abstract class AbstractObject {
   load(): Promise<AbstractObject> {
     return new Promise((resolve, reject) => {
       this.loader.load(this.url, gltf => {
-        this.object = gltf.scene.children[0];
-        this.handleModel();
+        this.scene = gltf.scene;
+        this.handleModel(gltf.scene);
         resolve(this);
       }, undefined, reject);
     });
   }
 
-  abstract handleModel();
+  abstract handleModel(scene: Scene);
 
   addToScene(scene: Scene) {
-    scene.add(this.object);
+    scene.add(this.scene);
   }
 }
