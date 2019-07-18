@@ -45,14 +45,14 @@ export class LoadoutToolbarComponent implements OnInit {
       new Decal(
         'assets/icons/Thumb_Skin_Flames.jpg',
         'Flames',
-        Quality.UNCOMMON,
+        Quality.PREMIUM,
         'assets/textures/MuscleCar_Flames_RGB.tga',
         false
       ),
       new Decal(
         'assets/icons/Thumb_Skin_Comic.jpg',
         'Funnybook',
-        Quality.UNCOMMON,
+        Quality.RARE,
         'assets/textures/Dominus_funnybook.tga',
         true
       )
@@ -84,7 +84,7 @@ export class LoadoutToolbarComponent implements OnInit {
       new Wheel(
         'assets/icons/wheel_chakram_thumbnail.jpg',
         'Chakram',
-        Quality.RARE,
+        Quality.VERY_RARE,
         'assets/models/wheel_chakram.glb',
         'assets/textures/Rim_CarCar_CUSTOM.tga',
         'assets/textures/Rim_CarCar_RGB.tga',

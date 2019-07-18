@@ -2,7 +2,16 @@
   <mat-grid-list cols="4" rowHeight="1:1" gutterSize="10">
     <mat-grid-tile *ngFor="let item of items" (click)="selectItem(item)">
       <img [src]="item.icon" alt="Icon"/>
-      <mat-grid-tile-footer>{{item.name}}</mat-grid-tile-footer>
+      <mat-grid-tile-footer [ngClass]="{
+      'common': item.quality === qCommon,
+      'rare': item.quality === qRare,
+      'very-rare': item.quality === qVeryRare,
+      'import': item.quality === qImport,
+      'exotic': item.quality === qExotic,
+      'black-market': item.quality === qBlackMarket,
+      'limited': item.quality === qLimited,
+      'premium': item.quality === qPremium
+      }">{{item.name}}</mat-grid-tile-footer>
     </mat-grid-tile>
   </mat-grid-list>
 </div>

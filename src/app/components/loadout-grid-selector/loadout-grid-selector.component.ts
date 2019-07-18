@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Item } from "../../model/item";
+import { Quality } from "../../model/quality";
 
 @Component({
   selector: 'app-loadout-grid-selector',
@@ -13,6 +14,15 @@ export class LoadoutGridSelectorComponent implements OnInit {
 
   @Input('onSelect')
   onSelect: (item: Item) => void;
+
+  qCommon = Quality.COMMON;
+  qRare = Quality.RARE;
+  qVeryRare = Quality.VERY_RARE;
+  qImport = Quality.IMPORT;
+  qExotic = Quality.EXOTIC;
+  qBlackMarket = Quality.BLACK_MARKET;
+  qLimited = Quality.LIMITED;
+  qPremium = Quality.PREMIUM;
 
   constructor() { }
 

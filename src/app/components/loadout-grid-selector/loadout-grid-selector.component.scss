@@ -4,7 +4,7 @@
   background-color: $background;
   height: 100%;
   padding: 10px;
-  box-shadow: -12px 0px 35px 15px rgba(0,0,0,0.4);
+  box-shadow: -12px 0px 35px 15px rgba(0, 0, 0, 0.4);
 }
 
 mat-grid-list {
@@ -18,4 +18,32 @@ mat-grid-tile img {
 
 mat-grid-tile:hover {
   cursor: pointer;
+}
+
+mat-grid-tile-footer.rare {
+  background-color: rgba(116, 151, 235, .4);
+}
+
+mat-grid-tile-footer.very-rare {
+  background-color: rgba(158, 124, 252, .4);
+}
+
+mat-grid-tile-footer.import {
+  background-color: rgba(227, 90, 82, .4);
+}
+
+mat-grid-tile-footer.exotic {
+  background-color: rgba(236, 219, 108, .4);
+}
+
+mat-grid-tile-footer.black-market {
+  background-color: rgba(255, 0, 255, .4);
+}
+
+mat-grid-tile-footer.limited {
+  background-color: rgba(247, 121, 57, .4);
+}
+
+mat-grid-tile-footer.premium {
+  background-color: rgba(107, 241, 174, .4);
 }
