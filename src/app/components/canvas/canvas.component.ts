@@ -64,6 +64,7 @@ export class CanvasComponent implements OnInit {
     this.camera.position.z = -91.74632500987678;
 
     this.scene = new Scene();
+    this.scene.background = new Color('#AAAAAA');
 
     this.renderer = new WebGLRenderer({canvas: this.canvas.nativeElement, antialias: true});
     this.renderer.setSize(width, height);
