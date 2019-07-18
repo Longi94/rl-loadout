@@ -8,7 +8,6 @@ import {
   Scene,
   Renderer,
   WebGLRenderer,
-  Mesh,
   MeshPhongMaterial,
   Texture,
   Color
@@ -16,9 +15,10 @@ import {
 import { TGALoader } from "three/examples/jsm/loaders/TGALoader";
 import { PromiseLoader } from "../../utils/loader";
 import { TgaRgbaLoader } from "../../utils/tga-rgba-loader";
-import { StaticSkin } from "../../skin/static-skin";
+import { StaticSkin } from "../../3d/static-skin";
 import { LoadoutService } from "../../service/loadout.service";
 import { Decal } from "../../model/decal";
+import { Body } from "../../3d/body";
 
 @Component({
   selector: 'app-canvas',
@@ -41,8 +41,10 @@ export class CanvasComponent implements OnInit {
   private textureLoader: PromiseLoader;
   private rgbaLoader: PromiseLoader;
 
+  // 3D objects
+  private body: Body;
+
   // colors
-  private skinMaterial: MeshPhongMaterial;
   private skin;
   private skinMap: Texture;
 
@@ -78,34 +80,29 @@ export class CanvasComponent implements OnInit {
     this.textureLoader = new PromiseLoader(new TGALoader());
     this.rgbaLoader = new PromiseLoader(new TgaRgbaLoader());
 
+    this.body = new Body('assets/models/Body_Dominus_PremiumSkin_SK.glb');
+
     Promise.all([
-      this.loader.load('assets/models/Body_Dominus_PremiumSkin_SK.glb'),
+      this.body.load(),
       this.textureLoader.load('assets/textures/MuscleCar_Chassis_D.tga'),
       this.textureLoader.load('assets/textures/MuscleCar_Chassis_N.tga'),
-      this.rgbaLoader.load('assets/textures/Dominus_funnybook.tga')
+      this.rgbaLoader.load('assets/textures/Dominus_funnybook.tga'),
+      this.loader.load('assets/models/wheels_oem.glb')
     ]).then(values => {
-      let gltf = values[0];
+      let body = <Body>values[0];
       let diffuseMap = values[1];
       let normalMap = values[2];
+
+      body.applyChassisTexture(diffuseMap, normalMap);
 
       this.skin = new StaticSkin(values[3], this.loadoutService.paints);
       this.skinMap = new Texture();
       this.skinMap.image = this.skin.toTexture();
       this.skinMap.needsUpdate = true;
 
-      let mesh: Mesh = <Mesh>gltf.scene.children[0].children[2];
-      let material = new MeshPhongMaterial();
-      mesh.material = material;
+      body.applyBodyTexture(this.skinMap);
 
-      material.map = diffuseMap;
-      material.normalMap = normalMap;
-
-      mesh = <Mesh>gltf.scene.children[0].children[1];
-      this.skinMaterial = new MeshPhongMaterial();
-      mesh.material = this.skinMaterial;
-      this.skinMaterial.map = this.skinMap;
-
-      this.scene.add(gltf.scene);
+      body.addToScene(this.scene);
     }).catch(console.error);
   }
 
@@ -139,9 +136,7 @@ export class CanvasComponent implements OnInit {
   private changeDecal(decal: Decal) {
     this.rgbaLoader.load(decal.texture).then(texture => {
       this.skin = new StaticSkin(texture, this.loadoutService.paints);
-      this.skinMap.image = this.skin.toTexture();
-      this.skinMap.needsUpdate = true;
-      this.skinMaterial.needsUpdate = true;
+      this.refreshSkin();
     });
   }
 
@@ -169,6 +164,6 @@ export class CanvasComponent implements OnInit {
     this.skin.update();
     this.skinMap.image = this.skin.toTexture();
     this.skinMap.needsUpdate = true;
-    this.skinMaterial.needsUpdate = true;
+    (<MeshPhongMaterial>this.body.body.material).needsUpdate = true;
   }
 }
