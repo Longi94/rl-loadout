@@ -5,6 +5,7 @@ import { Quality } from "../../model/quality";
 import { Decal } from "../../model/decal";
 import { LoadoutService } from "../../service/loadout.service";
 import { ColorSelectorComponent } from "../color-selector/color-selector.component";
+import { Wheel } from "../../model/wheel";
 
 @Component({
   selector: 'app-loadout-toolbar',
@@ -60,6 +61,38 @@ export class LoadoutToolbarComponent implements OnInit {
     component.instance.onSelect = item => this.loadoutService.selectDecal(<Decal>item);
   }
 
+  openWheelComponent() {
+    this.closeDropDown();
+    if (this.selected === Toolbar.WHEEL) {
+      this.selected = undefined;
+      return;
+    }
+    this.selected = Toolbar.WHEEL;
+    const factory = this.componentFactoryResolver.resolveComponentFactory(LoadoutGridSelectorComponent);
+    const component = this.loadoutDropdown.createComponent(factory);
+
+    component.instance.items = [
+      new Wheel(
+        'assets/icons/wheel_oem_thumbnail.jpg',
+        'OEM',
+        Quality.COMMON,
+        'assets/textures/OEM_D.tga',
+        'assets/textures/OEM_RGB.tga',
+        false
+      ),
+      new Wheel(
+        'assets/icons/wheel_chakram_thumbnail.jpg',
+        'Chakram',
+        Quality.RARE,
+        'assets/textures/Rim_CarCar_CUSTOM.tga',
+        'assets/textures/Rim_CarCar_RGB.tga',
+        true
+      )
+    ];
+
+    component.instance.onSelect = item => this.loadoutService.selectWheel(<Wheel>item);
+  }
+
   openPaintsComponent() {
     this.closeDropDown();
     if (this.selected === Toolbar.PAINT) {
@@ -77,5 +110,5 @@ export class LoadoutToolbarComponent implements OnInit {
 }
 
 enum Toolbar {
-  DECAL, PAINT
+  DECAL, PAINT, WHEEL
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Decal } from "../model/decal";
 import { Observable, Subject } from "rxjs";
+import { Wheel } from "../model/wheel";
 
 @Injectable({
   providedIn: 'root'
@@ -19,12 +20,16 @@ export class LoadoutService {
   private paintSubject: Subject<any> = new Subject();
   paintChanged$: Observable<any> = this.paintSubject.asObservable();
 
+  wheel: Wheel;
+  private wheelSubject: Subject<Wheel> = new Subject<Wheel>();
+  wheelChanged$: Observable<Wheel> = this.wheelSubject.asObservable();
+
   constructor() {
   }
 
   selectDecal(decal: Decal) {
     this.decal = decal;
-    this.decalSubject.next(decal)
+    this.decalSubject.next(decal);
   }
 
   setPaint(type: string, color: string) {
@@ -33,5 +38,10 @@ export class LoadoutService {
       type: type,
       color: color
     })
+  }
+
+  selectWheel(wheel: Wheel) {
+    this.wheel = wheel;
+    this.wheelSubject.next(wheel);
   }
 }

@@ -84,7 +84,7 @@ export class CanvasComponent implements OnInit {
     this.rgbaLoader = new PromiseLoader(new TgaRgbaLoader());
 
     this.body = new Body('assets/models/Body_Dominus_PremiumSkin_SK.glb');
-    this.wheels = new Wheels('assets/models/wheels_oem.glb');
+    this.wheels = new Wheels('assets/models/wheel_oem.glb');
 
     Promise.all([
       this.body.load(),
