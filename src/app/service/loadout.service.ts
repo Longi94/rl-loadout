@@ -15,7 +15,8 @@ export class LoadoutService {
   paints = {
     primary: '#0000FF',
     accent: '#FFFFFF',
-    decal: '#FF0000'
+    decal: '#FF0000',
+    wheel: '#888888'
   };
   private paintSubject: Subject<any> = new Subject();
   paintChanged$: Observable<any> = this.paintSubject.asObservable();

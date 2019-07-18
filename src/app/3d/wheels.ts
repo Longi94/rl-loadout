@@ -1,5 +1,6 @@
 import { AbstractObject } from "./object";
 import { Mesh, MeshPhongMaterial, MeshStandardMaterial, Scene } from "three";
+import { RgbaMapPipe } from "./rgba-map-pipe";
 
 const WHEEL_DIAMETER = 32.626;
 const FLOOR_POS = -20;
@@ -69,5 +70,11 @@ export class Wheels extends AbstractObject {
 
   removeFromScene(scene: Scene) {
     scene.remove(this.wheels.fr, this.wheels.fl, this.wheels.br, this.wheels.bl);
+  }
+}
+
+class RimSkin extends RgbaMapPipe {
+
+  update() {
   }
 }

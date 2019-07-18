@@ -21,6 +21,10 @@ export class ColorSelectorComponent implements OnInit {
     decal: {
       label: 'Decal Paint',
       value: ''
+    },
+    wheel: {
+      label: 'Wheel Paint',
+      value: ''
     }
   };
 

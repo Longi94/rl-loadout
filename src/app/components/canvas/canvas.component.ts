@@ -48,7 +48,7 @@ export class CanvasComponent implements OnInit {
   private wheels: Wheels;
 
   // colors
-  private skin;
+  private skin: StaticSkin;
   private skinMap: Texture;
 
   constructor(private loadoutService: LoadoutService) {
@@ -87,12 +87,13 @@ export class CanvasComponent implements OnInit {
 
     this.body = new Body('assets/models/Body_Dominus_PremiumSkin_SK.glb');
     this.wheels = new Wheels('assets/models/wheel_oem.glb');
+    this.skin = new StaticSkin('assets/textures/Dominus_funnybook.tga', this.loadoutService.paints);
 
     Promise.all([
       this.body.load(),
       this.textureLoader.load('assets/textures/MuscleCar_Chassis_D.tga'),
       this.textureLoader.load('assets/textures/MuscleCar_Chassis_N.tga'),
-      this.rgbaLoader.load('assets/textures/Dominus_funnybook.tga'),
+      this.skin.load(),
       this.wheels.load()
     ]).then(values => {
       let diffuseMap = values[1];
@@ -100,7 +101,7 @@ export class CanvasComponent implements OnInit {
 
       this.body.applyChassisTexture(diffuseMap, normalMap);
 
-      this.skin = new StaticSkin(values[3], this.loadoutService.paints);
+      this.skin.update();
       this.skinMap = new Texture();
       this.skinMap.image = this.skin.toTexture();
       this.skinMap.needsUpdate = true;
@@ -142,8 +143,8 @@ export class CanvasComponent implements OnInit {
   }
 
   private changeDecal(decal: Decal) {
-    this.rgbaLoader.load(decal.texture).then(texture => {
-      this.skin = new StaticSkin(texture, this.loadoutService.paints);
+    this.skin.rgbaMapUrl = decal.texture;
+    this.skin.load().then(() => {
       this.refreshSkin();
     });
   }
