@@ -1,6 +1,8 @@
 import { AbstractObject } from "./object";
-import { Mesh, MeshPhongMaterial, MeshStandardMaterial, Scene } from "three";
+import { Color, Mesh, MeshPhongMaterial, MeshStandardMaterial, Scene, Texture } from "three";
 import { RgbaMapPipe } from "./rgba-map-pipe";
+import { Wheel } from "../model/wheel";
+import { overBlendColors } from "../utils/color";
 
 const WHEEL_DIAMETER = 32.626;
 const FLOOR_POS = -20;
@@ -14,16 +16,37 @@ export class Wheels extends AbstractObject {
     bl: undefined
   };
 
-  constructor(modelUrl: string) {
-    super(modelUrl);
+  tire: Mesh;
+  rim: Mesh;
+  rimSkin: RimSkin;
+  rimMap: Texture = new Texture();
+
+  constructor(wheel: Wheel, paints) {
+    super(wheel.model);
+    this.rimSkin = new RimSkin(wheel.rimTexture, wheel.rgbaMap, paints.wheel);
+  }
+
+  load(): Promise<any> {
+    return new Promise((resolve, reject) => Promise.all([super.load(), this.rimSkin.load()]).then(() => {
+      this.applyRimSkin();
+      resolve();
+    }, reject));
   }
 
   handleModel(scene: Scene) {
-    const tire = <Mesh>this.scene.children[0];
-    const rim = <Mesh>this.scene.children[1];
+    for (let child of this.scene.children) {
+      switch (child.name) {
+        case 'rim':
+          this.rim = <Mesh>child;
+          break;
+        case 'tire':
+          this.tire = <Mesh>child;
+          break;
+      }
+    }
 
-    Wheels.fixMaterial(tire);
-    Wheels.fixMaterial(rim);
+    Wheels.fixMaterial(this.tire);
+    Wheels.fixMaterial(this.rim);
 
     this.wheels.fr = scene.clone();
     this.wheels.fl = scene.clone();
@@ -71,10 +94,46 @@ export class Wheels extends AbstractObject {
   removeFromScene(scene: Scene) {
     scene.remove(this.wheels.fr, this.wheels.fl, this.wheels.br, this.wheels.bl);
   }
+
+  private applyRimSkin() {
+    this.rimSkin.update();
+    const mat: MeshPhongMaterial = <MeshPhongMaterial>this.rim.material;
+    this.rimMap.image = this.rimSkin.toTexture();
+    this.rimMap.needsUpdate = true;
+    mat.map = this.rimMap;
+    mat.needsUpdate = true;
+  }
+
+  setPaint(paint: string) {
+    this.rimSkin.paint = new Color(paint);
+  }
+
+  refresh() {
+    this.rimSkin.update();
+    this.applyRimSkin();
+  }
 }
 
 class RimSkin extends RgbaMapPipe {
 
-  update() {
+  paint: Color;
+
+  constructor(baseUrl, rgbaMapUrl, paint) {
+    super(baseUrl, rgbaMapUrl);
+    this.paint = new Color(paint);
+  }
+
+  getColor(i: number): Color {
+    let color = new Color(
+      this.base[i] / 255,
+      this.base[i + 1] / 255,
+      this.base[i + 2] / 255
+    );
+
+    if (this.rgbaMap[i] === 0) {
+      color = overBlendColors(this.paint, color, 255 - this.rgbaMap[i + 3]);
+    }
+
+    return color;
   }
 }

@@ -11,12 +11,12 @@ export abstract class AbstractObject {
     this.url = modelUrl;
   }
 
-  load(): Promise<AbstractObject> {
+  load(): Promise<any> {
     return new Promise((resolve, reject) => {
       this.loader.load(this.url, gltf => {
         this.scene = gltf.scene;
         this.handleModel(gltf.scene);
-        resolve(this);
+        resolve();
       }, undefined, reject);
     });
   }

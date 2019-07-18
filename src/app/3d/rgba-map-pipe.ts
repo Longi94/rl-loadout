@@ -1,4 +1,6 @@
 import { TgaRgbaLoader } from "../utils/tga-rgba-loader";
+import { Color } from "three";
+import { overBlendColors } from "../utils/color";
 
 // @ts-ignore
 const useOffscreen = typeof OffscreenCanvas !== 'undefined';
@@ -64,7 +66,22 @@ export abstract class RgbaMapPipe {
   /**
    * Update the data array that will eventually be turned into a texture
    */
-  abstract update();
+  update() {
+    for (let i = 0; i < this.data.length; i += 4) {
+      const color = this.getColor(i);
+
+      this.data[i] = color.r * 255;
+      this.data[i + 1] = color.g * 255;
+      this.data[i + 2] = color.b * 255;
+      this.data[i + 3] = 255;
+    }
+  }
+
+  /**
+   * Calculate the color for the given pixel
+   * @param i index of the pixel (i:r, i+1:g, i+2:b, i+3:a)
+   */
+  abstract getColor(i: number): Color;
 
   /**
    * Convert the data array into a canvas that has the texture.

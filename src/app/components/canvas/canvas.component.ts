@@ -86,7 +86,8 @@ export class CanvasComponent implements OnInit {
     this.rgbaLoader = new PromiseLoader(new TgaRgbaLoader());
 
     this.body = new Body('assets/models/Body_Dominus_PremiumSkin_SK.glb');
-    this.wheels = new Wheels('assets/models/wheel_oem.glb');
+    this.wheels = new Wheels(new Wheel('', '', 0, 'assets/models/wheel_oem.glb',
+      'assets/textures/OEM_D.tga', 'assets/textures/OEM_RGB.tga', false), this.loadoutService.paints);
     this.skin = new StaticSkin('assets/textures/Dominus_funnybook.tga', this.loadoutService.paints);
 
     Promise.all([
@@ -151,7 +152,7 @@ export class CanvasComponent implements OnInit {
 
   private changeWheel(wheel: Wheel) {
     this.wheels.removeFromScene(this.scene);
-    this.wheels = new Wheels(wheel.model);
+    this.wheels = new Wheels(wheel, this.loadoutService.paints);
     this.wheels.load().then(() => {
       this.wheels.applyWheelPositions(this.body.getWheelPositions());
       this.wheels.addToScene(this.scene);
@@ -171,6 +172,10 @@ export class CanvasComponent implements OnInit {
       case 'decal':
         this.skin.paint = new Color(paint.color);
         this.refreshSkin();
+        break;
+      case 'wheel':
+        this.wheels.setPaint(paint.color);
+        this.wheels.refresh();
         break;
       default:
         console.error(`Unknown paint type ${paint.type}`);
