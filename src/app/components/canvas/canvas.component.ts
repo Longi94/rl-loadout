@@ -54,7 +54,9 @@ export class CanvasComponent implements OnInit {
     const width = this.canvasContainer.nativeElement.offsetWidth;
     const height = this.canvasContainer.nativeElement.offsetHeight;
     this.camera = new PerspectiveCamera(70, width / height, 0.01, 400);
-    this.camera.position.z = 200;
+    this.camera.position.x = 167.97478335547376;
+    this.camera.position.y = 58.02658014964849;
+    this.camera.position.z = -91.74632500987678;
 
     this.scene = new Scene();
 
