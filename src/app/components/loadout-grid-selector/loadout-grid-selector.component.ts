@@ -24,12 +24,16 @@ export class LoadoutGridSelectorComponent implements OnInit {
   qLimited = Quality.LIMITED;
   qPremium = Quality.PREMIUM;
 
+  @Input('selectedItem')
+  selectedItem: Item = new Item('', '', 0);
+
   constructor() { }
 
   ngOnInit() {
   }
 
   selectItem(item: Item) {
+    this.selectedItem = item;
     if (this.onSelect) {
       this.onSelect(item);
     }

@@ -8,7 +8,7 @@ import { Wheel } from "../model/wheel";
 })
 export class LoadoutService {
 
-  decal: Decal;
+  decal: Decal = new Decal('', '', 0, '', false);
   private decalSubject: Subject<Decal> = new Subject<Decal>();
   decalChanged$: Observable<Decal> = this.decalSubject.asObservable();
 
@@ -20,7 +20,7 @@ export class LoadoutService {
   private paintSubject: Subject<any> = new Subject();
   paintChanged$: Observable<any> = this.paintSubject.asObservable();
 
-  wheel: Wheel;
+  wheel: Wheel = new Wheel('', '', 0, '', '', '', false);
   private wheelSubject: Subject<Wheel> = new Subject<Wheel>();
   wheelChanged$: Observable<Wheel> = this.wheelSubject.asObservable();
 

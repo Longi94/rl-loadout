@@ -58,6 +58,7 @@ export class LoadoutToolbarComponent implements OnInit {
       )
     ];
 
+    component.instance.selectedItem = this.loadoutService.decal;
     component.instance.onSelect = item => this.loadoutService.selectDecal(<Decal>item);
   }
 
@@ -92,6 +93,7 @@ export class LoadoutToolbarComponent implements OnInit {
       )
     ];
 
+    component.instance.selectedItem = this.loadoutService.wheel;
     component.instance.onSelect = item => this.loadoutService.selectWheel(<Wheel>item);
   }
 

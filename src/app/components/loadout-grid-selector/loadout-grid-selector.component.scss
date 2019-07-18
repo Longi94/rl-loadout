@@ -47,3 +47,7 @@ mat-grid-tile-footer.limited {
 mat-grid-tile-footer.premium {
   background-color: rgba(82, 195, 144, 0.4);
 }
+
+.selected {
+  box-shadow: 0 0 14px 0 rgb(0, 180, 255);
+}
