@@ -1,6 +1,9 @@
 import { AbstractObject } from "./object";
 import { Mesh, MeshPhongMaterial, MeshStandardMaterial, Scene } from "three";
 
+const WHEEL_DIAMETER = 32.626;
+const FLOOR_POS = -20;
+
 export class Wheels extends AbstractObject {
 
   wheels = {
@@ -53,6 +56,10 @@ export class Wheels extends AbstractObject {
 
       this.wheels[key].needsUpdate = true;
       this.wheels[key].position.needsUpdate = true;
+
+      const scale = Math.abs(config[key].z - FLOOR_POS) / (WHEEL_DIAMETER / 2);
+      this.wheels[key].scale.set(scale, scale, scale);
+      this.wheels[key].scale.needsUpdate = true;
     }
   }
 
