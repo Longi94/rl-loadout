@@ -55,11 +55,19 @@ export class CanvasComponent implements OnInit {
   // Loading stuff
   initializing = true;
   initProgress = 0;
+  loading = {
+    decal: false,
+    wheel: false
+  };
 
   constructor(private loadoutService: LoadoutService) {
     this.loadoutService.decalChanged$.subscribe(decal => this.changeDecal(decal));
     this.loadoutService.paintChanged$.subscribe(paint => this.changePaint(paint));
     this.loadoutService.wheelChanged$.subscribe(wheel => this.changeWheel(wheel));
+  }
+
+  isLoading() {
+    return Object.values(this.loading).some(value => value);
   }
 
   ngOnInit() {
@@ -151,18 +159,22 @@ export class CanvasComponent implements OnInit {
   }
 
   private changeDecal(decal: Decal) {
+    this.loading.decal = true;
     this.skin.rgbaMapUrl = decal.texture;
     this.skin.load().then(() => {
       this.refreshSkin();
+      this.loading.decal = false;
     });
   }
 
   private changeWheel(wheel: Wheel) {
+    this.loading.wheel = true;
     this.wheels.removeFromScene(this.scene);
     this.wheels = new Wheels(wheel, this.loadoutService.paints);
     this.wheels.load().then(() => {
       this.wheels.applyWheelPositions(this.body.getWheelPositions());
       this.wheels.addToScene(this.scene);
+      this.loading.wheel = false;
     });
   }
 

@@ -2,11 +2,13 @@
   height: 100%;
   overflow:hidden;
   width:auto;
+  position: relative;
 }
 
 canvas {
   width: 100% !important;
   height: 100% !important;
+  position: absolute;
 }
 
 .full-overlay {
@@ -30,4 +32,18 @@ canvas {
 
 .full-overlay > mat-progress-bar {
   max-width: 500px;
+}
+
+.loading-overlay {
+  z-index: 500;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
 }
