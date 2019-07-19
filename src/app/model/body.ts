@@ -43,23 +43,4 @@ export class Body extends Item {
     this.topper_rot_y = topper_rot_y;
     this.topper_rot_z = topper_rot_z;
   }
-
-  static DEFAULT: Body = new Body(
-    1,
-    'icons/Body_MuscleCar_Thumbnail.jpg',
-    'Dominus',
-    Quality.PREMIUM,
-    false,
-    'textures/MuscleCar_BlankSkin_RGB.tga',
-    'textures/MuscleCar_Chassis_D.tga',
-    'textures/MuscleCar_Chassis_RGB.tga',
-    'textures/MuscleCar_Body_Curvature.tga',
-    'models/Body_Dominus_PremiumSkin_SK.glb',
-    0,
-    0,
-    0,
-    0,
-    0,
-    0
-  );
 }

@@ -13,15 +13,4 @@ export class Wheel extends Item {
     this.rim_base = rim_base;
     this.rim_rgb_map = rim_rgb_map;
   }
-
-  static DEFAULT = new Wheel(
-    0,
-    'icons/Wheel_Star_Thumbnail.jpg',
-    'OEM',
-    Quality.COMMON,
-    'models/WHEEL_Star_SM.glb',
-    'textures/OEM_D.tga',
-    'textures/OEM_RGB.tga',
-    true
-  )
 }

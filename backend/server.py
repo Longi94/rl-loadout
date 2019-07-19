@@ -27,6 +27,21 @@ def get_wheels():
     return jsonify([item.to_dict() for item in wheels])
 
 
+@app.route('/api/defaults', methods=['GET'])
+def get_default_wheel():
+    result = {}
+
+    body = database.get_default_body()
+    if body is not None:
+        result['body'] = body.to_dict()
+
+    wheel = database.get_default_wheel()
+    if wheel is not None:
+        result['wheel'] = wheel.to_dict()
+
+    return jsonify(result)
+
+
 @app.route('/api/decals', methods=['GET'])
 def get_decals():
     body_id = request.args.get('body', default=None)

@@ -3,13 +3,18 @@ import { Decal } from "../model/decal";
 import { Observable, Subject } from "rxjs";
 import { Wheel } from "../model/wheel";
 import { Body } from "../model/body";
+import { HttpClient } from "@angular/common/http";
+import { environment } from "../../environments/environment";
+import { Item } from "../model/item";
+
+const HOST = `${environment.backend}/api`;
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoadoutService {
 
-  body: Body = Body.DEFAULT;
+  body: Body;
   private bodySubject: Subject<Body> = new Subject<Body>();
   bodyChanged$: Observable<Body> = this.bodySubject.asObservable();
 
@@ -26,11 +31,11 @@ export class LoadoutService {
   private paintSubject: Subject<any> = new Subject();
   paintChanged$: Observable<any> = this.paintSubject.asObservable();
 
-  wheel: Wheel = Wheel.DEFAULT;
+  wheel: Wheel;
   private wheelSubject: Subject<Wheel> = new Subject<Wheel>();
   wheelChanged$: Observable<Wheel> = this.wheelSubject.asObservable();
 
-  constructor() {
+  constructor(private httpClient: HttpClient) {
   }
 
   selectDecal(decal: Decal) {
@@ -54,5 +59,15 @@ export class LoadoutService {
   selectBody(body: Body) {
     this.body = body;
     this.bodySubject.next(body);
+  }
+
+  loadDefaults(): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      this.httpClient.get<{ [type: string]: Item }>(`${HOST}/defaults`).subscribe(defaults => {
+        this.body = <Body>defaults['body'];
+        this.wheel = <Wheel>defaults['wheel'];
+        resolve();
+      }, reject);
+    });
   }
 }

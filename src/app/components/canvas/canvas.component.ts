@@ -1,6 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import {
   AmbientLight,
   DirectionalLight,
@@ -12,9 +11,6 @@ import {
   Texture,
   Color
 } from "three";
-import { TGALoader } from "three/examples/jsm/loaders/TGALoader";
-import { PromiseLoader } from "../../utils/loader";
-import { TgaRgbaLoader } from "../../utils/tga-rgba-loader";
 import { StaticSkin } from "../../3d/static-skin";
 import { LoadoutService } from "../../service/loadout.service";
 import { Decal } from "../../model/decal";
@@ -44,9 +40,6 @@ export class CanvasComponent implements OnInit {
   private scene: Scene;
   private renderer: Renderer;
   private controls: OrbitControls;
-  private loader: PromiseLoader;
-  private textureLoader: PromiseLoader;
-  private rgbaLoader: PromiseLoader;
 
   // 3D objects
   private body: BodyModel;
@@ -100,36 +93,38 @@ export class CanvasComponent implements OnInit {
 
     this.animate();
 
-    this.loader = new PromiseLoader(new GLTFLoader());
-    this.textureLoader = new PromiseLoader(new TGALoader());
-    this.rgbaLoader = new PromiseLoader(new TgaRgbaLoader());
+    this.loadoutService.loadDefaults().then(() => {
+      this.body = new BodyModel(this.loadoutService.body);
+      this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints);
+      this.skin = new StaticSkin(this.loadoutService.decal, this.loadoutService.paints);
 
-    this.body = new BodyModel(this.loadoutService.body);
-    this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints);
-    this.skin = new StaticSkin(this.loadoutService.decal, this.loadoutService.paints);
+      let promises = [
+        this.body.load(),
+        this.skin.load(),
+        this.wheels.load(),
+        this.loadoutStore.initBodies(),
+        this.loadoutStore.initWheels(),
+        this.loadoutStore.loadDecals(this.loadoutService.body.id)
+      ];
 
-    promiseProgress([
-      this.body.load(),
-      this.skin.load(),
-      this.wheels.load(),
-      this.loadoutStore.initBodies(),
-      this.loadoutStore.initWheels(),
-      this.loadoutStore.loadDecals(this.loadoutService.body.id)
-    ], progress => this.initProgress = progress).then(() => {
-      this.skin.blankSkinMap = this.body.blankSkinMap;
-      this.skin.update();
-      this.skinMap = new Texture();
-      this.skinMap.image = this.skin.toTexture();
-      this.skinMap.needsUpdate = true;
+      promiseProgress(promises, progress => {
+        this.initProgress = 100 * (progress + 1) / (promises.length + 1)
+      }).then(() => {
+        this.skin.blankSkinMap = this.body.blankSkinMap;
+        this.skin.update();
+        this.skinMap = new Texture();
+        this.skinMap.image = this.skin.toTexture();
+        this.skinMap.needsUpdate = true;
 
-      this.body.applyBodyTexture(this.skinMap);
+        this.body.applyBodyTexture(this.skinMap);
 
-      this.wheels.applyWheelPositions(this.body.getWheelPositions());
+        this.wheels.applyWheelPositions(this.body.getWheelPositions());
 
-      this.body.addToScene(this.scene);
-      this.wheels.addToScene(this.scene);
+        this.body.addToScene(this.scene);
+        this.wheels.addToScene(this.scene);
 
-      this.initializing = false;
+        this.initializing = false;
+      }).catch(console.error);
     }).catch(console.error);
   }
 

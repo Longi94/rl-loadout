@@ -1,4 +1,5 @@
 import logging
+from typing import List, Dict
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, create_engine, Boolean, ForeignKey
 from sqlalchemy.engine.url import URL
@@ -35,7 +36,7 @@ class Body(Base, BaseItem):
     topper_rot_z = Column(Integer, nullable=False, default=0)
     decals = relationship('Decal')
 
-    def to_dict(self):
+    def to_dict(self) -> Dict:
         """Return object data in easily serializable format"""
         return {
             'id': self.id,
@@ -64,7 +65,7 @@ class Wheel(Base, BaseItem):
     rim_base = Column(String(255), nullable=False)
     rim_rgb_map = Column(String(255), nullable=False)
 
-    def to_dict(self):
+    def to_dict(self) -> Dict:
         """Return object data in easily serializable format"""
         return {
             'id': self.id,
@@ -95,7 +96,7 @@ class Decal(Base):
     decal_detail = relationship('DecalDetail', back_populates='decals')
     quality = Column(Integer, nullable=True)
 
-    def to_dict(self):
+    def to_dict(self) -> Dict:
         """Return object data in easily serializable format"""
         quality = self.quality
 
@@ -129,17 +130,43 @@ class Db(object):
         Base.metadata.create_all(self.engine)
         self.Session = scoped_session(sessionmaker(bind=self.engine))
 
-    def get_bodies(self):
+    def get_bodies(self) -> List[Body]:
+        """
+        :return: all the bodies
+        """
         session = self.Session()
         return session.query(Body)
 
-    def get_wheels(self):
+    def get_wheels(self) -> List[Wheel]:
+        """
+        :return: all the wheels
+        """
         session = self.Session()
         return session.query(Wheel)
 
-    def get_decals(self, body_id):
+    def get_decals(self, body_id: int) -> List[Decal]:
+        """
+        Find decals that are applicable to a body
+
+        :param body_id: id of the body
+        :return: decal
+        """
         session = self.Session()
         body = session.query(Body).get(body_id)
         if body is None:
             return []
         return body.decals
+
+    def get_default_wheel(self) -> Wheel:
+        """
+        :return: the default OEM wheel
+        """
+        session = self.Session()
+        return session.query(Wheel).filter(Wheel.name == 'OEM').first()
+
+    def get_default_body(self) -> Body:
+        """
+        :return: the default body (Octane)
+        """
+        session = self.Session()
+        return session.query(Body).filter(Body.name == 'Dominus').first()  # TODO change to octane

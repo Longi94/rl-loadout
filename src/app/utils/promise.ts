@@ -10,7 +10,7 @@ export function promiseProgress(promises, progressCallback): Promise<any[]> {
   for (const p of promises) {
     p.then(() => {
       d++;
-      progressCallback((d * 100) / promises.length);
+      progressCallback(d);
     });
   }
   return Promise.all(promises);
