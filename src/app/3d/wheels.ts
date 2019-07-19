@@ -131,7 +131,7 @@ class RimSkin extends RgbaMapPipe {
     );
 
     if (this.rgbaMap[i] === 0) {
-      color = overBlendColors(this.paint, color, 255 - this.rgbaMap[i + 3]);
+      color = this.paint;
     }
 
     return color;
