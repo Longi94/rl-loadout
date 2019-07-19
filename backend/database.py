@@ -1,8 +1,8 @@
 import logging
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, create_engine, Boolean
+from sqlalchemy import Column, Integer, String, create_engine, Boolean, ForeignKey
 from sqlalchemy.engine.url import URL
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, relationship
 from config import config
 
 log = logging.getLogger(__name__)
@@ -33,6 +33,7 @@ class Body(Base, BaseItem):
     topper_rot_x = Column(Integer, nullable=False, default=0)
     topper_rot_y = Column(Integer, nullable=False, default=0)
     topper_rot_z = Column(Integer, nullable=False, default=0)
+    decals = relationship('Decal')
 
     def to_dict(self):
         """Return object data in easily serializable format"""
@@ -78,6 +79,41 @@ class Wheel(Base, BaseItem):
         }
 
 
+class DecalDetail(Base, BaseItem):
+    __tablename__ = 'decal_detail'
+    decals = relationship('Decal')
+
+
+class Decal(Base):
+    __tablename__ = 'decal'
+    id = Column(Integer, primary_key=True)
+    base_texture = Column(String(255), nullable=True)
+    rgba_map = Column(String(255), nullable=False)
+    body_id = Column(Integer, ForeignKey('body.id'), nullable=True)
+    body = relationship('Body', back_populates='decals')
+    decal_detail_id = Column(Integer, ForeignKey('decal_detail.id'), nullable=False)
+    decal_detail = relationship('DecalDetail', back_populates='decals')
+    quality = Column(Integer, nullable=True)
+
+    def to_dict(self):
+        """Return object data in easily serializable format"""
+        quality = self.quality
+
+        if quality is None:
+            quality = self.decal_detail.quality
+
+        return {
+            'id': self.id,
+            'replay_id': self.decal_detail.replay_id,
+            'name': self.decal_detail.name,
+            'quality': quality,
+            'icon': self.decal_detail.icon,
+            'paintable': self.decal_detail.paintable,
+            'base_texture': self.base_texture,
+            'rgba_map': self.rgba_map
+        }
+
+
 class Db(object):
     def __init__(self):
         self.url = URL(
@@ -100,3 +136,10 @@ class Db(object):
     def get_wheels(self):
         session = self.Session()
         return session.query(Wheel)
+
+    def get_decals(self, body_id):
+        session = self.Session()
+        body = session.query(Body).get(body_id)
+        if body is None:
+            return []
+        return body.decals

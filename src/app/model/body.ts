@@ -45,7 +45,7 @@ export class Body extends Item {
   }
 
   static DEFAULT: Body = new Body(
-    0,
+    1,
     'icons/Body_MuscleCar_Thumbnail.jpg',
     'Dominus',
     Quality.PREMIUM,

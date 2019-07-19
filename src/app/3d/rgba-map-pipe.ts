@@ -1,29 +1,40 @@
 import { TgaRgbaLoader } from "../utils/tga-rgba-loader";
 import { Color } from "three";
-import { overBlendColors } from "../utils/color";
 
 // @ts-ignore
 const useOffscreen = typeof OffscreenCanvas !== 'undefined';
+
+const WIDTH = 2048;
+const HEIGHT = 2048;
 
 export abstract class RgbaMapPipe {
   baseUrl: string;
   rgbaMapUrl: string;
   loader: TgaRgbaLoader = new TgaRgbaLoader();
 
-  width: number;
-  height: number;
   base: Uint8ClampedArray;
   rgbaMap: Uint8ClampedArray;
   data: Uint8ClampedArray;
 
   // @ts-ignore
-  private canvas: OffscreenCanvas | HTMLCanvasElement;
-  private context: CanvasRenderingContext2D;
-  private imageData: ImageData;
+  private readonly canvas: OffscreenCanvas | HTMLCanvasElement;
+  private readonly context: CanvasRenderingContext2D;
+  private readonly imageData: ImageData;
 
   protected constructor(baseUrl, rgbaMapUrl) {
     this.baseUrl = baseUrl;
     this.rgbaMapUrl = rgbaMapUrl;
+
+    // @ts-ignore
+    this.canvas = useOffscreen ? new OffscreenCanvas(WIDTH, HEIGHT) : document.createElement('canvas');
+    this.canvas.width = WIDTH;
+    this.canvas.height = HEIGHT;
+    this.context = this.canvas.getContext('2d');
+
+    // create imageData object
+    this.imageData = this.context.createImageData(WIDTH, HEIGHT);
+
+    this.data = new Uint8ClampedArray(WIDTH * HEIGHT * 4);
   }
 
   /**
@@ -41,24 +52,14 @@ export abstract class RgbaMapPipe {
       }));
     }
 
-    promises.push(new Promise((resolve, reject) => {
-      this.loader.load(this.rgbaMapUrl, buffer => {
-        this.width = buffer.width;
-        this.height = buffer.height;
-        this.rgbaMap = buffer.data;
-        this.data = new Uint8ClampedArray(this.rgbaMap);
-
-        // @ts-ignore
-        this.canvas = useOffscreen ? new OffscreenCanvas(this.width, this.height) : document.createElement('canvas');
-        this.canvas.width = this.width;
-        this.canvas.height = this.height;
-        this.context = this.canvas.getContext('2d');
-
-        // create imageData object
-        this.imageData = this.context.createImageData(this.width, this.height);
-        resolve();
-      }, undefined, reject);
-    }));
+    if (this.rgbaMapUrl !== undefined) {
+      promises.push(new Promise((resolve, reject) => {
+        this.loader.load(this.rgbaMapUrl, buffer => {
+          this.rgbaMap = buffer.data;
+          resolve();
+        }, undefined, reject);
+      }));
+    }
 
     return Promise.all(promises);
   }

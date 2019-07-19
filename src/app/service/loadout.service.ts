@@ -13,7 +13,7 @@ export class LoadoutService {
   private bodySubject: Subject<Body> = new Subject<Body>();
   bodyChanged$: Observable<Body> = this.bodySubject.asObservable();
 
-  decal: Decal = new Decal(0, '', '', 0, '', false);
+  decal: Decal = Decal.DEFAULT;
   private decalSubject: Subject<Decal> = new Subject<Decal>();
   decalChanged$: Observable<Decal> = this.decalSubject.asObservable();
 

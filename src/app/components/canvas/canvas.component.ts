@@ -23,6 +23,9 @@ import { WheelsModel } from "../../3d/wheels-model";
 import { Wheel } from "../../model/wheel";
 import { promiseProgress } from "../../utils/promise";
 import { LoadoutStoreService } from "../../service/loadout-store.service";
+import { environment } from "../../../environments/environment";
+
+const ASSET_HOST = environment.assetHost;
 
 @Component({
   selector: 'app-canvas',
@@ -103,7 +106,7 @@ export class CanvasComponent implements OnInit {
 
     this.body = new BodyModel(this.loadoutService.body);
     this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints);
-    this.skin = new StaticSkin('assets/textures/Dominus_funnybook.tga', this.loadoutService.paints);
+    this.skin = new StaticSkin(this.loadoutService.decal, this.loadoutService.paints);
 
     promiseProgress([
       this.body.load(),
@@ -111,6 +114,7 @@ export class CanvasComponent implements OnInit {
       this.wheels.load(),
       this.loadoutStore.initBodies(),
       this.loadoutStore.initWheels(),
+      this.loadoutStore.loadDecals(this.loadoutService.body.id)
     ], progress => this.initProgress = progress).then(() => {
       this.skin.update();
       this.skinMap = new Texture();
@@ -157,7 +161,7 @@ export class CanvasComponent implements OnInit {
 
   private changeDecal(decal: Decal) {
     this.loading.decal = true;
-    this.skin.rgbaMapUrl = decal.texture;
+    this.skin.rgbaMapUrl = `${ASSET_HOST}/${decal.rgba_map}`;
     this.skin.load().then(() => {
       this.refreshSkin();
       this.loading.decal = false;

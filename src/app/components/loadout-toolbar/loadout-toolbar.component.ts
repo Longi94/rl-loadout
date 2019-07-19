@@ -1,7 +1,6 @@
 import { Component, ComponentFactoryResolver, ComponentRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from "@angular/material";
 import { LoadoutGridSelectorComponent } from "../loadout-grid-selector/loadout-grid-selector.component";
-import { Quality } from "../../model/quality";
 import { Decal } from "../../model/decal";
 import { LoadoutService } from "../../service/loadout.service";
 import { ColorSelectorComponent } from "../color-selector/color-selector.component";
@@ -54,26 +53,7 @@ export class LoadoutToolbarComponent implements OnInit {
 
   openDecalsComponent() {
     const component = this.createNewGRidSelector(Toolbar.DECAL);
-
-    component.instance.items = [
-      new Decal(
-        0,
-        'icons/Thumb_Skin_Flames.jpg',
-        'Flames',
-        Quality.PREMIUM,
-        'assets/textures/MuscleCar_Flames_RGB.tga',
-        false
-      ),
-      new Decal(
-        0,
-        'icons/Thumb_Skin_Comic.jpg',
-        'Funnybook',
-        Quality.RARE,
-        'assets/textures/Dominus_funnybook.tga',
-        true
-      )
-    ];
-
+    component.instance.items = this.loadoutStore.decals;
     component.instance.selectedItem = this.loadoutService.decal;
     component.instance.onSelect = item => this.loadoutService.selectDecal(<Decal>item);
   }
@@ -93,7 +73,7 @@ export class LoadoutToolbarComponent implements OnInit {
     }
     this.selected = Toolbar.PAINT;
     const factory = this.componentFactoryResolver.resolveComponentFactory(ColorSelectorComponent);
-    const component = this.loadoutDropdown.createComponent(factory);
+    this.loadoutDropdown.createComponent(factory);
   }
 
   closeDropDown() {
