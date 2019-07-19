@@ -57,14 +57,16 @@ export class LoadoutToolbarComponent implements OnInit {
 
     component.instance.items = [
       new Decal(
-        'assets/icons/Thumb_Skin_Flames.jpg',
+        0,
+        'icons/Thumb_Skin_Flames.jpg',
         'Flames',
         Quality.PREMIUM,
         'assets/textures/MuscleCar_Flames_RGB.tga',
         false
       ),
       new Decal(
-        'assets/icons/Thumb_Skin_Comic.jpg',
+        0,
+        'icons/Thumb_Skin_Comic.jpg',
         'Funnybook',
         Quality.RARE,
         'assets/textures/Dominus_funnybook.tga',
@@ -81,7 +83,8 @@ export class LoadoutToolbarComponent implements OnInit {
 
     component.instance.items = [
       new Wheel(
-        'assets/icons/wheel_oem_thumbnail.jpg',
+        0,
+        'icons/Wheel_Star_Thumbnail.jpg',
         'OEM',
         Quality.COMMON,
         'assets/models/wheel_oem.glb',
@@ -90,7 +93,8 @@ export class LoadoutToolbarComponent implements OnInit {
         false
       ),
       new Wheel(
-        'assets/icons/wheel_chakram_thumbnail.jpg',
+        0,
+        'icons/WHEEL_CarCar_Thumbnail.jpg',
         'Chakram',
         Quality.VERY_RARE,
         'assets/models/wheel_chakram.glb',

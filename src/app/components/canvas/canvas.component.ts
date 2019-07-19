@@ -102,7 +102,7 @@ export class CanvasComponent implements OnInit {
     this.rgbaLoader = new PromiseLoader(new TgaRgbaLoader());
 
     this.body = new Body('assets/models/Body_Dominus_PremiumSkin_SK.glb');
-    this.wheels = new Wheels(new Wheel('', '', 0, 'assets/models/wheel_oem.glb',
+    this.wheels = new Wheels(new Wheel(0, '', '', 0, 'assets/models/wheel_oem.glb',
       'assets/textures/OEM_D.tga', 'assets/textures/OEM_RGB.tga', false), this.loadoutService.paints);
     this.skin = new StaticSkin('assets/textures/Dominus_funnybook.tga', this.loadoutService.paints);
 

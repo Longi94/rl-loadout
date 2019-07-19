@@ -9,11 +9,11 @@ import { Body } from "../model/body";
 })
 export class LoadoutService {
 
-  body: Body = new Body('', '', 0);
+  body: Body = Body.DEFAULT;
   private bodySubject: Subject<Body> = new Subject<Body>();
   bodyChanged$: Observable<Body> = this.bodySubject.asObservable();
 
-  decal: Decal = new Decal('', '', 0, '', false);
+  decal: Decal = new Decal(0, '', '', 0, '', false);
   private decalSubject: Subject<Decal> = new Subject<Decal>();
   decalChanged$: Observable<Decal> = this.decalSubject.asObservable();
 
@@ -26,7 +26,7 @@ export class LoadoutService {
   private paintSubject: Subject<any> = new Subject();
   paintChanged$: Observable<any> = this.paintSubject.asObservable();
 
-  wheel: Wheel = new Wheel('', '', 0, '', '', '', false);
+  wheel: Wheel = Wheel.DEFAULT;
   private wheelSubject: Subject<Wheel> = new Subject<Wheel>();
   wheelChanged$: Observable<Wheel> = this.wheelSubject.asObservable();
 
