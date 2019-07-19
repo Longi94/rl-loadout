@@ -4,7 +4,8 @@
       <td><span class="color-label">{{colors[key].label}}</span></td>
       <td>
         <div class="color-picker-button" [(colorPicker)]="colors[key].value" [style.background]="colors[key].value"
-          (colorPickerSelect)="colorChanged(colors[key].value, key)" cpAlphaChannel="disabled" [cpOKButton]="true">
+          (colorPickerSelect)="colorChanged(colors[key].value, key)" cpAlphaChannel="disabled" [cpOKButton]="true"
+          [cpSaveClickOutside]="false">
         </div>
       </td>
     </tr>
