@@ -1,12 +1,10 @@
 import { Bone, Color, MeshPhongMaterial, Scene, SkinnedMesh, Texture } from "three";
 import { AbstractObject, fixMaterial } from "./object";
-import { environment } from "../../environments/environment";
 import { Body } from "../model/body";
 import { RgbaMapPipe } from "./rgba-map-pipe";
 import { PromiseLoader } from "../utils/loader";
 import { TgaRgbaLoader } from "../utils/tga-rgba-loader";
-
-const ASSET_HOST = environment.assetHost;
+import { getAssetUrl } from "../utils/network";
 
 export class BodyModel extends AbstractObject {
 
@@ -25,15 +23,19 @@ export class BodyModel extends AbstractObject {
   blankSkinMap: Uint8ClampedArray;
 
   constructor(body: Body) {
-    super(`${ASSET_HOST}/${body.model}`);
+    super(getAssetUrl(body.model));
+    this.apply(body);
+  }
 
-    this.displacementMapUrl = `${ASSET_HOST}/${body.displacement_map}`;
+  apply(body: Body) {
+    this.url = getAssetUrl(body.model);
+    this.displacementMapUrl = getAssetUrl(body.displacement_map);
     this.chassisSkin = new ChassisSkin(
-      `${ASSET_HOST}/${body.chassis_base}`,
-      `${ASSET_HOST}/${body.chassis_rgb_map}`,
+      getAssetUrl(body.chassis_base),
+      getAssetUrl(body.chassis_rgb_map),
       new Color(0, 0, 0)
     );
-    this.blankSkinMapUrl = `${ASSET_HOST}/${body.blank_skin}`;
+    this.blankSkinMapUrl = getAssetUrl(body.blank_skin);
   }
 
   load(): Promise<any> {

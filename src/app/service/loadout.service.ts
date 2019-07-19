@@ -58,6 +58,7 @@ export class LoadoutService {
 
   selectBody(body: Body) {
     this.body = body;
+    this.decal = Decal.NONE;
     this.bodySubject.next(body);
   }
 

@@ -169,4 +169,4 @@ class Db(object):
         :return: the default body (Octane)
         """
         session = self.Session()
-        return session.query(Body).filter(Body.name == 'Dominus').first()  # TODO change to octane
+        return session.query(Body).filter(Body.name == 'Octane').first()

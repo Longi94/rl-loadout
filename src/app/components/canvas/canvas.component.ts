@@ -19,9 +19,8 @@ import { WheelsModel } from "../../3d/wheels-model";
 import { Wheel } from "../../model/wheel";
 import { promiseProgress } from "../../utils/promise";
 import { LoadoutStoreService } from "../../service/loadout-store.service";
-import { environment } from "../../../environments/environment";
-
-const ASSET_HOST = environment.assetHost;
+import { Body } from "../../model/body";
+import { getAssetUrl } from "../../utils/network";
 
 @Component({
   selector: 'app-canvas',
@@ -54,6 +53,7 @@ export class CanvasComponent implements OnInit {
   initializing = true;
   initProgress = 0;
   loading = {
+    body: false,
     decal: false,
     wheel: false
   };
@@ -63,6 +63,7 @@ export class CanvasComponent implements OnInit {
     this.loadoutService.decalChanged$.subscribe(decal => this.changeDecal(decal));
     this.loadoutService.paintChanged$.subscribe(paint => this.changePaint(paint));
     this.loadoutService.wheelChanged$.subscribe(wheel => this.changeWheel(wheel));
+    this.loadoutService.bodyChanged$.subscribe(body => this.changeBody(body));
   }
 
   isLoading() {
@@ -155,10 +156,36 @@ export class CanvasComponent implements OnInit {
     }
   }
 
+  private changeBody(body: Body) {
+    this.loading.body = true;
+    this.body.removeFromScene(this.scene);
+    this.body.apply(body);
+
+    let decal = this.loadoutService.decal;
+    this.skin.clear();
+    this.skin.baseUrl = getAssetUrl(decal.base_texture);
+    this.skin.rgbaMapUrl = getAssetUrl(decal.rgba_map);
+
+    Promise.all([
+      this.body.load(),
+      this.loadoutStore.loadDecals(body.id),
+      this.skin.load()
+    ]).then(() => {
+      this.skin.blankSkinMap = this.body.blankSkinMap;
+      this.refreshSkin();
+      this.skinMap.needsUpdate = true;
+
+      this.body.applyBodyTexture(this.skinMap);
+      this.wheels.applyWheelPositions(this.body.getWheelPositions());
+      this.body.addToScene(this.scene);
+      this.loading.body = false;
+    });
+  }
+
   private changeDecal(decal: Decal) {
     this.loading.decal = true;
     this.skin.clear();
-    this.skin.rgbaMapUrl = decal.rgba_map === undefined ? undefined : `${ASSET_HOST}/${decal.rgba_map}`;
+    this.skin.rgbaMapUrl = getAssetUrl(decal.rgba_map);
     this.skin.load().then(() => {
       this.refreshSkin();
       this.loading.decal = false;

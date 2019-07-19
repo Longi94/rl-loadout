@@ -2,9 +2,8 @@ import { Color } from "three";
 import { overBlendColors } from "../utils/color";
 import { RgbaMapPipe } from "./rgba-map-pipe";
 import { Decal } from "../model/decal";
-import { environment } from "../../environments/environment";
+import { getAssetUrl } from "../utils/network";
 
-const ASSET_HOST = environment.assetHost;
 
 export class StaticSkin extends RgbaMapPipe {
 
@@ -15,9 +14,7 @@ export class StaticSkin extends RgbaMapPipe {
   blankSkinMap: Uint8ClampedArray;
 
   constructor(decal: Decal, paints) {
-    super(undefined, undefined);
-    this.baseUrl = decal.base_texture === undefined ? undefined : `${ASSET_HOST}/${decal.base_texture}`;
-    this.rgbaMapUrl = decal.rgba_map === undefined ? undefined : `${ASSET_HOST}/${decal.rgba_map}`;
+    super(getAssetUrl(decal.base_texture), getAssetUrl(decal.rgba_map));
 
     this.primary = new Color(paints.primary);
     this.accent = new Color(paints.accent);

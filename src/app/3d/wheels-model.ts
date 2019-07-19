@@ -2,11 +2,10 @@ import { AbstractObject, fixMaterial } from "./object";
 import { Color, Mesh, MeshPhongMaterial, MeshStandardMaterial, Scene, Texture } from "three";
 import { RgbaMapPipe } from "./rgba-map-pipe";
 import { Wheel } from "../model/wheel";
-import { environment } from "../../environments/environment";
+import { getAssetUrl } from "../utils/network";
 
 const WHEEL_DIAMETER = 32.626;
 const FLOOR_POS = -20;
-const ASSET_HOST = environment.assetHost;
 
 export class WheelsModel extends AbstractObject {
 
@@ -23,10 +22,10 @@ export class WheelsModel extends AbstractObject {
   rimMap: Texture = new Texture();
 
   constructor(wheel: Wheel, paints) {
-    super(`${ASSET_HOST}/${wheel.model}`);
+    super(getAssetUrl(wheel.model));
     this.rimSkin = new RimSkin(
-      `${ASSET_HOST}/${wheel.rim_base}`,
-      `${ASSET_HOST}/${wheel.rim_rgb_map}`,
+      getAssetUrl(wheel.rim_base),
+      getAssetUrl(wheel.rim_rgb_map),
       paints.wheel
     );
   }
