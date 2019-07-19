@@ -134,15 +134,18 @@ export class BodyModel extends AbstractObject {
 
 class ChassisSkin extends RgbaMapPipe {
 
+  colorHolder = new Color();
+
   constructor(baseUrl, rgbaMapUrl) {
     super(baseUrl, rgbaMapUrl);
   }
 
   getColor(i: number): Color {
-    return new Color(
+    this.colorHolder.setRGB(
       this.base[i] / 255,
       this.base[i + 1] / 255,
       this.base[i + 2] / 255
     );
+    return this.colorHolder;
   }
 }

@@ -110,6 +110,7 @@ export class WheelsModel extends AbstractObject {
 class RimSkin extends RgbaMapPipe {
 
   paint: Color;
+  colorHolder = new Color();
 
   constructor(baseUrl, rgbaMapUrl, paint) {
     super(baseUrl, rgbaMapUrl);
@@ -117,16 +118,16 @@ class RimSkin extends RgbaMapPipe {
   }
 
   getColor(i: number): Color {
-    let color = new Color(
+    if (this.rgbaMap[i] === 0) {
+      return this.paint;
+    }
+
+    this.colorHolder.setRGB(
       this.base[i] / 255,
       this.base[i + 1] / 255,
       this.base[i + 2] / 255
     );
 
-    if (this.rgbaMap[i] === 0) {
-      color = this.paint;
-    }
-
-    return color;
+    return this.colorHolder;
   }
 }
