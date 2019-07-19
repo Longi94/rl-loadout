@@ -25,6 +25,7 @@ export class LoadoutService {
   paints = {
     primary: '#0000FF',
     accent: '#FFFFFF',
+    body: '#3b3b3b',
     decal: '#FF0000',
     wheel: '#888888'
   };

@@ -213,6 +213,10 @@ export class CanvasComponent implements OnInit {
         this.skin.accent = new Color(paint.color);
         this.refreshSkin();
         break;
+      case 'body':
+        this.skin.bodyPaint = new Color(paint.color);
+        this.refreshSkin();
+        break;
       case 'decal':
         this.skin.paint = new Color(paint.color);
         this.refreshSkin();

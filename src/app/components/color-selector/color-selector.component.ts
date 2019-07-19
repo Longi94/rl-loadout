@@ -18,6 +18,10 @@ export class ColorSelectorComponent implements OnInit {
       label: 'Accent',
       value: ''
     },
+    body: {
+      label: 'Body Paint',
+      value: ''
+    },
     decal: {
       label: 'Decal Paint',
       value: ''

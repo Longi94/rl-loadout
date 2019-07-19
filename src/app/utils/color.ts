@@ -1,5 +1,7 @@
 import { Color } from "three";
 
+export const BLACK = new Color(0, 0, 0);
+
 export function overBlendColors(foreground: Color, background: Color, foregroundAlpha: number): Color {
   foregroundAlpha = foregroundAlpha / 255;
   let r = (foreground.r * foregroundAlpha) + (background.r * (1.0 - foregroundAlpha));
