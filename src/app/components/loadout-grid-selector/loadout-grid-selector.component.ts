@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Item } from "../../model/item";
 import { Quality } from "../../model/quality";
+import { environment } from "../../../environments/environment";
 
 @Component({
   selector: 'app-loadout-grid-selector',
@@ -8,6 +9,8 @@ import { Quality } from "../../model/quality";
   styleUrls: ['./loadout-grid-selector.component.scss']
 })
 export class LoadoutGridSelectorComponent implements OnInit {
+
+  assetHost = environment.assetHost;
 
   @Input('items')
   items: Item[];
