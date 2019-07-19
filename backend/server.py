@@ -15,6 +15,12 @@ def get_bodies():
     return jsonify([body.to_dict() for body in bodies])
 
 
+@app.route('/api/wheels', methods=['GET'])
+def get_wheels():
+    wheels = database.get_wheels()
+    return jsonify([item.to_dict() for item in wheels])
+
+
 if __name__ == '__main__':
     logging_config()
     port = int(config.get('server', 'port'))

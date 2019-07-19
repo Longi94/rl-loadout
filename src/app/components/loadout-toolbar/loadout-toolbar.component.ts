@@ -80,30 +80,7 @@ export class LoadoutToolbarComponent implements OnInit {
 
   openWheelComponent() {
     const component = this.createNewGRidSelector(Toolbar.WHEEL);
-
-    component.instance.items = [
-      new Wheel(
-        0,
-        'icons/Wheel_Star_Thumbnail.jpg',
-        'OEM',
-        Quality.COMMON,
-        'assets/models/wheel_oem.glb',
-        'assets/textures/OEM_D.tga',
-        'assets/textures/OEM_RGB.tga',
-        false
-      ),
-      new Wheel(
-        0,
-        'icons/WHEEL_CarCar_Thumbnail.jpg',
-        'Chakram',
-        Quality.VERY_RARE,
-        'assets/models/wheel_chakram.glb',
-        'assets/textures/Rim_CarCar_CUSTOM.tga',
-        'assets/textures/Rim_CarCar_RGB.tga',
-        true
-      )
-    ];
-
+    component.instance.items = this.loadoutStore.wheels;
     component.instance.selectedItem = this.loadoutService.wheel;
     component.instance.onSelect = item => this.loadoutService.selectWheel(<Wheel>item);
   }

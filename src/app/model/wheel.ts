@@ -3,16 +3,15 @@ import { Quality } from "./quality";
 
 export class Wheel extends Item {
   model: string;
-  rimTexture: string;
-  rgbaMap: string;
-  paintable: boolean;
+  rim_base: string;
+  rim_rgb_map: string;
 
-  constructor(id: number, icon: string, name: string, quality: Quality, model: string, rimTexture: string, rgbaMap: string,
+  constructor(id: number, icon: string, name: string, quality: Quality, model: string, rim_base: string, rim_rgb_map: string,
               paintable: boolean) {
     super(id, icon, name, quality, paintable);
     this.model = model;
-    this.rimTexture = rimTexture;
-    this.rgbaMap = rgbaMap;
+    this.rim_base = rim_base;
+    this.rim_rgb_map = rim_rgb_map;
   }
 
   static DEFAULT = new Wheel(
@@ -20,9 +19,9 @@ export class Wheel extends Item {
     'icons/Wheel_Star_Thumbnail.jpg',
     'OEM',
     Quality.COMMON,
-    'assets/models/wheel_oem.glb',
-    'assets/textures/OEM_D.tga',
-    'assets/textures/OEM_RGB.tga',
+    'models/WHEEL_Star_SM.glb',
+    'textures/OEM_D.tga',
+    'textures/OEM_RGB.tga',
     true
   )
 }

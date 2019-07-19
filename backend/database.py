@@ -55,6 +55,27 @@ class Body(Base, BaseItem):
         }
 
 
+class Wheel(Base, BaseItem):
+    __tablename__ = 'wheel'
+    model = Column(String(255), nullable=False)
+    rim_base = Column(String(255), nullable=False)
+    rim_rgb_map = Column(String(255), nullable=False)
+
+    def to_dict(self):
+        """Return object data in easily serializable format"""
+        return {
+            'id': self.id,
+            'replay_id': self.replay_id,
+            'name': self.name,
+            'quality': self.quality,
+            'icon': self.icon,
+            'paintable': self.paintable,
+            'model': self.model,
+            'rim_base': self.rim_base,
+            'rim_rgb_map': self.rim_rgb_map
+        }
+
+
 class Db(object):
     def __init__(self):
         self.url = URL(
@@ -73,3 +94,7 @@ class Db(object):
     def get_bodies(self):
         session = self.Session()
         return session.query(Body)
+
+    def get_wheels(self):
+        session = self.Session()
+        return session.query(Wheel)
