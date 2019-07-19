@@ -2,7 +2,8 @@
   <mat-grid-list cols="4" rowHeight="1:1" gutterSize="10">
     <mat-grid-tile *ngFor="let item of items" (click)="selectItem(item)"
                    [ngClass]="{'selected': selectedItem.name === item.name}">
-      <img [src]="assetHost + '/' + item.icon" alt="Icon"/>
+      <mat-icon *ngIf="item.name === 'None'">close</mat-icon>
+      <img *ngIf="item.name !== 'None'" [src]="assetHost + '/' + item.icon" alt="Icon"/>
       <mat-grid-tile-footer [ngClass]="{
       'common': item.quality === qCommon,
       'rare': item.quality === qRare,

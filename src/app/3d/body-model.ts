@@ -3,10 +3,14 @@ import { AbstractObject, fixMaterial } from "./object";
 import { environment } from "../../environments/environment";
 import { Body } from "../model/body";
 import { RgbaMapPipe } from "./rgba-map-pipe";
+import { PromiseLoader } from "../utils/loader";
+import { TgaRgbaLoader } from "../utils/tga-rgba-loader";
 
 const ASSET_HOST = environment.assetHost;
 
 export class BodyModel extends AbstractObject {
+
+  textureLoader = new PromiseLoader(new TgaRgbaLoader());
 
   displacementMapUrl: string;
 
@@ -17,6 +21,9 @@ export class BodyModel extends AbstractObject {
   chassisSkin: ChassisSkin;
   chassisMap: Texture = new Texture();
 
+  blankSkinMapUrl: string;
+  blankSkinMap: Uint8ClampedArray;
+
   constructor(body: Body) {
     super(`${ASSET_HOST}/${body.model}`);
 
@@ -26,18 +33,21 @@ export class BodyModel extends AbstractObject {
       `${ASSET_HOST}/${body.chassis_rgb_map}`,
       new Color(0, 0, 0)
     );
+    this.blankSkinMapUrl = `${ASSET_HOST}/${body.blank_skin}`;
   }
 
   load(): Promise<any> {
     return new Promise((resolve, reject) => Promise.all([
       super.load(),
       // this.textureLoader.load(this.displacementMapUrl) TODO doesn't seem to make a difference
-      this.chassisSkin.load()
-    ]).then(() => {
+      this.chassisSkin.load(),
+      this.textureLoader.load(this.blankSkinMapUrl)
+    ]).then(values => {
       // const displacementMap = new Texture();
       // displacementMap.image = dataToCanvas(values[1].data, values[1].width, values[1].height);
       // this.applyDisplacementMap(displacementMap);
       this.applyChassisSkin();
+      this.blankSkinMap = values[2].data;
       resolve();
     }, reject));
   }

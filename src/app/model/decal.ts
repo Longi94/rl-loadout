@@ -11,7 +11,7 @@ export class Decal extends Item {
     this.rgba_map = rgba_map;
   }
 
-  static DEFAULT = new Decal(
+  static NONE = new Decal(
     -1,
     '',
     'None',

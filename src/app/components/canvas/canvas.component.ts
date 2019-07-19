@@ -116,6 +116,7 @@ export class CanvasComponent implements OnInit {
       this.loadoutStore.initWheels(),
       this.loadoutStore.loadDecals(this.loadoutService.body.id)
     ], progress => this.initProgress = progress).then(() => {
+      this.skin.blankSkinMap = this.body.blankSkinMap;
       this.skin.update();
       this.skinMap = new Texture();
       this.skinMap.image = this.skin.toTexture();
@@ -161,7 +162,8 @@ export class CanvasComponent implements OnInit {
 
   private changeDecal(decal: Decal) {
     this.loading.decal = true;
-    this.skin.rgbaMapUrl = `${ASSET_HOST}/${decal.rgba_map}`;
+    this.skin.clear();
+    this.skin.rgbaMapUrl = decal.rgba_map === undefined ? undefined : `${ASSET_HOST}/${decal.rgba_map}`;
     this.skin.load().then(() => {
       this.refreshSkin();
       this.loading.decal = false;

@@ -53,7 +53,8 @@ export class LoadoutToolbarComponent implements OnInit {
 
   openDecalsComponent() {
     const component = this.createNewGRidSelector(Toolbar.DECAL);
-    component.instance.items = this.loadoutStore.decals;
+    component.instance.items = this.loadoutStore.decals.slice();
+    component.instance.items.unshift(Decal.NONE);
     component.instance.selectedItem = this.loadoutService.decal;
     component.instance.onSelect = item => this.loadoutService.selectDecal(<Decal>item);
   }

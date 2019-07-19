@@ -14,7 +14,7 @@ import {
   MatTooltipModule,
   MatSnackBarModule,
   MatGridListModule,
-  MatProgressBarModule, MatProgressSpinnerModule
+  MatProgressBarModule, MatProgressSpinnerModule, MatIconModule
 } from "@angular/material";
 import { LoadoutGridSelectorComponent } from './components/loadout-grid-selector/loadout-grid-selector.component';
 import { ColorSelectorComponent } from './components/color-selector/color-selector.component';
@@ -37,6 +37,7 @@ import { HttpClientModule } from "@angular/common/http";
     HttpClientModule,
     MatButtonModule,
     MatGridListModule,
+    MatIconModule,
     MatProgressBarModule,
     MatRippleModule,
     MatSnackBarModule,

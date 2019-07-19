@@ -12,6 +12,8 @@ export class StaticSkin extends RgbaMapPipe {
   accent: Color = new Color(1, 1, 1);
   paint: Color = new Color(1, 0, 0);
 
+  blankSkinMap: Uint8ClampedArray;
+
   constructor(decal: Decal, paints) {
     super(undefined, undefined);
     this.baseUrl = decal.base_texture === undefined ? undefined : `${ASSET_HOST}/${decal.base_texture}`;
@@ -24,6 +26,14 @@ export class StaticSkin extends RgbaMapPipe {
 
   getColor(i: number): Color {
     let color = new Color(0, 0, 0);
+
+    if (this.blankSkinMap !== undefined) {
+      if (this.blankSkinMap[i] !== 255) {
+        return color;
+      } else {
+        color = this.primary;
+      }
+    }
 
     if (this.rgbaMap === undefined) {
       return color;
@@ -42,5 +52,10 @@ export class StaticSkin extends RgbaMapPipe {
     }
 
     return color;
+  }
+
+  clear() {
+    this.base = undefined;
+    this.rgbaMap = undefined;
   }
 }
