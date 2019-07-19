@@ -2,6 +2,7 @@ import logging
 from flask import Flask, jsonify
 from config import config
 from database import Db
+from logging_config import logging_config
 
 app = Flask(__name__)
 database = Db()
@@ -14,5 +15,6 @@ def get_bodies():
 
 
 if __name__ == '__main__':
+    logging_config()
     port = int(config.get('server', 'port'))
     app.run(host='0.0.0.0', port=port)

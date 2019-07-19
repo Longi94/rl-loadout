@@ -11,4 +11,4 @@ config = configparser.ConfigParser()
 if os.path.exists(CONFIG_FILE):
     config.read(CONFIG_FILE)
 else:
-    log.warn('Config file not found, using defaults.')
+    log.warning('Config file not found, using defaults.')
