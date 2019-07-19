@@ -32,8 +32,7 @@ export class BodyModel extends AbstractObject {
     this.displacementMapUrl = getAssetUrl(body.displacement_map);
     this.chassisSkin = new ChassisSkin(
       getAssetUrl(body.chassis_base),
-      getAssetUrl(body.chassis_rgb_map),
-      new Color(0, 0, 0)
+      undefined
     );
     this.blankSkinMapUrl = getAssetUrl(body.blank_skin);
   }
@@ -86,11 +85,6 @@ export class BodyModel extends AbstractObject {
     }
   }
 
-  refresh() {
-    this.chassisSkin.update();
-    this.applyChassisSkin();
-  }
-
   applyChassisSkin() {
     this.chassisSkin.update();
     const mat: MeshPhongMaterial = <MeshPhongMaterial>this.chassis.material;
@@ -140,15 +134,11 @@ export class BodyModel extends AbstractObject {
 
 class ChassisSkin extends RgbaMapPipe {
 
-  paint: Color;
-
-  constructor(baseUrl, rgbaMapUrl, paint) {
+  constructor(baseUrl, rgbaMapUrl) {
     super(baseUrl, rgbaMapUrl);
-    this.paint = new Color(paint);
   }
 
   getColor(i: number): Color {
-    // TODO support body paints
     return new Color(
       this.base[i] / 255,
       this.base[i + 1] / 255,
