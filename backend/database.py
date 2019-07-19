@@ -2,7 +2,7 @@ import logging
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, create_engine, Boolean, ForeignKey
 from sqlalchemy.engine.url import URL
-from sqlalchemy.orm import sessionmaker, relationship
+from sqlalchemy.orm import sessionmaker, relationship, scoped_session
 from config import config
 
 log = logging.getLogger(__name__)
@@ -127,7 +127,7 @@ class Db(object):
 
         self.engine = create_engine(self.url)
         Base.metadata.create_all(self.engine)
-        self.Session = sessionmaker(bind=self.engine)
+        self.Session = scoped_session(sessionmaker(bind=self.engine))
 
     def get_bodies(self):
         session = self.Session()

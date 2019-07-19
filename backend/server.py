@@ -9,6 +9,12 @@ CORS(app)
 database = Db()
 
 
+@app.after_request
+def after_request(response):
+    database.Session.remove()
+    return response
+
+
 @app.route('/api/bodies', methods=['GET'])
 def get_bodies():
     bodies = database.get_bodies()
