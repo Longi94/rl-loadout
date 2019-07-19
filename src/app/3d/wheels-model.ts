@@ -1,4 +1,4 @@
-import { AbstractObject } from "./object";
+import { AbstractObject, fixMaterial } from "./object";
 import { Color, Mesh, MeshPhongMaterial, MeshStandardMaterial, Scene, Texture } from "three";
 import { RgbaMapPipe } from "./rgba-map-pipe";
 import { Wheel } from "../model/wheel";
@@ -50,24 +50,13 @@ export class WheelsModel extends AbstractObject {
       }
     }
 
-    WheelsModel.fixMaterial(this.tire);
-    WheelsModel.fixMaterial(this.rim);
+    fixMaterial(this.tire);
+    fixMaterial(this.rim);
 
     this.wheels.fr = scene.clone();
     this.wheels.fl = scene.clone();
     this.wheels.br = scene.clone();
     this.wheels.bl = scene.clone();
-  }
-
-  private static fixMaterial(mesh: Mesh) {
-    const mat = new MeshPhongMaterial();
-    const oldMat = <MeshStandardMaterial>mesh.material;
-
-    mat.map = oldMat.map;
-    mat.normalMap = oldMat.normalMap;
-    mat.needsUpdate = true;
-
-    mesh.material = mat;
   }
 
   applyWheelPositions(config) {

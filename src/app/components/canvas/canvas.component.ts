@@ -107,18 +107,11 @@ export class CanvasComponent implements OnInit {
 
     promiseProgress([
       this.body.load(),
-      this.textureLoader.load('assets/textures/MuscleCar_Chassis_D.tga'),
-      this.textureLoader.load('assets/textures/MuscleCar_Chassis_N.tga'),
       this.skin.load(),
       this.wheels.load(),
       this.loadoutStore.initBodies(),
       this.loadoutStore.initWheels(),
-    ], progress => this.initProgress = progress).then(values => {
-      let diffuseMap: Texture = values[1];
-      let normalMap: Texture = values[2];
-
-      this.body.applyChassisTexture(diffuseMap, normalMap);
-
+    ], progress => this.initProgress = progress).then(() => {
       this.skin.update();
       this.skinMap = new Texture();
       this.skinMap.image = this.skin.toTexture();

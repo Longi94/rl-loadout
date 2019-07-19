@@ -1,16 +1,12 @@
-import { Bone, MeshPhongMaterial, Scene, SkinnedMesh, Texture } from "three";
-import { AbstractObject } from "./object";
+import { Bone, Color, MeshPhongMaterial, Scene, SkinnedMesh, Texture } from "three";
+import { AbstractObject, fixMaterial } from "./object";
 import { environment } from "../../environments/environment";
 import { Body } from "../model/body";
-import { TgaRgbaLoader } from "../utils/tga-rgba-loader";
-import { PromiseLoader } from "../utils/loader";
-import { dataToCanvas } from "../utils/texture";
+import { RgbaMapPipe } from "./rgba-map-pipe";
 
 const ASSET_HOST = environment.assetHost;
 
 export class BodyModel extends AbstractObject {
-
-  textureLoader = new PromiseLoader(new TgaRgbaLoader());
 
   displacementMapUrl: string;
 
@@ -18,20 +14,30 @@ export class BodyModel extends AbstractObject {
   body: SkinnedMesh;
   chassis: SkinnedMesh;
 
+  chassisSkin: ChassisSkin;
+  chassisMap: Texture = new Texture();
+
   constructor(body: Body) {
     super(`${ASSET_HOST}/${body.model}`);
 
     this.displacementMapUrl = `${ASSET_HOST}/${body.displacement_map}`;
+    this.chassisSkin = new ChassisSkin(
+      `${ASSET_HOST}/${body.chassis_base}`,
+      `${ASSET_HOST}/${body.chassis_rgb_map}`,
+      new Color(0, 0, 0)
+    );
   }
 
   load(): Promise<any> {
     return new Promise((resolve, reject) => Promise.all([
       super.load(),
       // this.textureLoader.load(this.displacementMapUrl) TODO doesn't seem to make a difference
-    ]).then(values => {
+      this.chassisSkin.load()
+    ]).then(() => {
       // const displacementMap = new Texture();
       // displacementMap.image = dataToCanvas(values[1].data, values[1].width, values[1].height);
       // this.applyDisplacementMap(displacementMap);
+      this.applyChassisSkin();
       resolve();
     }, reject));
   }
@@ -56,22 +62,30 @@ export class BodyModel extends AbstractObject {
     }
 
     if (this.body !== undefined) {
-      this.body.material = new MeshPhongMaterial();
+      fixMaterial(this.body);
     } else {
       console.error(`${this.url} did not contain a body mesh`);
     }
 
     if (this.chassis !== undefined) {
-      this.chassis.material = new MeshPhongMaterial();
+      fixMaterial(this.chassis);
     } else {
       console.error(`${this.url} did not chassis a body mesh`);
     }
   }
 
-  applyChassisTexture(diffuseMap: Texture, normalMap?: Texture) {
-    const mat = <MeshPhongMaterial>this.chassis.material;
-    mat.map = diffuseMap;
-    mat.normalMap = normalMap;
+  refresh() {
+    this.chassisSkin.update();
+    this.applyChassisSkin();
+  }
+
+  applyChassisSkin() {
+    this.chassisSkin.update();
+    const mat: MeshPhongMaterial = <MeshPhongMaterial>this.chassis.material;
+    this.chassisMap.image = this.chassisSkin.toTexture();
+    this.chassisMap.needsUpdate = true;
+    mat.map = this.chassisMap;
+    mat.needsUpdate = true;
   }
 
   applyBodyTexture(diffuseMap: Texture) {
@@ -109,5 +123,24 @@ export class BodyModel extends AbstractObject {
     }
 
     return config;
+  }
+}
+
+class ChassisSkin extends RgbaMapPipe {
+
+  paint: Color;
+
+  constructor(baseUrl, rgbaMapUrl, paint) {
+    super(baseUrl, rgbaMapUrl);
+    this.paint = new Color(paint);
+  }
+
+  getColor(i: number): Color {
+    // TODO support body paints
+    return new Color(
+      this.base[i] / 255,
+      this.base[i + 1] / 255,
+      this.base[i + 2] / 255
+    );
   }
 }
