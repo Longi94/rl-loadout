@@ -3,7 +3,9 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  assetHost: 'https://storage.googleapis.com/rl-loadout',
+  backend: 'localhost:10000'
 };
 
 /*
