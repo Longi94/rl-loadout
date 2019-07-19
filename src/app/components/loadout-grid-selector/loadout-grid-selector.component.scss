@@ -49,5 +49,5 @@ mat-grid-tile-footer.premium {
 }
 
 .selected {
-  box-shadow: 0 0 14px 0 rgb(0, 180, 255);
+  box-shadow: 0 0 14px 0 map-get($app-primary, 700);
 }

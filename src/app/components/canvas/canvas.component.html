@@ -1,3 +1,8 @@
 <div class="canvas-container" #canvasContainer>
   <canvas #canvas></canvas>
 </div>
+
+<div class="full-overlay" [style.display]="initializing ? null : 'none'">
+  <span>Loading {{initProgress}}%</span>
+  <mat-progress-bar mode="determinate" [value]="initProgress" color="primary"></mat-progress-bar>
+</div>

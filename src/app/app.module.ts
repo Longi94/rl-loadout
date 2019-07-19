@@ -13,7 +13,8 @@ import {
   MatRippleModule,
   MatTooltipModule,
   MatSnackBarModule,
-  MatGridListModule
+  MatGridListModule,
+  MatProgressBarModule
 } from "@angular/material";
 import { LoadoutGridSelectorComponent } from './components/loadout-grid-selector/loadout-grid-selector.component';
 import { ColorSelectorComponent } from './components/color-selector/color-selector.component';
@@ -34,6 +35,7 @@ import { ColorSelectorComponent } from './components/color-selector/color-select
     ColorPickerModule,
     MatButtonModule,
     MatGridListModule,
+    MatProgressBarModule,
     MatRippleModule,
     MatSnackBarModule,
     MatTooltipModule

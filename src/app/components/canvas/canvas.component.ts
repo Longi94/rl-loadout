@@ -21,6 +21,7 @@ import { Decal } from "../../model/decal";
 import { Body } from "../../3d/body";
 import { Wheels } from "../../3d/wheels";
 import { Wheel } from "../../model/wheel";
+import { promiseProgress } from "../../utils/promise";
 
 @Component({
   selector: 'app-canvas',
@@ -50,6 +51,10 @@ export class CanvasComponent implements OnInit {
   // colors
   private skin: StaticSkin;
   private skinMap: Texture;
+
+  // Loading stuff
+  initializing = true;
+  initProgress = 0;
 
   constructor(private loadoutService: LoadoutService) {
     this.loadoutService.decalChanged$.subscribe(decal => this.changeDecal(decal));
@@ -90,15 +95,15 @@ export class CanvasComponent implements OnInit {
       'assets/textures/OEM_D.tga', 'assets/textures/OEM_RGB.tga', false), this.loadoutService.paints);
     this.skin = new StaticSkin('assets/textures/Dominus_funnybook.tga', this.loadoutService.paints);
 
-    Promise.all([
+    promiseProgress([
       this.body.load(),
       this.textureLoader.load('assets/textures/MuscleCar_Chassis_D.tga'),
       this.textureLoader.load('assets/textures/MuscleCar_Chassis_N.tga'),
       this.skin.load(),
       this.wheels.load()
-    ]).then(values => {
-      let diffuseMap = values[1];
-      let normalMap = values[2];
+    ], progress => this.initProgress = progress).then(values => {
+      let diffuseMap: Texture = values[1];
+      let normalMap: Texture = values[2];
 
       this.body.applyChassisTexture(diffuseMap, normalMap);
 
@@ -113,6 +118,8 @@ export class CanvasComponent implements OnInit {
 
       this.body.addToScene(this.scene);
       this.wheels.addToScene(this.scene);
+
+      this.initializing = false;
     }).catch(console.error);
   }
 
