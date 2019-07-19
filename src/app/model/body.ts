@@ -13,10 +13,11 @@ export class Body extends Item {
   topper_rot_y: number;
   topper_rot_z: number;
 
-  constructor(id: number, icon: string, name: string, quality: Quality, blank_skin: string, chassis_base: string,
+  constructor(id: number, icon: string, name: string, quality: Quality, paintable: boolean,
+              blank_skin: string, chassis_base: string,
               chassis_rgb_map: string, model: string, topper_pos_x: number, topper_pos_y: number,
               topper_pos_z: number, topper_rot_x: number, topper_rot_y: number, topper_rot_z: number) {
-    super(id, icon, name, quality);
+    super(id, icon, name, quality, paintable);
     this.blank_skin = blank_skin;
     this.chassis_base = chassis_base;
     this.chassis_rgb_map = chassis_rgb_map;
@@ -34,6 +35,7 @@ export class Body extends Item {
     'icons/Body_MuscleCar_Thumbnail.jpg',
     'Dominus',
     Quality.PREMIUM,
+    false,
     'textures/MuscleCar_BlankSkin_RGB.tga',
     'textures/MuscleCar_Chassis_D.tga',
     'textures/MuscleCar_Chassis_RGB.tga',

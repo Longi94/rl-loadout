@@ -28,7 +28,7 @@ export class LoadoutGridSelectorComponent implements OnInit {
   qPremium = Quality.PREMIUM;
 
   @Input('selectedItem')
-  selectedItem: Item = new Item(0, '', '', 0);
+  selectedItem: Item = new Item(0, '', '', 0, false);
 
   constructor() { }
 

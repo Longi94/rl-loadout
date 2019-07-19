@@ -1,6 +1,6 @@
 import logging
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, create_engine
+from sqlalchemy import Column, Integer, String, create_engine, Boolean
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker
 from config import config
@@ -17,6 +17,7 @@ class BaseItem:
     name = Column(String(255), nullable=False)
     quality = Column(Integer, nullable=False)
     icon = Column(String(255), nullable=False)
+    paintable = Column(Boolean, nullable=False, default=False)
 
 
 class Body(Base, BaseItem):
@@ -40,6 +41,7 @@ class Body(Base, BaseItem):
             'name': self.name,
             'quality': self.quality,
             'icon': self.icon,
+            'paintable': self.paintable,
             'model': self.model,
             'blank_skin': self.blank_skin,
             'chassis_base': self.chassis_base,

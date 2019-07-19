@@ -6,8 +6,7 @@ export class Decal extends Item {
   paintable: boolean;
 
   constructor(id: number, icon: string, name: string, quality: Quality, texture: string, paintable: boolean) {
-    super(id, icon, name, quality);
+    super(id, icon, name, quality, paintable);
     this.texture = texture;
-    this.paintable = paintable;
   }
 }

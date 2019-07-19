@@ -9,11 +9,10 @@ export class Wheel extends Item {
 
   constructor(id: number, icon: string, name: string, quality: Quality, model: string, rimTexture: string, rgbaMap: string,
               paintable: boolean) {
-    super(id, icon, name, quality);
+    super(id, icon, name, quality, paintable);
     this.model = model;
     this.rimTexture = rimTexture;
     this.rgbaMap = rgbaMap;
-    this.paintable = paintable;
   }
 
   static DEFAULT = new Wheel(
