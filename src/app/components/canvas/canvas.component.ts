@@ -22,6 +22,7 @@ import { Body } from "../../3d/body";
 import { Wheels } from "../../3d/wheels";
 import { Wheel } from "../../model/wheel";
 import { promiseProgress } from "../../utils/promise";
+import { LoadoutStoreService } from "../../service/loadout-store.service";
 
 @Component({
   selector: 'app-canvas',
@@ -53,6 +54,7 @@ export class CanvasComponent implements OnInit {
   private skinMap: Texture;
 
   // Loading stuff
+  mathRound = Math.round;
   initializing = true;
   initProgress = 0;
   loading = {
@@ -60,7 +62,8 @@ export class CanvasComponent implements OnInit {
     wheel: false
   };
 
-  constructor(private loadoutService: LoadoutService) {
+  constructor(private loadoutService: LoadoutService,
+              private loadoutStore: LoadoutStoreService) {
     this.loadoutService.decalChanged$.subscribe(decal => this.changeDecal(decal));
     this.loadoutService.paintChanged$.subscribe(paint => this.changePaint(paint));
     this.loadoutService.wheelChanged$.subscribe(wheel => this.changeWheel(wheel));
@@ -108,7 +111,8 @@ export class CanvasComponent implements OnInit {
       this.textureLoader.load('assets/textures/MuscleCar_Chassis_D.tga'),
       this.textureLoader.load('assets/textures/MuscleCar_Chassis_N.tga'),
       this.skin.load(),
-      this.wheels.load()
+      this.wheels.load(),
+      this.loadoutStore.initBodies()
     ], progress => this.initProgress = progress).then(values => {
       let diffuseMap: Texture = values[1];
       let normalMap: Texture = values[2];

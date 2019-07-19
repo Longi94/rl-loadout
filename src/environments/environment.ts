@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   assetHost: 'https://storage.googleapis.com/rl-loadout',
-  backend: 'localhost:10000'
+  backend: 'http://localhost:10000'
 };
 
 /*

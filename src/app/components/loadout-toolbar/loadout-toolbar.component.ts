@@ -1,4 +1,4 @@
-import { Component, ComponentFactoryResolver, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentFactoryResolver, ComponentRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
 import { MatSnackBar } from "@angular/material";
 import { LoadoutGridSelectorComponent } from "../loadout-grid-selector/loadout-grid-selector.component";
 import { Quality } from "../../model/quality";
@@ -6,6 +6,8 @@ import { Decal } from "../../model/decal";
 import { LoadoutService } from "../../service/loadout.service";
 import { ColorSelectorComponent } from "../color-selector/color-selector.component";
 import { Wheel } from "../../model/wheel";
+import { LoadoutStoreService } from "../../service/loadout-store.service";
+import { Body } from "../../model/body";
 
 @Component({
   selector: 'app-loadout-toolbar',
@@ -21,7 +23,8 @@ export class LoadoutToolbarComponent implements OnInit {
 
   constructor(private _snackBar: MatSnackBar,
               private componentFactoryResolver: ComponentFactoryResolver,
-              private loadoutService: LoadoutService) {
+              private loadoutService: LoadoutService,
+              private loadoutStore: LoadoutStoreService) {
   }
 
   ngOnInit() {
@@ -31,15 +34,26 @@ export class LoadoutToolbarComponent implements OnInit {
     this._snackBar.open(`${type} are not currently supported.`, undefined, {duration: 2000});
   }
 
-  openDecalsComponent() {
+  createNewGRidSelector(toolbar: Toolbar): ComponentRef<LoadoutGridSelectorComponent> {
     this.closeDropDown();
-    if (this.selected === Toolbar.DECAL) {
+    if (this.selected === toolbar) {
       this.selected = undefined;
       return;
     }
-    this.selected = Toolbar.DECAL;
+    this.selected = toolbar;
     const factory = this.componentFactoryResolver.resolveComponentFactory(LoadoutGridSelectorComponent);
-    const component = this.loadoutDropdown.createComponent(factory);
+    return this.loadoutDropdown.createComponent(factory);
+  }
+
+  openBodiesComponent() {
+    const component = this.createNewGRidSelector(Toolbar.BODY);
+    component.instance.items = this.loadoutStore.bodies;
+    component.instance.selectedItem = this.loadoutService.body;
+    component.instance.onSelect = item => this.loadoutService.selectBody(<Body>item);
+  }
+
+  openDecalsComponent() {
+    const component = this.createNewGRidSelector(Toolbar.DECAL);
 
     component.instance.items = [
       new Decal(
@@ -63,14 +77,7 @@ export class LoadoutToolbarComponent implements OnInit {
   }
 
   openWheelComponent() {
-    this.closeDropDown();
-    if (this.selected === Toolbar.WHEEL) {
-      this.selected = undefined;
-      return;
-    }
-    this.selected = Toolbar.WHEEL;
-    const factory = this.componentFactoryResolver.resolveComponentFactory(LoadoutGridSelectorComponent);
-    const component = this.loadoutDropdown.createComponent(factory);
+    const component = this.createNewGRidSelector(Toolbar.WHEEL);
 
     component.instance.items = [
       new Wheel(
@@ -114,5 +121,5 @@ export class LoadoutToolbarComponent implements OnInit {
 }
 
 enum Toolbar {
-  DECAL, PAINT, WHEEL
+  BODY, DECAL, PAINT, WHEEL
 }

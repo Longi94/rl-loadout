@@ -18,6 +18,7 @@ import {
 } from "@angular/material";
 import { LoadoutGridSelectorComponent } from './components/loadout-grid-selector/loadout-grid-selector.component';
 import { ColorSelectorComponent } from './components/color-selector/color-selector.component';
+import { HttpClientModule } from "@angular/common/http";
 
 @NgModule({
   declarations: [
@@ -33,6 +34,7 @@ import { ColorSelectorComponent } from './components/color-selector/color-select
     AppRoutingModule,
     BrowserAnimationsModule,
     ColorPickerModule,
+    HttpClientModule,
     MatButtonModule,
     MatGridListModule,
     MatProgressBarModule,

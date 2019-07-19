@@ -2,11 +2,16 @@ import { Injectable } from '@angular/core';
 import { Decal } from "../model/decal";
 import { Observable, Subject } from "rxjs";
 import { Wheel } from "../model/wheel";
+import { Body } from "../model/body";
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoadoutService {
+
+  body: Body = new Body('', '', 0);
+  private bodySubject: Subject<Body> = new Subject<Body>();
+  bodyChanged$: Observable<Body> = this.bodySubject.asObservable();
 
   decal: Decal = new Decal('', '', 0, '', false);
   private decalSubject: Subject<Decal> = new Subject<Decal>();
@@ -44,5 +49,10 @@ export class LoadoutService {
   selectWheel(wheel: Wheel) {
     this.wheel = wheel;
     this.wheelSubject.next(wheel);
+  }
+
+  selectBody(body: Body) {
+    this.body = body;
+    this.bodySubject.next(body);
   }
 }

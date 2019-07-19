@@ -1,10 +1,11 @@
-import logging
 from flask import Flask, jsonify
+from flask_cors import CORS
 from config import config
 from database import Db
 from logging_config import logging_config
 
 app = Flask(__name__)
+CORS(app)
 database = Db()
 
 
