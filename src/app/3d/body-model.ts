@@ -1,14 +1,39 @@
 import { Bone, MeshPhongMaterial, Scene, SkinnedMesh, Texture } from "three";
 import { AbstractObject } from "./object";
+import { environment } from "../../environments/environment";
+import { Body } from "../model/body";
+import { TgaRgbaLoader } from "../utils/tga-rgba-loader";
+import { PromiseLoader } from "../utils/loader";
+import { dataToCanvas } from "../utils/texture";
 
-export class Body extends AbstractObject {
+const ASSET_HOST = environment.assetHost;
+
+export class BodyModel extends AbstractObject {
+
+  textureLoader = new PromiseLoader(new TgaRgbaLoader());
+
+  displacementMapUrl: string;
 
   skeleton: Bone;
   body: SkinnedMesh;
   chassis: SkinnedMesh;
 
-  constructor(modelUrl: string) {
-    super(modelUrl);
+  constructor(body: Body) {
+    super(`${ASSET_HOST}/${body.model}`);
+
+    this.displacementMapUrl = `${ASSET_HOST}/${body.displacement_map}`;
+  }
+
+  load(): Promise<any> {
+    return new Promise((resolve, reject) => Promise.all([
+      super.load(),
+      // this.textureLoader.load(this.displacementMapUrl) TODO doesn't seem to make a difference
+    ]).then(values => {
+      // const displacementMap = new Texture();
+      // displacementMap.image = dataToCanvas(values[1].data, values[1].width, values[1].height);
+      // this.applyDisplacementMap(displacementMap);
+      resolve();
+    }, reject));
   }
 
   handleModel(scene: Scene) {
@@ -52,6 +77,11 @@ export class Body extends AbstractObject {
   applyBodyTexture(diffuseMap: Texture) {
     const mat = <MeshPhongMaterial>this.body.material;
     mat.map = diffuseMap;
+  }
+
+  applyDisplacementMap(map: Texture) {
+    const mat = <MeshPhongMaterial>this.body.material;
+    mat.displacementMap = map;
   }
 
   getWheelPositions() {

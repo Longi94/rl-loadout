@@ -26,6 +26,7 @@ class Body(Base, BaseItem):
     blank_skin = Column(String(255), nullable=False)
     chassis_base = Column(String(255), nullable=False)
     chassis_rgb_map = Column(String(255), nullable=True)
+    displacement_map = Column(String(255), nullable=False)
     topper_pos_x = Column(Integer, nullable=False, default=0)
     topper_pos_y = Column(Integer, nullable=False, default=0)
     topper_pos_z = Column(Integer, nullable=False, default=0)
@@ -46,6 +47,7 @@ class Body(Base, BaseItem):
             'blank_skin': self.blank_skin,
             'chassis_base': self.chassis_base,
             'chassis_rgb_map': self.chassis_rgb_map,
+            'displacement_map': self.displacement_map,
             'topper_pos_x': self.topper_pos_x,
             'topper_pos_y': self.topper_pos_y,
             'topper_pos_z': self.topper_pos_z,

@@ -18,8 +18,8 @@ import { TgaRgbaLoader } from "../../utils/tga-rgba-loader";
 import { StaticSkin } from "../../3d/static-skin";
 import { LoadoutService } from "../../service/loadout.service";
 import { Decal } from "../../model/decal";
-import { Body } from "../../3d/body";
-import { Wheels } from "../../3d/wheels";
+import { BodyModel } from "../../3d/body-model";
+import { WheelsModel } from "../../3d/wheels-model";
 import { Wheel } from "../../model/wheel";
 import { promiseProgress } from "../../utils/promise";
 import { LoadoutStoreService } from "../../service/loadout-store.service";
@@ -46,8 +46,8 @@ export class CanvasComponent implements OnInit {
   private rgbaLoader: PromiseLoader;
 
   // 3D objects
-  private body: Body;
-  private wheels: Wheels;
+  private body: BodyModel;
+  private wheels: WheelsModel;
 
   // colors
   private skin: StaticSkin;
@@ -101,8 +101,8 @@ export class CanvasComponent implements OnInit {
     this.textureLoader = new PromiseLoader(new TGALoader());
     this.rgbaLoader = new PromiseLoader(new TgaRgbaLoader());
 
-    this.body = new Body('assets/models/Body_Dominus_PremiumSkin_SK.glb');
-    this.wheels = new Wheels(this.loadoutService.wheel, this.loadoutService.paints);
+    this.body = new BodyModel(this.loadoutService.body);
+    this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints);
     this.skin = new StaticSkin('assets/textures/Dominus_funnybook.tga', this.loadoutService.paints);
 
     promiseProgress([
@@ -174,7 +174,7 @@ export class CanvasComponent implements OnInit {
   private changeWheel(wheel: Wheel) {
     this.loading.wheel = true;
     this.wheels.removeFromScene(this.scene);
-    this.wheels = new Wheels(wheel, this.loadoutService.paints);
+    this.wheels = new WheelsModel(wheel, this.loadoutService.paints);
     this.wheels.load().then(() => {
       this.wheels.applyWheelPositions(this.body.getWheelPositions());
       this.wheels.addToScene(this.scene);

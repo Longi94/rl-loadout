@@ -8,7 +8,7 @@ const WHEEL_DIAMETER = 32.626;
 const FLOOR_POS = -20;
 const ASSET_HOST = environment.assetHost;
 
-export class Wheels extends AbstractObject {
+export class WheelsModel extends AbstractObject {
 
   wheels = {
     fr: undefined,
@@ -50,8 +50,8 @@ export class Wheels extends AbstractObject {
       }
     }
 
-    Wheels.fixMaterial(this.tire);
-    Wheels.fixMaterial(this.rim);
+    WheelsModel.fixMaterial(this.tire);
+    WheelsModel.fixMaterial(this.rim);
 
     this.wheels.fr = scene.clone();
     this.wheels.fl = scene.clone();
