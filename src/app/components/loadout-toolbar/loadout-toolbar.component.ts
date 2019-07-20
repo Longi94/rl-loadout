@@ -46,6 +46,9 @@ export class LoadoutToolbarComponent implements OnInit {
 
   openBodiesComponent() {
     const component = this.createNewGRidSelector(Toolbar.BODY);
+    if (component == undefined) {
+      return;
+    }
     component.instance.items = this.loadoutStore.bodies;
     component.instance.selectedItem = this.loadoutService.body;
     component.instance.onSelect = item => this.loadoutService.selectBody(<Body>item);
@@ -53,6 +56,9 @@ export class LoadoutToolbarComponent implements OnInit {
 
   openDecalsComponent() {
     const component = this.createNewGRidSelector(Toolbar.DECAL);
+    if (component == undefined) {
+      return;
+    }
     component.instance.items = this.loadoutStore.decals.slice();
     component.instance.items.unshift(Decal.NONE);
     component.instance.selectedItem = this.loadoutService.decal;
@@ -61,6 +67,9 @@ export class LoadoutToolbarComponent implements OnInit {
 
   openWheelComponent() {
     const component = this.createNewGRidSelector(Toolbar.WHEEL);
+    if (component == undefined) {
+      return;
+    }
     component.instance.items = this.loadoutStore.wheels;
     component.instance.selectedItem = this.loadoutService.wheel;
     component.instance.onSelect = item => this.loadoutService.selectWheel(<Wheel>item);
