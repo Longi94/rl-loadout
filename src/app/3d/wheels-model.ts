@@ -40,6 +40,9 @@ export class WheelsModel extends AbstractObject {
     }
 
     return new Promise((resolve, reject) => Promise.all(promises).then(() => {
+      if (this.rimSkin){
+        this.paintableMaterial.map = this.rimSkin.texture;
+      }
       this.applyRimSkin();
       resolve();
     }, reject));
@@ -61,7 +64,6 @@ export class WheelsModel extends AbstractObject {
       let mat = <MeshPhongMaterial>object.material;
       if (mat.name.endsWith('_paintable')) {
         this.paintableMaterial = mat;
-        this.paintableMaterial.map = this.rimSkin.texture;
       }
     }
 
