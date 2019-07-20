@@ -1,5 +1,5 @@
 import { AbstractObject, fixMaterial } from "./object";
-import { Color, Mesh, MeshPhongMaterial, MeshStandardMaterial, Scene, Texture } from "three";
+import { Color, Mesh, MeshPhongMaterial, Object3D, Scene, Texture } from "three";
 import { RgbaMapPipe } from "./rgba-map-pipe";
 import { Wheel } from "../model/wheel";
 import { getAssetUrl } from "../utils/network";
@@ -16,8 +16,7 @@ export class WheelsModel extends AbstractObject {
     bl: undefined
   };
 
-  tire: Mesh;
-  rim: Mesh;
+  paintableMaterial: MeshPhongMaterial;
   rimSkin: RimSkin;
   rimMap: Texture = new Texture();
 
@@ -38,24 +37,27 @@ export class WheelsModel extends AbstractObject {
   }
 
   handleModel(scene: Scene) {
-    for (let child of this.scene.children) {
-      switch (child.name) {
-        case 'rim':
-          this.rim = <Mesh>child;
-          break;
-        case 'tire':
-          this.tire = <Mesh>child;
-          break;
-      }
-    }
-
-    fixMaterial(this.tire);
-    fixMaterial(this.rim);
+    this.traverse(scene);
 
     this.wheels.fr = scene.clone();
     this.wheels.fl = scene.clone();
     this.wheels.br = scene.clone();
     this.wheels.bl = scene.clone();
+  }
+
+  traverse(object: Object3D) {
+    if (object instanceof Mesh) {
+      fixMaterial(object);
+
+      let mat = <MeshPhongMaterial>object.material;
+      if (mat.name.endsWith('_paintable')) {
+        this.paintableMaterial = mat;
+      }
+    }
+
+    for (let child of object.children) {
+      this.traverse(child);
+    }
   }
 
   applyWheelPositions(config) {
@@ -89,12 +91,13 @@ export class WheelsModel extends AbstractObject {
   }
 
   private applyRimSkin() {
-    this.rimSkin.update();
-    const mat: MeshPhongMaterial = <MeshPhongMaterial>this.rim.material;
-    this.rimMap.image = this.rimSkin.toTexture();
-    this.rimMap.needsUpdate = true;
-    mat.map = this.rimMap;
-    mat.needsUpdate = true;
+    if (this.paintableMaterial !== undefined) {
+      this.rimSkin.update();
+      this.rimMap.image = this.rimSkin.toTexture();
+      this.rimMap.needsUpdate = true;
+      this.paintableMaterial.map = this.rimMap;
+      this.paintableMaterial.needsUpdate = true;
+    }
   }
 
   setPaint(paint: string) {

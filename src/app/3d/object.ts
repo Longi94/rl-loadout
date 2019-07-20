@@ -43,6 +43,7 @@ export function fixMaterial(mesh: Mesh) {
 
   mat.map = oldMat.map;
   mat.normalMap = oldMat.normalMap;
+  mat.name = oldMat.name;
   mat.needsUpdate = true;
 
   mesh.material = mat;
