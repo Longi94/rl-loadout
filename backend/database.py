@@ -62,8 +62,8 @@ class Body(Base, BaseItem):
 class Wheel(Base, BaseItem):
     __tablename__ = 'wheel'
     model = Column(String(255), nullable=False)
-    rim_base = Column(String(255), nullable=False)
-    rim_rgb_map = Column(String(255), nullable=False)
+    rim_base = Column(String(255), nullable=True)
+    rim_rgb_map = Column(String(255), nullable=True)
 
     def to_dict(self) -> Dict:
         """Return object data in easily serializable format"""
