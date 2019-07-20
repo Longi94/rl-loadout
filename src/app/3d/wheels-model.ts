@@ -3,6 +3,7 @@ import { Color, Mesh, MeshPhongMaterial, Object3D, Scene, Texture } from "three"
 import { RgbaMapPipe } from "./rgba-map-pipe";
 import { Wheel } from "../model/wheel";
 import { getAssetUrl } from "../utils/network";
+import { SkeletonUtils } from "three/examples/jsm/utils/SkeletonUtils";
 
 const WHEEL_DIAMETER = 32.626;
 const FLOOR_POS = -20;
@@ -22,15 +23,23 @@ export class WheelsModel extends AbstractObject {
 
   constructor(wheel: Wheel, paints) {
     super(getAssetUrl(wheel.model));
-    this.rimSkin = new RimSkin(
-      getAssetUrl(wheel.rim_base),
-      getAssetUrl(wheel.rim_rgb_map),
-      paints.wheel
-    );
+    if (wheel.rim_base && wheel.rim_rgb_map) {
+      this.rimSkin = new RimSkin(
+        getAssetUrl(wheel.rim_base),
+        getAssetUrl(wheel.rim_rgb_map),
+        paints.wheel
+      );
+    }
   }
 
   load(): Promise<any> {
-    return new Promise((resolve, reject) => Promise.all([super.load(), this.rimSkin.load()]).then(() => {
+    const promises = [super.load()];
+
+    if (this.rimSkin) {
+      promises.push(this.rimSkin.load());
+    }
+
+    return new Promise((resolve, reject) => Promise.all(promises).then(() => {
       this.applyRimSkin();
       resolve();
     }, reject));
@@ -39,10 +48,10 @@ export class WheelsModel extends AbstractObject {
   handleModel(scene: Scene) {
     this.traverse(scene);
 
-    this.wheels.fr = scene.clone();
-    this.wheels.fl = scene.clone();
-    this.wheels.br = scene.clone();
-    this.wheels.bl = scene.clone();
+    this.wheels.fr = SkeletonUtils.clone(scene);
+    this.wheels.fl = SkeletonUtils.clone(scene);
+    this.wheels.br = SkeletonUtils.clone(scene);
+    this.wheels.bl = SkeletonUtils.clone(scene);
   }
 
   traverse(object: Object3D) {
@@ -91,7 +100,7 @@ export class WheelsModel extends AbstractObject {
   }
 
   private applyRimSkin() {
-    if (this.paintableMaterial !== undefined) {
+    if (this.paintableMaterial != undefined && this.rimSkin != undefined) {
       this.rimSkin.update();
       this.rimMap.image = this.rimSkin.toTexture();
       this.rimMap.needsUpdate = true;
