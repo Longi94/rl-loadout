@@ -1,6 +1,6 @@
 import { AbstractObject, fixMaterial } from "./object";
-import { Color, Mesh, MeshPhongMaterial, Object3D, Scene, Texture } from "three";
-import { RgbaMapPipe } from "./rgba-map-pipe";
+import { Color, Mesh, MeshPhongMaterial, Object3D, Scene } from "three";
+import { RgbaMapPipeTexture } from "./rgba-map-pipe-texture";
 import { Wheel } from "../model/wheel";
 import { getAssetUrl } from "../utils/network";
 import { SkeletonUtils } from "three/examples/jsm/utils/SkeletonUtils";
@@ -19,7 +19,6 @@ export class WheelsModel extends AbstractObject {
 
   paintableMaterial: MeshPhongMaterial;
   rimSkin: RimSkin;
-  rimMap: Texture = new Texture();
 
   constructor(wheel: Wheel, paints) {
     super(getAssetUrl(wheel.model));
@@ -61,6 +60,7 @@ export class WheelsModel extends AbstractObject {
       let mat = <MeshPhongMaterial>object.material;
       if (mat.name.endsWith('_paintable')) {
         this.paintableMaterial = mat;
+        this.paintableMaterial.map = this.rimSkin.texture;
       }
     }
 
@@ -102,9 +102,6 @@ export class WheelsModel extends AbstractObject {
   private applyRimSkin() {
     if (this.paintableMaterial != undefined && this.rimSkin != undefined) {
       this.rimSkin.update();
-      this.rimMap.image = this.rimSkin.toTexture();
-      this.rimMap.needsUpdate = true;
-      this.paintableMaterial.map = this.rimMap;
       this.paintableMaterial.needsUpdate = true;
     }
   }
@@ -119,7 +116,7 @@ export class WheelsModel extends AbstractObject {
   }
 }
 
-class RimSkin extends RgbaMapPipe {
+class RimSkin extends RgbaMapPipeTexture {
 
   paint: Color;
   colorHolder = new Color();

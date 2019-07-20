@@ -1,40 +1,26 @@
 import { TgaRgbaLoader } from "../utils/tga-rgba-loader";
-import { Color } from "three";
-
-// @ts-ignore
-const useOffscreen = typeof OffscreenCanvas !== 'undefined';
+import { Color, DataTexture, RGBAFormat } from "three";
 
 const WIDTH = 2048;
 const HEIGHT = 2048;
 
-export abstract class RgbaMapPipe {
+export abstract class RgbaMapPipeTexture {
   baseUrl: string;
   rgbaMapUrl: string;
   loader: TgaRgbaLoader = new TgaRgbaLoader();
 
   base: Uint8ClampedArray;
   rgbaMap: Uint8ClampedArray;
-  data: Uint8ClampedArray;
+  data: Uint8Array;
 
-  // @ts-ignore
-  private readonly canvas: OffscreenCanvas | HTMLCanvasElement;
-  private readonly context: CanvasRenderingContext2D;
-  private readonly imageData: ImageData;
+  texture: DataTexture;
 
   protected constructor(baseUrl, rgbaMapUrl) {
     this.baseUrl = baseUrl;
     this.rgbaMapUrl = rgbaMapUrl;
 
-    // @ts-ignore
-    this.canvas = useOffscreen ? new OffscreenCanvas(WIDTH, HEIGHT) : document.createElement('canvas');
-    this.canvas.width = WIDTH;
-    this.canvas.height = HEIGHT;
-    this.context = this.canvas.getContext('2d');
-
-    // create imageData object
-    this.imageData = this.context.createImageData(WIDTH, HEIGHT);
-
-    this.data = new Uint8ClampedArray(WIDTH * HEIGHT * 4);
+    this.data = new Uint8Array(WIDTH * HEIGHT * 4);
+    this.texture = new DataTexture(this.data, WIDTH, HEIGHT, RGBAFormat);
   }
 
   /**
@@ -76,6 +62,8 @@ export abstract class RgbaMapPipe {
       this.data[i + 2] = color.b * 255;
       this.data[i + 3] = 255;
     }
+
+    this.texture.needsUpdate = true;
   }
 
   /**
@@ -83,16 +71,4 @@ export abstract class RgbaMapPipe {
    * @param i index of the pixel (i:r, i+1:g, i+2:b, i+3:a)
    */
   abstract getColor(i: number): Color;
-
-  /**
-   * Convert the data array into a canvas that has the texture.
-   */
-  toTexture() {
-    // set our buffer as source
-    this.imageData.data.set(this.data);
-
-    this.context.putImageData(this.imageData, 0, 0);
-
-    return useOffscreen ? this.canvas.transferToImageBitmap() : this.canvas;
-  }
 }

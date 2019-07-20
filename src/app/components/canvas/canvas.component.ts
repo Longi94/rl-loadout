@@ -8,7 +8,6 @@ import {
   Renderer,
   WebGLRenderer,
   MeshPhongMaterial,
-  Texture,
   Color
 } from "three";
 import { StaticSkin } from "../../3d/static-skin";
@@ -46,7 +45,6 @@ export class CanvasComponent implements OnInit {
 
   // colors
   private skin: StaticSkin;
-  private skinMap: Texture;
 
   // Loading stuff
   mathRound = Math.round;
@@ -113,11 +111,8 @@ export class CanvasComponent implements OnInit {
       }).then(() => {
         this.skin.blankSkinMap = this.body.blankSkinMap;
         this.skin.update();
-        this.skinMap = new Texture();
-        this.skinMap.image = this.skin.toTexture();
-        this.skinMap.needsUpdate = true;
 
-        this.body.applyBodyTexture(this.skinMap);
+        this.body.applyBodyTexture(this.skin.texture);
 
         this.wheels.applyWheelPositions(this.body.getWheelPositions());
 
@@ -173,9 +168,8 @@ export class CanvasComponent implements OnInit {
     ]).then(() => {
       this.skin.blankSkinMap = this.body.blankSkinMap;
       this.refreshSkin();
-      this.skinMap.needsUpdate = true;
 
-      this.body.applyBodyTexture(this.skinMap);
+      this.body.applyBodyTexture(this.skin.texture);
       this.wheels.applyWheelPositions(this.body.getWheelPositions());
       this.body.addToScene(this.scene);
       this.loading.body = false;
@@ -233,8 +227,6 @@ export class CanvasComponent implements OnInit {
 
   private refreshSkin() {
     this.skin.update();
-    this.skinMap.image = this.skin.toTexture();
-    this.skinMap.needsUpdate = true;
     (<MeshPhongMaterial>this.body.body.material).needsUpdate = true;
   }
 }

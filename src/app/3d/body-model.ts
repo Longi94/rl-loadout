@@ -1,7 +1,7 @@
 import { Bone, Color, MeshPhongMaterial, Scene, SkinnedMesh, Texture } from "three";
 import { AbstractObject, fixMaterial } from "./object";
 import { Body } from "../model/body";
-import { RgbaMapPipe } from "./rgba-map-pipe";
+import { RgbaMapPipeTexture } from "./rgba-map-pipe-texture";
 import { PromiseLoader } from "../utils/loader";
 import { TgaRgbaLoader } from "../utils/tga-rgba-loader";
 import { getAssetUrl } from "../utils/network";
@@ -17,7 +17,6 @@ export class BodyModel extends AbstractObject {
   chassis: SkinnedMesh;
 
   chassisSkin: ChassisSkin;
-  chassisMap: Texture = new Texture();
 
   blankSkinMapUrl: string;
   blankSkinMap: Uint8ClampedArray;
@@ -80,6 +79,7 @@ export class BodyModel extends AbstractObject {
 
     if (this.chassis !== undefined) {
       fixMaterial(this.chassis);
+
     } else {
       console.error(`${this.url} did not chassis a body mesh`);
     }
@@ -88,9 +88,7 @@ export class BodyModel extends AbstractObject {
   applyChassisSkin() {
     this.chassisSkin.update();
     const mat: MeshPhongMaterial = <MeshPhongMaterial>this.chassis.material;
-    this.chassisMap.image = this.chassisSkin.toTexture();
-    this.chassisMap.needsUpdate = true;
-    mat.map = this.chassisMap;
+    mat.map = this.chassisSkin.texture;
     mat.needsUpdate = true;
   }
 
@@ -132,7 +130,7 @@ export class BodyModel extends AbstractObject {
   }
 }
 
-class ChassisSkin extends RgbaMapPipe {
+class ChassisSkin extends RgbaMapPipeTexture {
 
   colorHolder = new Color();
 

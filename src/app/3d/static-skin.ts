@@ -1,11 +1,11 @@
 import { Color } from "three";
 import { BLACK, overBlendColors } from "../utils/color";
-import { RgbaMapPipe } from "./rgba-map-pipe";
+import { RgbaMapPipeTexture } from "./rgba-map-pipe-texture";
 import { Decal } from "../model/decal";
 import { getAssetUrl } from "../utils/network";
 
 
-export class StaticSkin extends RgbaMapPipe {
+export class StaticSkin extends RgbaMapPipeTexture {
 
   primary: Color;
   accent: Color;
