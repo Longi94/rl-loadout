@@ -4,6 +4,7 @@ import { RgbaMapPipeTexture } from "./rgba-map-pipe-texture";
 import { Wheel } from "../model/wheel";
 import { getAssetUrl } from "../utils/network";
 import { SkeletonUtils } from "three/examples/jsm/utils/SkeletonUtils";
+import { overBlendColors } from "../utils/color";
 
 const WHEEL_DIAMETER = 32.626;
 const FLOOR_POS = -20;
@@ -120,6 +121,7 @@ class RimSkin extends RgbaMapPipeTexture {
 
   paint: Color;
   colorHolder = new Color();
+  baseHolder = new Color();
 
   constructor(baseUrl, rgbaMapUrl, paint) {
     super(baseUrl, rgbaMapUrl);
@@ -127,15 +129,13 @@ class RimSkin extends RgbaMapPipeTexture {
   }
 
   getColor(i: number): Color {
-    if (this.rgbaMap[i] === 0) {
-      return this.paint;
-    }
-
-    this.colorHolder.setRGB(
+    this.baseHolder.setRGB(
       this.base[i] / 255,
       this.base[i + 1] / 255,
       this.base[i + 2] / 255
     );
+
+    overBlendColors(this.paint, this.baseHolder, 255 - this.rgbaMap[i], this.colorHolder);
 
     return this.colorHolder;
   }
