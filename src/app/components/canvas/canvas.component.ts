@@ -8,7 +8,6 @@ import {
   MeshStandardMaterial,
   Color,
   SpotLight,
-  SpotLightHelper,
 } from "three";
 import { StaticSkin } from "../../3d/static-skin";
 import { LoadoutService } from "../../service/loadout.service";
@@ -109,15 +108,9 @@ export class CanvasComponent implements OnInit {
       promiseProgress(promises, progress => {
         this.initProgress = 100 * (progress + 1) / (promises.length + 1)
       }).then(() => {
-        this.skin.blankSkinMap = this.body.blankSkinMap;
-        this.skin.update();
-
-        this.body.applyBodyTexture(this.skin.texture);
-
-        this.wheels.applyWheelPositions(this.body.getWheelPositions());
-
+        this.applySkin();
         this.body.addToScene(this.scene);
-        this.wheels.addToScene(this.scene);
+        this.applyWheelModel();
 
         this.initializing = false;
       }).catch(console.error);
@@ -198,10 +191,7 @@ export class CanvasComponent implements OnInit {
       this.loadoutStore.loadDecals(body.id),
       this.skin.load()
     ]).then(() => {
-      this.skin.blankSkinMap = this.body.blankSkinMap;
-      this.refreshSkin();
-
-      this.body.applyBodyTexture(this.skin.texture);
+      this.applySkin();
       this.wheels.applyWheelPositions(this.body.getWheelPositions());
       this.body.addToScene(this.scene);
       this.loading.body = false;
@@ -211,11 +201,18 @@ export class CanvasComponent implements OnInit {
   private changeDecal(decal: Decal) {
     this.loading.decal = true;
     this.skin.clear();
+    this.skin.baseUrl = getAssetUrl(decal.base_texture);
     this.skin.rgbaMapUrl = getAssetUrl(decal.rgba_map);
     this.skin.load().then(() => {
-      this.refreshSkin();
+      this.applySkin();
       this.loading.decal = false;
     });
+  }
+
+  private applySkin() {
+    this.skin.blankSkinMap = this.body.blankSkinMap;
+    this.refreshSkin();
+    this.body.applyBodyTexture(this.skin.texture);
   }
 
   private changeWheel(wheel: Wheel) {
@@ -223,10 +220,14 @@ export class CanvasComponent implements OnInit {
     this.wheels.removeFromScene(this.scene);
     this.wheels = new WheelsModel(wheel, this.loadoutService.paints);
     this.wheels.load().then(() => {
-      this.wheels.applyWheelPositions(this.body.getWheelPositions());
-      this.wheels.addToScene(this.scene);
+      this.applyWheelModel();
       this.loading.wheel = false;
     });
+  }
+
+  private applyWheelModel() {
+    this.wheels.applyWheelPositions(this.body.getWheelPositions());
+    this.wheels.addToScene(this.scene);
   }
 
   private changePaint(paint) {
