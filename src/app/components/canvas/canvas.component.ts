@@ -181,10 +181,7 @@ export class CanvasComponent implements OnInit {
     this.body.removeFromScene(this.scene);
     this.body.apply(body);
 
-    let decal = this.loadoutService.decal;
-    this.skin.clear();
-    this.skin.baseUrl = getAssetUrl(decal.base_texture);
-    this.skin.rgbaMapUrl = getAssetUrl(decal.rgba_map);
+    this.clearSkin(this.loadoutService.decal);
 
     Promise.all([
       this.body.load(),
@@ -200,13 +197,17 @@ export class CanvasComponent implements OnInit {
 
   private changeDecal(decal: Decal) {
     this.loading.decal = true;
-    this.skin.clear();
-    this.skin.baseUrl = getAssetUrl(decal.base_texture);
-    this.skin.rgbaMapUrl = getAssetUrl(decal.rgba_map);
+    this.clearSkin(decal);
     this.skin.load().then(() => {
       this.applySkin();
       this.loading.decal = false;
     });
+  }
+
+  private clearSkin(newDecal: Decal) {
+    this.skin.clear();
+    this.skin.baseUrl = getAssetUrl(newDecal.base_texture);
+    this.skin.rgbaMapUrl = getAssetUrl(newDecal.rgba_map);
   }
 
   private applySkin() {
