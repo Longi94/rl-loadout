@@ -1,14 +1,14 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import {
-  AmbientLight,
-  DirectionalLight,
   PerspectiveCamera,
   Scene,
   Renderer,
   WebGLRenderer,
-  MeshPhongMaterial,
-  Color
+  MeshStandardMaterial,
+  Color,
+  SpotLight,
+  SpotLightHelper,
 } from "three";
 import { StaticSkin } from "../../3d/static-skin";
 import { LoadoutService } from "../../service/loadout.service";
@@ -125,12 +125,44 @@ export class CanvasComponent implements OnInit {
   }
 
   addLights() {
-    let light = new AmbientLight(0xFFFFFF, 0.6); // soft white light
-    this.scene.add(light);
+    const INTENSITY = 3;
+    const ANGLE = Math.PI / 4;
 
-    let dirLight = new DirectionalLight(0xFFFFFF, 0.4 * Math.PI);
-    dirLight.position.set(0.5, 30, 0.866); // ~60º
-    this.scene.add(dirLight);
+    const light0 = new SpotLight(0xFFFFFF, INTENSITY, 300, ANGLE); // soft white light
+    light0.position.set(100, 60, 100);
+    light0.lookAt(0, 0, 0);
+    this.scene.add(light0);
+
+    const light1 = new SpotLight(0xFFFFFF, INTENSITY, 300, ANGLE); // soft white light
+    light1.position.set(-100, 60, 100);
+    light1.lookAt(0, 0, 0);
+    this.scene.add(light1);
+
+    const light2 = new SpotLight(0xFFFFFF, INTENSITY, 300, ANGLE); // soft white light
+    light2.position.set(100, 60, -100);
+    light2.lookAt(0, 0, 0);
+    this.scene.add(light2);
+
+    const light3 = new SpotLight(0xFFFFFF, INTENSITY, 300, ANGLE); // soft white light
+    light3.position.set(-100, 60, -100);
+    light3.lookAt(0, 0, 0);
+    this.scene.add(light3);
+
+    const light4 = new SpotLight(0xFFFFFF, INTENSITY, 300, ANGLE); // soft white light
+    light4.position.set(0, -160, 0);
+    light4.lookAt(0, 0, 0);
+    this.scene.add(light4);
+
+    // const helper0 = new SpotLightHelper(light0, new Color(1, 1, 1));
+    // this.scene.add(helper0);
+    // const helper1 = new SpotLightHelper(light1, new Color(0, 1, 1));
+    // this.scene.add(helper1);
+    // const helper2 = new SpotLightHelper(light2, new Color(1, 0, 1));
+    // this.scene.add(helper2);
+    // const helper3 = new SpotLightHelper(light3, new Color(1, 1, 0));
+    // this.scene.add(helper3);
+    // const helper4 = new SpotLightHelper(light4, new Color(0, 1, 0));
+    // this.scene.add(helper4);
   }
 
   animate() {
@@ -227,6 +259,6 @@ export class CanvasComponent implements OnInit {
 
   private refreshSkin() {
     this.skin.update();
-    (<MeshPhongMaterial>this.body.body.material).needsUpdate = true;
+    (<MeshStandardMaterial>this.body.body.material).needsUpdate = true;
   }
 }

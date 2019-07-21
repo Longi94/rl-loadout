@@ -1,5 +1,5 @@
-import { Bone, Color, MeshPhongMaterial, Scene, SkinnedMesh, Texture } from "three";
-import { AbstractObject, fixMaterial } from "./object";
+import { Bone, Color, MeshStandardMaterial, Scene, SkinnedMesh, Texture } from "three";
+import { AbstractObject } from "./object";
 import { Body } from "../model/body";
 import { RgbaMapPipeTexture } from "./rgba-map-pipe-texture";
 import { PromiseLoader } from "../utils/loader";
@@ -71,34 +71,29 @@ export class BodyModel extends AbstractObject {
       }
     }
 
-    if (this.body !== undefined) {
-      fixMaterial(this.body);
-    } else {
+    if (this.body === undefined) {
       console.error(`${this.url} did not contain a body mesh`);
     }
 
-    if (this.chassis !== undefined) {
-      fixMaterial(this.chassis);
-
-    } else {
+    if (this.chassis === undefined) {
       console.error(`${this.url} did not chassis a body mesh`);
     }
   }
 
   applyChassisSkin() {
     this.chassisSkin.update();
-    const mat: MeshPhongMaterial = <MeshPhongMaterial>this.chassis.material;
+    const mat: MeshStandardMaterial = <MeshStandardMaterial>this.chassis.material;
     mat.map = this.chassisSkin.texture;
     mat.needsUpdate = true;
   }
 
   applyBodyTexture(diffuseMap: Texture) {
-    const mat = <MeshPhongMaterial>this.body.material;
+    const mat = <MeshStandardMaterial>this.body.material;
     mat.map = diffuseMap;
   }
 
   applyDisplacementMap(map: Texture) {
-    const mat = <MeshPhongMaterial>this.body.material;
+    const mat = <MeshStandardMaterial>this.body.material;
     mat.displacementMap = map;
   }
 

@@ -1,5 +1,5 @@
-import { AbstractObject, fixMaterial } from "./object";
-import { Color, Mesh, MeshPhongMaterial, Object3D, Scene } from "three";
+import { AbstractObject } from "./object";
+import { Color, Mesh, MeshStandardMaterial, Object3D, Scene } from "three";
 import { RgbaMapPipeTexture } from "./rgba-map-pipe-texture";
 import { Wheel } from "../model/wheel";
 import { getAssetUrl } from "../utils/network";
@@ -18,7 +18,7 @@ export class WheelsModel extends AbstractObject {
     bl: undefined
   };
 
-  paintableMaterial: MeshPhongMaterial;
+  paintableMaterial: MeshStandardMaterial;
   rimSkin: RimSkin;
 
   constructor(wheel: Wheel, paints) {
@@ -59,9 +59,7 @@ export class WheelsModel extends AbstractObject {
 
   traverse(object: Object3D) {
     if (object instanceof Mesh) {
-      fixMaterial(object);
-
-      let mat = <MeshPhongMaterial>object.material;
+      let mat = <MeshStandardMaterial>object.material;
       if (mat.name.endsWith('_paintable')) {
         this.paintableMaterial = mat;
       }
