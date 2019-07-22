@@ -1,7 +1,7 @@
 import logging
 from typing import List, Dict
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, create_engine, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, create_engine, Boolean, ForeignKey, Float
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker, relationship, scoped_session
 from config import config
@@ -28,12 +28,12 @@ class Body(Base, BaseItem):
     chassis_base = Column(String(255), nullable=False)
     chassis_rgb_map = Column(String(255), nullable=True)
     displacement_map = Column(String(255), nullable=False)
-    topper_pos_x = Column(Integer, nullable=False, default=0)
-    topper_pos_y = Column(Integer, nullable=False, default=0)
-    topper_pos_z = Column(Integer, nullable=False, default=0)
-    topper_rot_x = Column(Integer, nullable=False, default=0)
-    topper_rot_y = Column(Integer, nullable=False, default=0)
-    topper_rot_z = Column(Integer, nullable=False, default=0)
+    topper_pos_x = Column(Float(5), nullable=False, default=0.0)
+    topper_pos_y = Column(Float(5), nullable=False, default=0.0)
+    topper_pos_z = Column(Float(5), nullable=False, default=0.0)
+    topper_rot_x = Column(Float(5), nullable=False, default=0.0)
+    topper_rot_y = Column(Float(5), nullable=False, default=0.0)
+    topper_rot_z = Column(Float(5), nullable=False, default=0.0)
     decals = relationship('Decal')
 
     def to_dict(self) -> Dict:
