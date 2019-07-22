@@ -14,12 +14,16 @@
   background-color: $background;
   overflow-y: auto;
   z-index: 100;
-  box-shadow: -12px 0px 35px 15px rgba(0,0,0,0.4);
+  box-shadow: -12px 0px 35px 15px rgba(0, 0, 0, 0.4);
 }
 
 .toolbar-button {
   cursor: pointer;
   padding: 0 8px;
+}
+
+.toolbar-button.selected {
+  background: rgba(255, 255, 255, 0.31);
 }
 
 .toolbar-button img {

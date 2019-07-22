@@ -20,6 +20,48 @@ export class LoadoutToolbarComponent implements OnInit {
 
   selected: Toolbar = undefined;
 
+  items = [{
+    id: Toolbar.BODY,
+    tooltip: 'Body',
+    click: () => this.openBodiesComponent(),
+    img: 'assets/icons/Vehicles-icon.png'
+  }, {
+    id: Toolbar.DECAL,
+    tooltip: 'Decal',
+    click: () => this.openDecalsComponent(),
+    img: 'assets/icons/Decals-icon.png'
+  }, {
+    id: Toolbar.PAINT,
+    tooltip: 'Paint',
+    click: () => this.openPaintsComponent(),
+    img: 'assets/icons/Paint-icon.png'
+  }, {
+    id: Toolbar.WHEEL,
+    tooltip: 'Wheels',
+    click: () => this.openWheelComponent(),
+    img: 'assets/icons/Wheels-icon.png'
+  }, {
+    id: Toolbar.BOOST,
+    tooltip: 'Boost',
+    click: () => this.showUnsupported('Boosts'),
+    img: 'assets/icons/Trails-icon.png'
+  }, {
+    id: Toolbar.TOPPER,
+    tooltip: 'Topper',
+    click: () => this.showUnsupported('Toppers'),
+    img: 'assets/icons/Toppers-icon.png'
+  }, {
+    id: Toolbar.ANTENNA,
+    tooltip: 'Antenna',
+    click: () => this.showUnsupported('Antennas'),
+    img: 'assets/icons/Antennas-icon.png'
+  }, {
+    id: Toolbar.TRAIL,
+    tooltip: 'Trail',
+    click: () => this.showUnsupported('Trails'),
+    img: 'assets/icons/Trail_garage_icon.png'
+  }];
+
   constructor(private _snackBar: MatSnackBar,
               private componentFactoryResolver: ComponentFactoryResolver,
               private loadoutService: LoadoutService,
@@ -92,5 +134,5 @@ export class LoadoutToolbarComponent implements OnInit {
 }
 
 enum Toolbar {
-  BODY, DECAL, PAINT, WHEEL
+  BODY, DECAL, PAINT, WHEEL, BOOST, TOPPER, ANTENNA, TRAIL
 }

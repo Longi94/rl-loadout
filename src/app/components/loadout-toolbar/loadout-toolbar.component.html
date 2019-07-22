@@ -1,37 +1,9 @@
 <!--suppress HtmlUnknownTarget -->
 <div class="toolbar-container">
   <div class="toolbar">
-    <button mat-button class="toolbar-button" matTooltip="Body" matTooltipPosition="right"
-            (click)="openBodiesComponent()">
-      <img src="assets/icons/Vehicles-icon.png" alt="Bodies"/>
-    </button>
-    <button mat-button class="toolbar-button" matTooltip="Decal" matTooltipPosition="right"
-            (click)="openDecalsComponent()">
-      <img src="assets/icons/Decals-icon.png" alt="Decals"/>
-    </button>
-    <button mat-button class="toolbar-button" matTooltip="Paint" matTooltipPosition="right"
-            (click)="openPaintsComponent()">
-      <img src="assets/icons/Paint-icon.png" alt="Paints"/>
-    </button>
-    <button mat-button class="toolbar-button" matTooltip="Wheels" matTooltipPosition="right"
-            (click)="openWheelComponent()">
-      <img src="assets/icons/Wheels-icon.png" alt="Wheels"/>
-    </button>
-    <button mat-button class="toolbar-button" matTooltip="Boost" matTooltipPosition="right"
-            (click)="showUnsupported('Boosts')">
-      <img src="assets/icons/Trails-icon.png" alt="Boosts"/>
-    </button>
-    <button mat-button class="toolbar-button" matTooltip="Topper" matTooltipPosition="right"
-            (click)="showUnsupported('Toppers')">
-      <img src="assets/icons/Toppers-icon.png" alt="Toppers"/>
-    </button>
-    <button mat-button class="toolbar-button" matTooltip="Antenna" matTooltipPosition="right"
-            (click)="showUnsupported('Antennas')">
-      <img src="assets/icons/Antennas-icon.png" alt="Antenna"/>
-    </button>
-    <button mat-button class="toolbar-button" matTooltip="Trail" matTooltipPosition="right"
-            (click)="showUnsupported('Trails')">
-      <img src="assets/icons/Trail_garage_icon.png" alt="Trail"/>
+    <button *ngFor="let item of items" mat-button class="toolbar-button" [matTooltip]="item.tooltip"
+            matTooltipPosition="right" (click)="item.click()" [ngClass]="{selected: selected === item.id}">
+      <img [src]="item.img" [alt]="item.tooltip"/>
     </button>
   </div>
   <div class="loadout-dropdown">
