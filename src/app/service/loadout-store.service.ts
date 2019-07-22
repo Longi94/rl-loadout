@@ -4,6 +4,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Body } from "../model/body";
 import { Wheel } from "../model/wheel";
 import { Decal } from "../model/decal";
+import { Item } from "../model/item";
 
 const HOST = `${environment.backend}/api`;
 
@@ -27,6 +28,7 @@ export class LoadoutStoreService {
       this.httpClient.get<Body[]>(`${HOST}/bodies`).subscribe(
         bodies => {
           this.bodies = bodies;
+          this.bodies.sort(itemCompare);
           resolve();
         },
         error => {
@@ -45,6 +47,7 @@ export class LoadoutStoreService {
       this.httpClient.get<Wheel[]>(`${HOST}/wheels`).subscribe(
         wheels => {
           this.wheels = wheels;
+          this.wheels.sort(itemCompare);
           resolve();
         },
         error => {
@@ -65,6 +68,7 @@ export class LoadoutStoreService {
       this.httpClient.get<Decal[]>(`${HOST}/decals`, {params: params}).subscribe(
         decals => {
           this.decals = decals;
+          this.decals.sort(itemCompare);
           resolve();
         },
         error => {
@@ -74,4 +78,14 @@ export class LoadoutStoreService {
       )
     });
   }
+}
+
+function itemCompare(a: Item, b: Item) {
+  if (a.name < b.name) {
+    return -1;
+  }
+  if (a.name > b.name) {
+    return 1;
+  }
+  return 0;
 }
