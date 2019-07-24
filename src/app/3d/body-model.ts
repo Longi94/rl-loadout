@@ -26,6 +26,9 @@ export class BodyModel extends AbstractObject {
     this.url = getAssetUrl(body.model);
     this.displacementMapUrl = getAssetUrl(body.displacement_map);
     this.blankSkinMapUrl = getAssetUrl(body.blank_skin);
+    this.skeleton = undefined;
+    this.bodyMaterial = undefined;
+    this.blankSkinMap = undefined;
   }
 
   load(): Promise<any> {
