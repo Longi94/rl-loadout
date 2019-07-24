@@ -45,8 +45,6 @@ class Body(Base, BaseItem):
             'paintable': self.paintable,
             'model': self.model,
             'blank_skin': self.blank_skin,
-            'chassis_base': self.chassis_base,
-            'chassis_rgb_map': self.chassis_rgb_map,
             'displacement_map': self.displacement_map,
             'topper_pos_x': self.topper_pos_x,
             'topper_pos_y': self.topper_pos_y,
@@ -116,12 +114,12 @@ class Decal(Base):
 class Db(object):
     def __init__(self):
         self.url = URL(
-            drivername='mysql',
-            username=config.get('mysql', 'username'),
-            password=config.get('mysql', 'password'),
-            host=config.get('mysql', 'host'),
-            port=int(config.get('mysql', 'port')),
-            database=config.get('mysql', 'database')
+            drivername=config.get('database', 'driver'),
+            username=config.get('database', 'username'),
+            password=config.get('database', 'password'),
+            host=config.get('database', 'host'),
+            port=int(config.get('database', 'port')),
+            database=config.get('database', 'database')
         )
 
         self.engine = create_engine(self.url)
