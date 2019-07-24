@@ -1,7 +1,6 @@
-import { Bone, Color, MeshStandardMaterial, Scene, SkinnedMesh, Texture } from "three";
+import { Bone, Mesh, MeshStandardMaterial, Object3D, Scene, Texture } from "three";
 import { AbstractObject } from "./object";
 import { Body } from "../model/body";
-import { RgbaMapPipeTexture } from "./rgba-map-pipe-texture";
 import { PromiseLoader } from "../utils/loader";
 import { TgaRgbaLoader } from "../utils/tga-rgba-loader";
 import { getAssetUrl } from "../utils/network";
@@ -13,10 +12,7 @@ export class BodyModel extends AbstractObject {
   displacementMapUrl: string;
 
   skeleton: Bone;
-  body: SkinnedMesh;
-  chassis: SkinnedMesh;
-
-  chassisSkin: ChassisSkin;
+  bodyMaterial: MeshStandardMaterial;
 
   blankSkinMapUrl: string;
   blankSkinMap: Uint8ClampedArray;
@@ -29,10 +25,6 @@ export class BodyModel extends AbstractObject {
   apply(body: Body) {
     this.url = getAssetUrl(body.model);
     this.displacementMapUrl = getAssetUrl(body.displacement_map);
-    this.chassisSkin = new ChassisSkin(
-      getAssetUrl(body.chassis_base),
-      undefined
-    );
     this.blankSkinMapUrl = getAssetUrl(body.blank_skin);
   }
 
@@ -40,61 +32,39 @@ export class BodyModel extends AbstractObject {
     return new Promise((resolve, reject) => Promise.all([
       super.load(),
       // this.textureLoader.load(this.displacementMapUrl) TODO doesn't seem to make a difference
-      this.chassisSkin.load(),
       this.textureLoader.load(this.blankSkinMapUrl)
     ]).then(values => {
       // const displacementMap = new Texture();
       // displacementMap.image = dataToCanvas(values[1].data, values[1].width, values[1].height);
       // this.applyDisplacementMap(displacementMap);
-      this.applyChassisSkin();
-      this.blankSkinMap = values[2].data;
+      this.blankSkinMap = values[1].data;
       resolve();
     }, reject));
   }
 
   handleModel(scene: Scene) {
-    for (let child of scene.children[0].children) {
-      if (child instanceof Bone) {
-        this.skeleton = child;
-      } else if (child instanceof SkinnedMesh) {
-        switch (child.name) {
-          case 'body':
-            this.body = child;
-            break;
-          case 'chassis':
-            this.chassis = child;
-            break;
-          default:
-            console.warn(`unknown mesh in body model: ${child.name}`);
-            break;
-        }
+    this.traverse(scene);
+  }
+
+  traverse(object: Object3D) {
+    if (object instanceof Bone && this.skeleton == undefined) {
+      this.skeleton = object;
+    }
+    if (object instanceof Mesh) {
+      let mat = <MeshStandardMaterial>object.material;
+      if (mat.name.toLowerCase().startsWith('body_')) {
+        this.bodyMaterial = mat;
       }
     }
 
-    if (this.body === undefined) {
-      console.error(`${this.url} did not contain a body mesh`);
+    for (let child of object.children) {
+      this.traverse(child);
     }
-
-    if (this.chassis === undefined) {
-      console.error(`${this.url} did not chassis a body mesh`);
-    }
-  }
-
-  applyChassisSkin() {
-    this.chassisSkin.update();
-    const mat: MeshStandardMaterial = <MeshStandardMaterial>this.chassis.material;
-    mat.map = this.chassisSkin.texture;
-    mat.needsUpdate = true;
   }
 
   applyBodyTexture(diffuseMap: Texture) {
-    const mat = <MeshStandardMaterial>this.body.material;
-    mat.map = diffuseMap;
-  }
-
-  applyDisplacementMap(map: Texture) {
-    const mat = <MeshStandardMaterial>this.body.material;
-    mat.displacementMap = map;
+    this.bodyMaterial.map = diffuseMap;
+    this.bodyMaterial.needsUpdate = true;
   }
 
   getWheelPositions() {
@@ -122,23 +92,5 @@ export class BodyModel extends AbstractObject {
     }
 
     return config;
-  }
-}
-
-class ChassisSkin extends RgbaMapPipeTexture {
-
-  colorHolder = new Color();
-
-  constructor(baseUrl, rgbaMapUrl) {
-    super(baseUrl, rgbaMapUrl);
-  }
-
-  getColor(i: number): Color {
-    this.colorHolder.setRGB(
-      this.base[i] / 255,
-      this.base[i + 1] / 255,
-      this.base[i + 2] / 255
-    );
-    return this.colorHolder;
   }
 }

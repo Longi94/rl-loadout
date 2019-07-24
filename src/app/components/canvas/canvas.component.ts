@@ -261,6 +261,6 @@ export class CanvasComponent implements OnInit {
 
   private refreshSkin() {
     this.skin.update();
-    (<MeshStandardMaterial>this.body.body.material).needsUpdate = true;
+    (<MeshStandardMaterial>this.body.bodyMaterial).needsUpdate = true;
   }
 }

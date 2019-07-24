@@ -3,8 +3,6 @@ import { Quality } from "./quality";
 
 export class Body extends Item {
   blank_skin: string;
-  chassis_base: string;
-  chassis_rgb_map: string;
   displacement_map: string;
   model: string;
   topper_pos_x: number;
@@ -32,8 +30,6 @@ export class Body extends Item {
               topper_rot_z: number) {
     super(id, icon, name, quality, paintable);
     this.blank_skin = blank_skin;
-    this.chassis_base = chassis_base;
-    this.chassis_rgb_map = chassis_rgb_map;
     this.displacement_map = displacement_map;
     this.model = model;
     this.topper_pos_x = topper_pos_x;

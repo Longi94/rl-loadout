@@ -25,8 +25,6 @@ class Body(Base, BaseItem):
     __tablename__ = 'body'
     model = Column(String(255), nullable=False)
     blank_skin = Column(String(255), nullable=False)
-    chassis_base = Column(String(255), nullable=False)
-    chassis_rgb_map = Column(String(255), nullable=True)
     displacement_map = Column(String(255), nullable=False)
     topper_pos_x = Column(Float(5), nullable=False, default=0.0)
     topper_pos_y = Column(Float(5), nullable=False, default=0.0)
