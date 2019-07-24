@@ -118,7 +118,7 @@ export class CanvasComponent implements OnInit {
   }
 
   addLights() {
-    const INTENSITY = 3;
+    const INTENSITY = 1.5;
     const ANGLE = Math.PI / 4;
 
     const light0 = new SpotLight(0xFFFFFF, INTENSITY, 300, ANGLE); // soft white light
@@ -142,9 +142,14 @@ export class CanvasComponent implements OnInit {
     this.scene.add(light3);
 
     const light4 = new SpotLight(0xFFFFFF, INTENSITY, 300, ANGLE); // soft white light
-    light4.position.set(0, -160, 0);
+    light4.position.set(0, -100, 0);
     light4.lookAt(0, 0, 0);
     this.scene.add(light4);
+
+    const light5 = new SpotLight(0xFFFFFF, INTENSITY, 300, ANGLE); // soft white light
+    light5.position.set(0, 160, 0);
+    light5.lookAt(0, 0, 0);
+    this.scene.add(light5);
 
     // const helper0 = new SpotLightHelper(light0, new Color(1, 1, 1));
     // this.scene.add(helper0);

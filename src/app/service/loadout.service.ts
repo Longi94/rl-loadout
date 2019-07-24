@@ -6,6 +6,7 @@ import { Body } from "../model/body";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import { Item } from "../model/item";
+import { DEFAULT_ACCENT, DEFAULT_BLUE_TEAM, DEFAULT_BODY_PAINT } from "../utils/color";
 
 const HOST = `${environment.backend}/api`;
 
@@ -23,9 +24,9 @@ export class LoadoutService {
   decalChanged$: Observable<Decal> = this.decalSubject.asObservable();
 
   paints = {
-    primary: '#0000FF',
-    accent: '#FFFFFF',
-    body: '#3b3b3b',
+    primary: DEFAULT_BLUE_TEAM,
+    accent: DEFAULT_ACCENT,
+    body: DEFAULT_BODY_PAINT,
     decal: '#FF0000',
     wheel: '#888888'
   };
