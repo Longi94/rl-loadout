@@ -58,7 +58,7 @@ workflows:
       - frontend-build
       - frontend-deploy:
           requires:
-            - build
+            - frontend-build
           filters:
             branches:
               only: master
