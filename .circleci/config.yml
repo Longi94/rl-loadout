@@ -5,10 +5,12 @@ jobs:
     working_directory: ~/rl-loadout
     docker:
       - image: circleci/node:10.16-browsers
-        environment:
-          NG_CLI_ANALYTICS: ci
     steps:
       - checkout
+      - run:
+          name: Setup custom environment variables
+          command: |
+            echo 'export NG_CLI_ANALYTICS=ci' >> $BASH_ENV
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
