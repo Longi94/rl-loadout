@@ -73,6 +73,9 @@ jobs:
           name: Remove dir in home
           command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "rm -rf ~/rl-loadout-backend/"
       - run:
+          name: Remove config.ini from working dir
+          command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "echo $SSH_PASS | sudo -S rm $BACKEND_DIR/config.ini || true"
+      - run:
           name: Restart service
           command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "echo $SSH_PASS | sudo -S systemctl restart rl-loadout"
 workflows:
