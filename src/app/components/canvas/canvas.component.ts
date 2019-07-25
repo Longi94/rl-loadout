@@ -8,7 +8,7 @@ import {
   Color,
   SpotLight,
   TextureLoader,
-  Texture
+  Texture, WebGLRenderTarget, AmbientLight
 } from "three";
 import { StaticSkin } from "../../3d/static-skin";
 import { LoadoutService } from "../../service/loadout.service";
@@ -22,6 +22,8 @@ import { Body } from "../../model/body";
 import { getAssetUrl } from "../../utils/network";
 import { EquirectangularToCubeGenerator } from "three/examples/jsm/loaders/EquirectangularToCubeGenerator";
 import { PromiseLoader } from "../../utils/loader";
+import { PMREMGenerator } from "three/examples/jsm/pmrem/PMREMGenerator";
+import { PMREMCubeUVPacker } from "three/examples/jsm/pmrem/PMREMCubeUVPacker";
 
 @Component({
   selector: 'app-canvas',
@@ -40,7 +42,8 @@ export class CanvasComponent implements OnInit {
   private scene: Scene;
   private renderer: WebGLRenderer;
   private controls: OrbitControls;
-  private background;
+  private cubeRenderTarget: WebGLRenderTarget;
+  private envMap: Texture;
 
   // 3D objects
   private body: BodyModel;
@@ -87,7 +90,7 @@ export class CanvasComponent implements OnInit {
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enablePan = false;
-    //this.controls.minDistance = 100;
+    this.controls.minDistance = 100;
     this.controls.maxDistance = 300;
     this.controls.update();
 
@@ -115,26 +118,21 @@ export class CanvasComponent implements OnInit {
       promiseProgress(promises, progress => {
         this.initProgress = 100 * (progress + 1) / (promises.length + 1)
       }).then(values => {
+        this.processBackground(values[6]);
         this.applySkin();
-        this.body.addToScene(this.scene);
+        this.applyBodyModel();
         this.applyWheelModel();
-
-        const backgroundTexture: Texture = values[6];
-        const generator = new EquirectangularToCubeGenerator(backgroundTexture);
-        generator.update(this.renderer);
-
-        // @ts-ignore
-        this.background = generator.renderTarget;
-        this.scene.background = this.background;
-
         this.initializing = false;
       }).catch(console.error);
     }).catch(console.error);
   }
 
   addLights() {
-    const INTENSITY = 1.5;
+    const INTENSITY = 0.6;
     const ANGLE = Math.PI / 4;
+
+    const ambient = new AmbientLight(0xFFFFFF, INTENSITY);
+    this.scene.add(ambient);
 
     const light0 = new SpotLight(0xFFFFFF, INTENSITY, 300, ANGLE); // soft white light
     light0.position.set(100, 60, 100);
@@ -178,14 +176,33 @@ export class CanvasComponent implements OnInit {
     // this.scene.add(helper4);
   }
 
-  animate() {
+  private processBackground(backgroundTexture: Texture) {
+    const generator = new EquirectangularToCubeGenerator(backgroundTexture);
+    const cubeMapTexture = generator.update(this.renderer);
+
+    // @ts-ignore
+    this.scene.background = generator.renderTarget;
+
+    const pmremGenerator = new PMREMGenerator(cubeMapTexture);
+    pmremGenerator.update(this.renderer);
+    const pmremCubeUVPacker = new PMREMCubeUVPacker(pmremGenerator.cubeLods);
+    pmremCubeUVPacker.update(this.renderer);
+    this.cubeRenderTarget = pmremCubeUVPacker.CubeUVRenderTarget;
+    this.envMap = this.cubeRenderTarget.texture;
+
+    backgroundTexture.dispose();
+    pmremGenerator.dispose();
+    pmremCubeUVPacker.dispose();
+  }
+
+  private animate() {
     requestAnimationFrame(() => this.animate());
 
     this.resizeCanvas();
     this.renderer.render(this.scene, this.camera);
   }
 
-  resizeCanvas() {
+  private resizeCanvas() {
     const width = this.canvasContainer.nativeElement.offsetWidth;
     const height = this.canvasContainer.nativeElement.offsetHeight;
 
@@ -210,7 +227,7 @@ export class CanvasComponent implements OnInit {
     ]).then(() => {
       this.applySkin();
       this.wheels.applyWheelPositions(this.body.getWheelPositions());
-      this.body.addToScene(this.scene);
+      this.applyBodyModel();
       this.loading.body = false;
     });
   }
@@ -248,7 +265,13 @@ export class CanvasComponent implements OnInit {
 
   private applyWheelModel() {
     this.wheels.applyWheelPositions(this.body.getWheelPositions());
+    this.wheels.setEnvMap(this.envMap);
     this.wheels.addToScene(this.scene);
+  }
+
+  private applyBodyModel() {
+    this.body.setEnvMap(this.envMap);
+    this.body.addToScene(this.scene);
   }
 
   private changePaint(paint) {

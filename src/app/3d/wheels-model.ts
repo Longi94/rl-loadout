@@ -1,5 +1,5 @@
 import { AbstractObject } from "./object";
-import { Color, Mesh, MeshStandardMaterial, Object3D, Scene } from "three";
+import { Color, Mesh, MeshStandardMaterial, Object3D, Scene, Texture } from "three";
 import { RgbaMapPipeTexture } from "./rgba-map-pipe-texture";
 import { Wheel } from "../model/wheel";
 import { getAssetUrl } from "../utils/network";
@@ -49,25 +49,19 @@ export class WheelsModel extends AbstractObject {
   }
 
   handleModel(scene: Scene) {
-    this.traverse(scene);
+    this.iterChildren(object => {
+      if (object instanceof Mesh) {
+        let mat = <MeshStandardMaterial>object.material;
+        if (mat.name.endsWith('_paintable')) {
+          this.paintableMaterial = mat;
+        }
+      }
+    });
 
     this.wheels.fr = SkeletonUtils.clone(scene);
     this.wheels.fl = SkeletonUtils.clone(scene);
     this.wheels.br = SkeletonUtils.clone(scene);
     this.wheels.bl = SkeletonUtils.clone(scene);
-  }
-
-  traverse(object: Object3D) {
-    if (object instanceof Mesh) {
-      let mat = <MeshStandardMaterial>object.material;
-      if (mat.name.endsWith('_paintable')) {
-        this.paintableMaterial = mat;
-      }
-    }
-
-    for (let child of object.children) {
-      this.traverse(child);
-    }
   }
 
   applyWheelPositions(config) {

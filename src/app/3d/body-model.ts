@@ -46,23 +46,17 @@ export class BodyModel extends AbstractObject {
   }
 
   handleModel(scene: Scene) {
-    this.traverse(scene);
-  }
-
-  traverse(object: Object3D) {
-    if (object instanceof Bone && this.skeleton == undefined) {
-      this.skeleton = object;
-    }
-    if (object instanceof Mesh) {
-      let mat = <MeshStandardMaterial>object.material;
-      if (mat.name.toLowerCase().startsWith('body_')) {
-        this.bodyMaterial = mat;
+    this.iterChildren(object => {
+      if (object instanceof Bone && this.skeleton == undefined) {
+        this.skeleton = object;
       }
-    }
-
-    for (let child of object.children) {
-      this.traverse(child);
-    }
+      if (object instanceof Mesh) {
+        let mat = <MeshStandardMaterial>object.material;
+        if (mat.name.toLowerCase().startsWith('body_')) {
+          this.bodyMaterial = mat;
+        }
+      }
+    })
   }
 
   applyBodyTexture(diffuseMap: Texture) {
