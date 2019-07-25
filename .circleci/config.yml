@@ -1,0 +1,64 @@
+version: 2.1
+
+jobs:
+  frontend-build:
+    working_directory: ~/rl-loadout
+    docker:
+      - image: circleci/node:8.13-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: install angular cli
+          command: sudo npm install -g @angular/cli
+      - run:
+          name: install-dependencies
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: angular-build
+          command: ng build --prod
+      - store_artifacts:
+          path: dist/rl-loadout
+      - persist_to_workspace:
+          root: dist
+          paths:
+            - rl-loadout
+  frontend-deploy:
+    working_directory: ~/rl-loadout
+    machine:
+      enabled: true
+    steps:
+      - attach_workspace:
+          at: dist
+      - run:
+          name: Remove old files
+          command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "echo $SSH_PASS | sudo -S rm -rf $FRONTEND_DIR/*"
+      - run:
+          name: Create dir for files in home
+          command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "mkdir -p ~/rl-loadout-frontend"
+      - run:
+          name: Copy artifacts to host
+          command: scp -P $SSH_PORT dist/rl-loadout/* "$SSH_USER@$SSH_HOST:/home/$SSH_USER/rl-loadout-frontend/"
+      - run:
+          name: Copy artifacts to deploy folder
+          command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "echo $SSH_PASS | sudo -S mv ~/rl-loadout-frontend/* $FRONTEND_DIR/"
+      - run:
+          name: Remove dir in home
+          command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "rm -rf ~/rl-loadout-frontend/"
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - frontend-build
+      - frontend-deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
