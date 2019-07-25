@@ -74,7 +74,7 @@ jobs:
           command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "rm -rf ~/rl-loadout-backend/"
       - run:
           name: Restart service
-          command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "echo $SSH_PASS | sudo systemctl restart rl-loadout"
+          command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "echo $SSH_PASS | sudo -S systemctl restart rl-loadout"
 workflows:
   version: 2
   build-and-deploy:
