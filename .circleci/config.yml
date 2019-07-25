@@ -50,7 +50,7 @@ jobs:
           command: scp -rP $SSH_PORT dist/rl-loadout/* "$SSH_USER@$SSH_HOST:/home/$SSH_USER/rl-loadout-frontend/"
       - run:
           name: Copy artifacts to deploy folder
-          command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "echo $SSH_PASS | sudo -S mv ~/rl-loadout-frontend/* $FRONTEND_DIR/"
+          command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "echo $SSH_PASS | sudo -S cp -r ~/rl-loadout-frontend/* $FRONTEND_DIR/"
       - run:
           name: Remove dir in home
           command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "rm -rf ~/rl-loadout-frontend/"
@@ -68,7 +68,7 @@ jobs:
           command: scp -rP $SSH_PORT backend/* "$SSH_USER@$SSH_HOST:/home/$SSH_USER/rl-loadout-backend/"
       - run:
           name: Copy artifacts to deploy folder
-          command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "echo $SSH_PASS | sudo -S mv ~/rl-loadout-backend/* $BACKEND_DIR/"
+          command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "echo $SSH_PASS | sudo -S cp -r ~/rl-loadout-backend/* $BACKEND_DIR/"
       - run:
           name: Remove dir in home
           command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "rm -rf ~/rl-loadout-backend/"
