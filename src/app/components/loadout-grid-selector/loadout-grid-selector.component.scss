@@ -6,6 +6,8 @@
   padding: 10px;
   overflow-y: auto;
   box-shadow: -12px 0px 35px 15px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 50;
   box-sizing: border-box;
 }
 

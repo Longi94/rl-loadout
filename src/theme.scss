@@ -11,3 +11,5 @@ $app-theme: mat-dark-theme($app-primary, $app-accent, $app-warn);
 @include angular-material-theme($app-theme);
 
 $background: #303030;
+
+$toolbar-height: 56px;

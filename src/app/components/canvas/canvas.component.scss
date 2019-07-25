@@ -1,5 +1,7 @@
+@import "../../../theme";
+
 .canvas-container {
-  height: 100%;
+  height: calc(100% - #{$toolbar-height});
   overflow:hidden;
   width:auto;
   position: relative;
