@@ -47,7 +47,7 @@ jobs:
           command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "mkdir -p ~/rl-loadout-frontend"
       - run:
           name: Copy artifacts to host
-          command: scp -P $SSH_PORT dist/rl-loadout/* "$SSH_USER@$SSH_HOST:/home/$SSH_USER/rl-loadout-frontend/"
+          command: scp -rP $SSH_PORT dist/rl-loadout/* "$SSH_USER@$SSH_HOST:/home/$SSH_USER/rl-loadout-frontend/"
       - run:
           name: Copy artifacts to deploy folder
           command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "echo $SSH_PASS | sudo -S mv ~/rl-loadout-frontend/* $FRONTEND_DIR/"
