@@ -159,10 +159,10 @@ export class CanvasComponent implements OnInit {
     light4.lookAt(0, 0, 0);
     this.scene.add(light4);
 
-    const light5 = new SpotLight(0xFFFFFF, INTENSITY, 300, ANGLE); // soft white light
-    light5.position.set(0, 160, 0);
-    light5.lookAt(0, 0, 0);
-    this.scene.add(light5);
+    // const light5 = new SpotLight(0xFFFFFF, INTENSITY, 300, ANGLE); // soft white light
+    // light5.position.set(0, 160, 0);
+    // light5.lookAt(0, 0, 0);
+    // this.scene.add(light5);
 
     // const helper0 = new SpotLightHelper(light0, new Color(1, 1, 1));
     // this.scene.add(helper0);

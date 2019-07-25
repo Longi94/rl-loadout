@@ -1,5 +1,9 @@
 .color-selector-container {
   padding: 16px;
+  height: 100%;
+  box-shadow: -12px 0px 35px 15px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 50;
 }
 
 .color-label {
