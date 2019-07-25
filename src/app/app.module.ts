@@ -17,11 +17,14 @@ import {
   MatProgressBarModule,
   MatProgressSpinnerModule,
   MatIconModule,
-  MatToolbarModule
+  MatToolbarModule,
+  MatDialogModule,
+  MatMenuModule
 } from "@angular/material";
 import { LoadoutGridSelectorComponent } from './components/loadout-grid-selector/loadout-grid-selector.component';
 import { ColorSelectorComponent } from './components/color-selector/color-selector.component';
 import { HttpClientModule } from "@angular/common/http";
+import { AboutDialogComponent } from './components/about-dialog/about-dialog.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +33,8 @@ import { HttpClientModule } from "@angular/common/http";
     HomeComponent,
     LoadoutToolbarComponent,
     LoadoutGridSelectorComponent,
-    ColorSelectorComponent
+    ColorSelectorComponent,
+    AboutDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -39,8 +43,10 @@ import { HttpClientModule } from "@angular/common/http";
     ColorPickerModule,
     HttpClientModule,
     MatButtonModule,
+    MatDialogModule,
     MatGridListModule,
     MatIconModule,
+    MatMenuModule,
     MatProgressBarModule,
     MatRippleModule,
     MatSnackBarModule,
@@ -52,7 +58,8 @@ import { HttpClientModule } from "@angular/common/http";
   bootstrap: [AppComponent],
   entryComponents: [
     LoadoutGridSelectorComponent,
-    ColorSelectorComponent
+    ColorSelectorComponent,
+    AboutDialogComponent
   ]
 })
 export class AppModule { }
