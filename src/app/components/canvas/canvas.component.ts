@@ -3,11 +3,12 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import {
   PerspectiveCamera,
   Scene,
-  Renderer,
   WebGLRenderer,
   MeshStandardMaterial,
   Color,
   SpotLight,
+  TextureLoader,
+  Texture
 } from "three";
 import { StaticSkin } from "../../3d/static-skin";
 import { LoadoutService } from "../../service/loadout.service";
@@ -19,6 +20,8 @@ import { promiseProgress } from "../../utils/promise";
 import { LoadoutStoreService } from "../../service/loadout-store.service";
 import { Body } from "../../model/body";
 import { getAssetUrl } from "../../utils/network";
+import { EquirectangularToCubeGenerator } from "three/examples/jsm/loaders/EquirectangularToCubeGenerator";
+import { PromiseLoader } from "../../utils/loader";
 
 @Component({
   selector: 'app-canvas',
@@ -35,8 +38,9 @@ export class CanvasComponent implements OnInit {
 
   private camera: PerspectiveCamera;
   private scene: Scene;
-  private renderer: Renderer;
+  private renderer: WebGLRenderer;
   private controls: OrbitControls;
+  private background;
 
   // 3D objects
   private body: BodyModel;
@@ -91,6 +95,8 @@ export class CanvasComponent implements OnInit {
 
     this.animate();
 
+    const textureLoader = new PromiseLoader(new TextureLoader());
+
     this.loadoutService.loadDefaults().then(() => {
       this.body = new BodyModel(this.loadoutService.body);
       this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints);
@@ -102,15 +108,24 @@ export class CanvasComponent implements OnInit {
         this.wheels.load(),
         this.loadoutStore.initBodies(),
         this.loadoutStore.initWheels(),
-        this.loadoutStore.loadDecals(this.loadoutService.body.id)
+        this.loadoutStore.loadDecals(this.loadoutService.body.id),
+        textureLoader.load('assets/mannfield_equirectangular.jpg')
       ];
 
       promiseProgress(promises, progress => {
         this.initProgress = 100 * (progress + 1) / (promises.length + 1)
-      }).then(() => {
+      }).then(values => {
         this.applySkin();
         this.body.addToScene(this.scene);
         this.applyWheelModel();
+
+        const backgroundTexture: Texture = values[6];
+        const generator = new EquirectangularToCubeGenerator(backgroundTexture);
+        generator.update(this.renderer);
+
+        // @ts-ignore
+        this.background = generator.renderTarget;
+        this.scene.background = this.background;
 
         this.initializing = false;
       }).catch(console.error);
