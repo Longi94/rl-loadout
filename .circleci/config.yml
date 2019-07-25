@@ -4,7 +4,7 @@ jobs:
   frontend-build:
     working_directory: ~/rl-loadout
     docker:
-      - image: circleci/node:8.13-browsers
+      - image: circleci/node:10.16-browsers
     steps:
       - checkout
       - restore_cache:
