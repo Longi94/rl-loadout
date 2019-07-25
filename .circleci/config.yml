@@ -61,9 +61,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Remove old files
-          command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "echo $SSH_PASS | sudo -S rm -rf $BACKEND_DIR/*"
-      - run:
           name: Create dir for files in home
           command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "mkdir -p ~/rl-loadout-backend"
       - run:
