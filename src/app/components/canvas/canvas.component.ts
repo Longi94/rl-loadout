@@ -249,6 +249,7 @@ export class CanvasComponent implements OnInit {
 
   private applySkin() {
     this.skin.blankSkinMap = this.body.blankSkinMap;
+    this.skin.baseSkinMap = this.body.baseSkinMap;
     this.refreshSkin();
     this.body.applyBodyTexture(this.skin.texture);
   }

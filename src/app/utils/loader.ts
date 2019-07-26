@@ -8,7 +8,11 @@ export class PromiseLoader {
 
   load(url: string): Promise<any> {
     return new Promise<any>((resolve, reject) => {
-      this.loader.load(url, resolve, undefined, reject);
+      if (url) {
+        this.loader.load(url, resolve, undefined, reject);
+      } else {
+        resolve(undefined);
+      }
     });
   }
 }

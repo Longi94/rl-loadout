@@ -14,6 +14,7 @@ export class StaticSkin extends RgbaMapPipeTexture {
   colorHolder = new Color();
 
   blankSkinMap: Uint8ClampedArray;
+  baseSkinMap: Uint8ClampedArray;
 
   constructor(decal: Decal, paints) {
     super(getAssetUrl(decal.base_texture), getAssetUrl(decal.rgba_map));
@@ -25,7 +26,15 @@ export class StaticSkin extends RgbaMapPipeTexture {
   }
 
   getColor(i: number): Color {
-    this.colorHolder.set(BLACK);
+    if (this.baseSkinMap !== undefined) {
+      this.colorHolder.setRGB(
+        this.baseSkinMap[i] / 255,
+        this.baseSkinMap[i + 1] / 255,
+        this.baseSkinMap[i + 2] / 255
+      )
+    } else {
+      this.colorHolder.set(BLACK);
+    }
 
     if (this.blankSkinMap !== undefined) {
       if (this.blankSkinMap[i] > 150) {

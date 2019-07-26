@@ -15,6 +15,10 @@ export class BodyModel extends AbstractObject {
   blankSkinMapUrl: string;
   blankSkinMap: Uint8ClampedArray;
 
+  // base colors of the body
+  baseSkinMapUrl: string;
+  baseSkinMap: Uint8ClampedArray;
+
   constructor(body: Body) {
     super(getAssetUrl(body.model));
     this.apply(body);
@@ -23,17 +27,23 @@ export class BodyModel extends AbstractObject {
   apply(body: Body) {
     this.url = getAssetUrl(body.model);
     this.blankSkinMapUrl = getAssetUrl(body.blank_skin);
+    this.baseSkinMapUrl = getAssetUrl(body.base_skin);
     this.skeleton = undefined;
     this.bodyMaterial = undefined;
     this.blankSkinMap = undefined;
+    this.baseSkinMap = undefined;
   }
 
   load(): Promise<any> {
     return new Promise((resolve, reject) => Promise.all([
       super.load(),
-      this.textureLoader.load(this.blankSkinMapUrl)
+      this.textureLoader.load(this.blankSkinMapUrl),
+      this.textureLoader.load(this.baseSkinMapUrl)
     ]).then(values => {
       this.blankSkinMap = values[1].data;
+      if (values[2]) {
+        this.baseSkinMap = values[2].data;
+      }
       resolve();
     }, reject));
   }
