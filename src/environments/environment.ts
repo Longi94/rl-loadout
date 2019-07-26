@@ -3,6 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
+  // @ts-ignore
+  version: require('../../package.json').version + '-DEV',
   production: false,
   assetHost: 'https://storage.googleapis.com/rl-loadout',
   backend: 'http://localhost:10000'

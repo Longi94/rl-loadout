@@ -1,13 +1,34 @@
+@import "../../../theme";
+
 .main-container {
   width: 100%;
   height: 100%;
 }
 
 app-canvas {
-  height: 100%;
+  height: calc(100% - #{$toolbar-height});
 }
 
 app-loadout-toolbar {
-  height: 100%;
+  height: calc(100% - #{$toolbar-height});
   float: left;
+}
+
+mat-toolbar {
+  height: 56px;
+  z-index: 500;
+  position: relative;
+  box-shadow: 0 3px 5px -1px rgba(0, 0, 0, 0.2), 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12);
+}
+
+.alpha-container {
+  height: 32px;
+  display: flex;
+  align-items: flex-start;
+}
+
+.alpha {
+  margin-left: 4px;
+  font-size: 10px;
+  line-height: 10px;
 }

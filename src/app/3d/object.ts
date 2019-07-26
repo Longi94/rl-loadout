@@ -1,5 +1,5 @@
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { Scene } from "three";
+import { Mesh, MeshStandardMaterial, Object3D, Scene, Texture } from "three";
 
 export abstract class AbstractObject {
 
@@ -29,5 +29,38 @@ export abstract class AbstractObject {
 
   removeFromScene(scene: Scene) {
     scene.remove(this.scene);
+  }
+
+  /**
+   * Iterate through the objects recursively and apply the given function to each object.
+   *
+   * @param apply
+   */
+  iterChildren(apply: ((object: Object3D) => void)) {
+    this.iterChildrenRecursive(this.scene, apply);
+  }
+
+  private iterChildrenRecursive(object: Object3D, apply: ((object: Object3D) => void)) {
+    apply(object);
+
+    for (let child of object.children) {
+      this.iterChildrenRecursive(child, apply);
+    }
+  }
+
+  /**
+   * Set the environment map to all objects in this scene
+   *
+   * @param envMap
+   */
+  setEnvMap(envMap: Texture) {
+    this.iterChildren(object => {
+      if (object instanceof Mesh) {
+        let mat = <MeshStandardMaterial>object.material;
+        mat.envMap = envMap;
+        mat.envMapIntensity = 1.0;
+        mat.needsUpdate = true;
+      }
+    });
   }
 }

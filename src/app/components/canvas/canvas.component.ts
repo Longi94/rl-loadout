@@ -3,11 +3,12 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import {
   PerspectiveCamera,
   Scene,
-  Renderer,
   WebGLRenderer,
   MeshStandardMaterial,
   Color,
   SpotLight,
+  TextureLoader,
+  Texture, WebGLRenderTarget, AmbientLight
 } from "three";
 import { StaticSkin } from "../../3d/static-skin";
 import { LoadoutService } from "../../service/loadout.service";
@@ -19,6 +20,10 @@ import { promiseProgress } from "../../utils/promise";
 import { LoadoutStoreService } from "../../service/loadout-store.service";
 import { Body } from "../../model/body";
 import { getAssetUrl } from "../../utils/network";
+import { EquirectangularToCubeGenerator } from "three/examples/jsm/loaders/EquirectangularToCubeGenerator";
+import { PromiseLoader } from "../../utils/loader";
+import { PMREMGenerator } from "three/examples/jsm/pmrem/PMREMGenerator";
+import { PMREMCubeUVPacker } from "three/examples/jsm/pmrem/PMREMCubeUVPacker";
 
 @Component({
   selector: 'app-canvas',
@@ -35,8 +40,10 @@ export class CanvasComponent implements OnInit {
 
   private camera: PerspectiveCamera;
   private scene: Scene;
-  private renderer: Renderer;
+  private renderer: WebGLRenderer;
   private controls: OrbitControls;
+  private cubeRenderTarget: WebGLRenderTarget;
+  private envMap: Texture;
 
   // 3D objects
   private body: BodyModel;
@@ -83,13 +90,15 @@ export class CanvasComponent implements OnInit {
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enablePan = false;
-    //this.controls.minDistance = 100;
+    this.controls.minDistance = 100;
     this.controls.maxDistance = 300;
     this.controls.update();
 
     this.addLights();
 
     this.animate();
+
+    const textureLoader = new PromiseLoader(new TextureLoader());
 
     this.loadoutService.loadDefaults().then(() => {
       this.body = new BodyModel(this.loadoutService.body);
@@ -102,24 +111,28 @@ export class CanvasComponent implements OnInit {
         this.wheels.load(),
         this.loadoutStore.initBodies(),
         this.loadoutStore.initWheels(),
-        this.loadoutStore.loadDecals(this.loadoutService.body.id)
+        this.loadoutStore.loadDecals(this.loadoutService.body.id),
+        textureLoader.load('assets/mannfield_equirectangular.jpg')
       ];
 
       promiseProgress(promises, progress => {
         this.initProgress = 100 * (progress + 1) / (promises.length + 1)
-      }).then(() => {
+      }).then(values => {
+        this.processBackground(values[6]);
         this.applySkin();
-        this.body.addToScene(this.scene);
+        this.applyBodyModel();
         this.applyWheelModel();
-
         this.initializing = false;
       }).catch(console.error);
     }).catch(console.error);
   }
 
   addLights() {
-    const INTENSITY = 1.5;
+    const INTENSITY = 0.6;
     const ANGLE = Math.PI / 4;
+
+    const ambient = new AmbientLight(0xFFFFFF, INTENSITY);
+    this.scene.add(ambient);
 
     const light0 = new SpotLight(0xFFFFFF, INTENSITY, 300, ANGLE); // soft white light
     light0.position.set(100, 60, 100);
@@ -146,10 +159,10 @@ export class CanvasComponent implements OnInit {
     light4.lookAt(0, 0, 0);
     this.scene.add(light4);
 
-    const light5 = new SpotLight(0xFFFFFF, INTENSITY, 300, ANGLE); // soft white light
-    light5.position.set(0, 160, 0);
-    light5.lookAt(0, 0, 0);
-    this.scene.add(light5);
+    // const light5 = new SpotLight(0xFFFFFF, INTENSITY, 300, ANGLE); // soft white light
+    // light5.position.set(0, 160, 0);
+    // light5.lookAt(0, 0, 0);
+    // this.scene.add(light5);
 
     // const helper0 = new SpotLightHelper(light0, new Color(1, 1, 1));
     // this.scene.add(helper0);
@@ -163,14 +176,33 @@ export class CanvasComponent implements OnInit {
     // this.scene.add(helper4);
   }
 
-  animate() {
+  private processBackground(backgroundTexture: Texture) {
+    const generator = new EquirectangularToCubeGenerator(backgroundTexture);
+    const cubeMapTexture = generator.update(this.renderer);
+
+    // @ts-ignore
+    this.scene.background = generator.renderTarget;
+
+    const pmremGenerator = new PMREMGenerator(cubeMapTexture);
+    pmremGenerator.update(this.renderer);
+    const pmremCubeUVPacker = new PMREMCubeUVPacker(pmremGenerator.cubeLods);
+    pmremCubeUVPacker.update(this.renderer);
+    this.cubeRenderTarget = pmremCubeUVPacker.CubeUVRenderTarget;
+    this.envMap = this.cubeRenderTarget.texture;
+
+    backgroundTexture.dispose();
+    pmremGenerator.dispose();
+    pmremCubeUVPacker.dispose();
+  }
+
+  private animate() {
     requestAnimationFrame(() => this.animate());
 
     this.resizeCanvas();
     this.renderer.render(this.scene, this.camera);
   }
 
-  resizeCanvas() {
+  private resizeCanvas() {
     const width = this.canvasContainer.nativeElement.offsetWidth;
     const height = this.canvasContainer.nativeElement.offsetHeight;
 
@@ -195,7 +227,7 @@ export class CanvasComponent implements OnInit {
     ]).then(() => {
       this.applySkin();
       this.wheels.applyWheelPositions(this.body.getWheelPositions());
-      this.body.addToScene(this.scene);
+      this.applyBodyModel();
       this.loading.body = false;
     });
   }
@@ -233,7 +265,13 @@ export class CanvasComponent implements OnInit {
 
   private applyWheelModel() {
     this.wheels.applyWheelPositions(this.body.getWheelPositions());
+    this.wheels.setEnvMap(this.envMap);
     this.wheels.addToScene(this.scene);
+  }
+
+  private applyBodyModel() {
+    this.body.setEnvMap(this.envMap);
+    this.body.addToScene(this.scene);
   }
 
   private changePaint(paint) {
