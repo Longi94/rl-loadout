@@ -25,7 +25,6 @@ class Body(Base, BaseItem):
     __tablename__ = 'body'
     model = Column(String(255), nullable=False)
     blank_skin = Column(String(255), nullable=False)
-    displacement_map = Column(String(255), nullable=False)
     topper_pos_x = Column(Float(5), nullable=False, default=0.0)
     topper_pos_y = Column(Float(5), nullable=False, default=0.0)
     topper_pos_z = Column(Float(5), nullable=False, default=0.0)
@@ -45,7 +44,6 @@ class Body(Base, BaseItem):
             'paintable': self.paintable,
             'model': self.model,
             'blank_skin': self.blank_skin,
-            'displacement_map': self.displacement_map,
             'topper_pos_x': self.topper_pos_x,
             'topper_pos_y': self.topper_pos_y,
             'topper_pos_z': self.topper_pos_z,

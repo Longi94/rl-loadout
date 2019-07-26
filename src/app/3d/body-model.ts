@@ -1,4 +1,4 @@
-import { Bone, Mesh, MeshStandardMaterial, Object3D, Scene, Texture } from "three";
+import { Bone, Mesh, MeshStandardMaterial, Scene, Texture } from "three";
 import { AbstractObject } from "./object";
 import { Body } from "../model/body";
 import { PromiseLoader } from "../utils/loader";
@@ -8,8 +8,6 @@ import { getAssetUrl } from "../utils/network";
 export class BodyModel extends AbstractObject {
 
   textureLoader = new PromiseLoader(new TgaRgbaLoader());
-
-  displacementMapUrl: string;
 
   skeleton: Bone;
   bodyMaterial: MeshStandardMaterial;
@@ -24,7 +22,6 @@ export class BodyModel extends AbstractObject {
 
   apply(body: Body) {
     this.url = getAssetUrl(body.model);
-    this.displacementMapUrl = getAssetUrl(body.displacement_map);
     this.blankSkinMapUrl = getAssetUrl(body.blank_skin);
     this.skeleton = undefined;
     this.bodyMaterial = undefined;
@@ -34,12 +31,8 @@ export class BodyModel extends AbstractObject {
   load(): Promise<any> {
     return new Promise((resolve, reject) => Promise.all([
       super.load(),
-      // this.textureLoader.load(this.displacementMapUrl) TODO doesn't seem to make a difference
       this.textureLoader.load(this.blankSkinMapUrl)
     ]).then(values => {
-      // const displacementMap = new Texture();
-      // displacementMap.image = dataToCanvas(values[1].data, values[1].width, values[1].height);
-      // this.applyDisplacementMap(displacementMap);
       this.blankSkinMap = values[1].data;
       resolve();
     }, reject));
