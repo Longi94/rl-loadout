@@ -49,7 +49,7 @@ export class BodyModel extends AbstractObject {
   }
 
   handleModel(scene: Scene) {
-    this.iterChildren(object => {
+    scene.traverse(object => {
       if (object instanceof Bone && this.skeleton == undefined) {
         this.skeleton = object;
       }
@@ -59,7 +59,7 @@ export class BodyModel extends AbstractObject {
           this.bodyMaterial = mat;
         }
       }
-    })
+    });
   }
 
   applyBodyTexture(diffuseMap: Texture) {

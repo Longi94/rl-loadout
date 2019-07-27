@@ -1,5 +1,5 @@
 import { AbstractObject } from "./object";
-import { Color, Mesh, MeshStandardMaterial, Object3D, Scene, Texture } from "three";
+import { Color, Mesh, MeshStandardMaterial, Scene } from "three";
 import { RgbaMapPipeTexture } from "./rgba-map-pipe-texture";
 import { Wheel } from "../model/wheel";
 import { getAssetUrl } from "../utils/network";
@@ -49,7 +49,7 @@ export class WheelsModel extends AbstractObject {
   }
 
   handleModel(scene: Scene) {
-    this.iterChildren(object => {
+    scene.traverse(object => {
       if (object instanceof Mesh) {
         let mat = <MeshStandardMaterial>object.material;
         if (mat.name.endsWith('_paintable')) {

@@ -32,29 +32,12 @@ export abstract class AbstractObject {
   }
 
   /**
-   * Iterate through the objects recursively and apply the given function to each object.
-   *
-   * @param apply
-   */
-  iterChildren(apply: ((object: Object3D) => void)) {
-    this.iterChildrenRecursive(this.scene, apply);
-  }
-
-  private iterChildrenRecursive(object: Object3D, apply: ((object: Object3D) => void)) {
-    apply(object);
-
-    for (let child of object.children) {
-      this.iterChildrenRecursive(child, apply);
-    }
-  }
-
-  /**
    * Set the environment map to all objects in this scene
    *
    * @param envMap
    */
   setEnvMap(envMap: Texture) {
-    this.iterChildren(object => {
+    this.scene.traverse(object => {
       if (object instanceof Mesh) {
         let mat = <MeshStandardMaterial>object.material;
         mat.envMap = envMap;
