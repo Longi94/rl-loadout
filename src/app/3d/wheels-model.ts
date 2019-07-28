@@ -6,9 +6,6 @@ import { getAssetUrl } from "../utils/network";
 import { SkeletonUtils } from "three/examples/jsm/utils/SkeletonUtils";
 import { overBlendColors } from "../utils/color";
 
-const WHEEL_DIAMETER = 32.626;
-const FLOOR_POS = -20;
-
 export class WheelsModel extends AbstractObject {
 
   wheels = {
@@ -67,9 +64,9 @@ export class WheelsModel extends AbstractObject {
   applyWheelPositions(config) {
     for (let key of Object.keys(config)) {
       this.wheels[key].position.set(
-        config[key].x,
-        config[key].z,
-        config[key].y
+        config[key].pos.x,
+        config[key].pos.z,
+        config[key].pos.y
       );
 
       if (key.endsWith('r')) {
@@ -80,7 +77,7 @@ export class WheelsModel extends AbstractObject {
       this.wheels[key].needsUpdate = true;
       this.wheels[key].position.needsUpdate = true;
 
-      const scale = Math.abs(config[key].z - FLOOR_POS) / (WHEEL_DIAMETER / 2);
+      const scale = config[key].scale;
       this.wheels[key].scale.set(scale, scale, scale);
       this.wheels[key].scale.needsUpdate = true;
     }

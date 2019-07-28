@@ -19,6 +19,8 @@ export class BodyModel extends AbstractObject {
   baseSkinMapUrl: string;
   baseSkinMap: Uint8ClampedArray;
 
+  wheelScale: number[] = [1, 1];
+
   constructor(body: Body) {
     super(getAssetUrl(body.model));
     this.apply(body);
@@ -28,6 +30,7 @@ export class BodyModel extends AbstractObject {
     this.url = getAssetUrl(body.model);
     this.blankSkinMapUrl = getAssetUrl(body.blank_skin);
     this.baseSkinMapUrl = getAssetUrl(body.base_skin);
+    this.wheelScale = body.wheel_scale;
     this.skeleton = undefined;
     this.bodyMaterial = undefined;
     this.blankSkinMap = undefined;
@@ -77,17 +80,23 @@ export class BodyModel extends AbstractObject {
         const wheelType = bone.name.substr(0, 2).toLowerCase();
         let wheelPos = skeletonPos.clone();
         wheelPos.add(bone.position);
+        let scale = 1;
 
         if (wheelType.startsWith('f')) {
           const pivotJoint = bone.children.find(value => value.name.endsWith('Pivot_jnt'));
           const discJoint = pivotJoint.children[0];
           wheelPos.add(pivotJoint.position).add(discJoint.position);
+          scale = this.wheelScale[0];
         } else {
           const discJoint = <Bone>bone.children.find(value => value.name.endsWith('Disc_jnt'));
           wheelPos.add(discJoint.position);
+          scale = this.wheelScale[1];
         }
 
-        config[wheelType] = wheelPos;
+        config[wheelType] = {
+          pos: wheelPos,
+          scale: scale
+        };
       }
     }
 

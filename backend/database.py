@@ -2,6 +2,7 @@ import logging
 from typing import List, Dict
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, create_engine, Boolean, ForeignKey, Float
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker, relationship, scoped_session
 from config import config
@@ -32,6 +33,7 @@ class Body(Base, BaseItem):
     topper_rot_x = Column(Float(5), nullable=False, default=0.0)
     topper_rot_y = Column(Float(5), nullable=False, default=0.0)
     topper_rot_z = Column(Float(5), nullable=False, default=0.0)
+    wheel_scale = Column(ARRAY(Float), nullable=False, default=[1.0, 1.0])
     decals = relationship('Decal')
 
     def to_dict(self) -> Dict:
@@ -51,7 +53,8 @@ class Body(Base, BaseItem):
             'topper_pos_z': self.topper_pos_z,
             'topper_rot_x': self.topper_rot_x,
             'topper_rot_y': self.topper_rot_y,
-            'topper_rot_z': self.topper_rot_z
+            'topper_rot_z': self.topper_rot_z,
+            'wheel_scale': self.wheel_scale
         }
 
 

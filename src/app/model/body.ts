@@ -11,4 +11,5 @@ export class Body extends Item {
   topper_rot_x: number;
   topper_rot_y: number;
   topper_rot_z: number;
+  wheel_scale: number[];
 }
