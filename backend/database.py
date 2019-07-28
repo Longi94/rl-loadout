@@ -1,8 +1,7 @@
 import logging
 from typing import List, Dict
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, create_engine, Boolean, ForeignKey, Float
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy import Column, Integer, String, create_engine, Boolean, ForeignKey
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker, relationship, scoped_session
 from config import config
@@ -27,13 +26,6 @@ class Body(Base, BaseItem):
     model = Column(String(255), nullable=False)
     blank_skin = Column(String(255), nullable=False)
     base_skin = Column(String(255), nullable=True)
-    topper_pos_x = Column(Float(5), nullable=False, default=0.0)
-    topper_pos_y = Column(Float(5), nullable=False, default=0.0)
-    topper_pos_z = Column(Float(5), nullable=False, default=0.0)
-    topper_rot_x = Column(Float(5), nullable=False, default=0.0)
-    topper_rot_y = Column(Float(5), nullable=False, default=0.0)
-    topper_rot_z = Column(Float(5), nullable=False, default=0.0)
-    wheel_scale = Column(ARRAY(Float), nullable=False, default=[1.0, 1.0])
     decals = relationship('Decal')
 
     def to_dict(self) -> Dict:
@@ -47,14 +39,7 @@ class Body(Base, BaseItem):
             'paintable': self.paintable,
             'model': self.model,
             'blank_skin': self.blank_skin,
-            'base_skin': self.base_skin,
-            'topper_pos_x': self.topper_pos_x,
-            'topper_pos_y': self.topper_pos_y,
-            'topper_pos_z': self.topper_pos_z,
-            'topper_rot_x': self.topper_rot_x,
-            'topper_rot_y': self.topper_rot_y,
-            'topper_rot_z': self.topper_rot_z,
-            'wheel_scale': self.wheel_scale
+            'base_skin': self.base_skin
         }
 
 

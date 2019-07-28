@@ -30,7 +30,7 @@ export class BodyModel extends AbstractObject {
     this.url = getAssetUrl(body.model);
     this.blankSkinMapUrl = getAssetUrl(body.blank_skin);
     this.baseSkinMapUrl = getAssetUrl(body.base_skin);
-    this.wheelScale = body.wheel_scale;
+    this.wheelScale = [1, 1];
     this.skeleton = undefined;
     this.bodyMaterial = undefined;
     this.blankSkinMap = undefined;
@@ -52,6 +52,12 @@ export class BodyModel extends AbstractObject {
   }
 
   handleModel(scene: Scene) {
+    if ('wheel_scale' in scene.userData) {
+      this.wheelScale = scene.userData.wheel_scale;
+    } else {
+      console.warn('wheel_scale not found in body user data');
+    }
+
     scene.traverse(object => {
       if (object instanceof Bone && this.skeleton == undefined) {
         this.skeleton = object;
