@@ -269,3 +269,26 @@ export function overBlendColors(foreground: Color, background: Color, foreground
   let b = (foreground.b * foregroundAlpha) + (background.b * (1.0 - foregroundAlpha));
   holder.setRGB(r, g, b);
 }
+
+/**
+ * Get the text color for the background to make it readable.
+ * https://www.w3.org/TR/AERT/#color-contrast
+ *
+ * @param backgroundColor
+ */
+export function getTextColor(backgroundColor: string) {
+  const bg = hexToRgb(backgroundColor);
+  const o = Math.round(((bg.r * 299) + (bg.g * 587) + (bg.b * 114)) / 1000);
+  return (o > 125) ? 'black' : 'white';
+}
+
+const HEX_REGEX = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i;
+
+function hexToRgb(hex) {
+  let result = HEX_REGEX.exec(hex);
+  return result ? {
+    r: parseInt(result[1], 16),
+    g: parseInt(result[2], 16),
+    b: parseInt(result[3], 16)
+  } : undefined;
+}

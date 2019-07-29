@@ -14,10 +14,9 @@
 
   <mat-accordion>
     <mat-expansion-panel>
-      <mat-expansion-panel-header [style.background]="colors.primary.value">
-        <mat-panel-title>
-          Primary
-        </mat-panel-title>
+      <mat-expansion-panel-header [style.background]="colors.primary.value"
+        [ngClass]="{'dark-color': colors.primary.textColor === 'white', 'bright-color': colors.primary.textColor === 'black'}">
+        <mat-panel-title>Primary</mat-panel-title>
       </mat-expansion-panel-header>
 
       <div class="color-expansion-content">
@@ -41,10 +40,9 @@
       </div>
     </mat-expansion-panel>
     <mat-expansion-panel>
-      <mat-expansion-panel-header [style.background]="colors.accent.value">
-        <mat-panel-title>
-          Accent
-        </mat-panel-title>
+      <mat-expansion-panel-header [style.background]="colors.accent.value"
+        [ngClass]="{'dark-color': colors.accent.textColor === 'white', 'bright-color': colors.accent.textColor === 'black'}">
+        <mat-panel-title>Accent</mat-panel-title>
       </mat-expansion-panel-header>
 
       <div class="color-expansion-content">

@@ -37,3 +37,19 @@
 .color-expansion-content {
   padding-top: 16px;
 }
+
+::ng-deep .dark-color .mat-expansion-panel-header-title {
+  color: white;
+}
+
+::ng-deep .dark-color .mat-expansion-indicator::after {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+::ng-deep .bright-color .mat-expansion-panel-header-title {
+  color: black;
+}
+
+::ng-deep .bright-color .mat-expansion-indicator::after {
+  color: rgba(0, 0, 0, 0.7);
+}

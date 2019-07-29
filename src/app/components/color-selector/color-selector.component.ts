@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadoutService } from "../../service/loadout.service";
-import { ACCENT_COLORS, BLUE_PRIMARY_COLORS, ORANGE_PRIMARY_COLORS } from "../../utils/color";
+import { ACCENT_COLORS, BLUE_PRIMARY_COLORS, getTextColor, ORANGE_PRIMARY_COLORS } from "../../utils/color";
 
 @Component({
   selector: 'app-color-selector',
@@ -17,23 +17,28 @@ export class ColorSelectorComponent implements OnInit {
   colors = {
     primary: {
       label: 'Primary',
-      value: ''
+      value: '',
+      textColor: 'white'
     },
     accent: {
       label: 'Accent',
-      value: ''
+      value: '',
+      textColor: 'white'
     },
     body: {
       label: 'Body Paint',
-      value: ''
+      value: '',
+      textColor: 'white'
     },
     decal: {
       label: 'Decal Paint',
-      value: ''
+      value: '',
+      textColor: 'white'
     },
     wheel: {
       label: 'Wheel Paint',
-      value: ''
+      value: '',
+      textColor: 'white'
     }
   };
 
@@ -43,11 +48,13 @@ export class ColorSelectorComponent implements OnInit {
 
   ngOnInit() {
     for (let key of Object.keys(this.loadoutService.paints)) {
-      this.colors[key].value = this.loadoutService.paints[key]
+      this.colors[key].value = this.loadoutService.paints[key];
+      this.colors[key].textColor = getTextColor(this.colors[key].value);
     }
   }
 
   colorChanged(color: string, type: string) {
+    this.colors[type].textColor = getTextColor(color);
     this.loadoutService.setPaint(type, color);
   }
 
