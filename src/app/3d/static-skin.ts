@@ -21,7 +21,10 @@ export class StaticSkin extends RgbaMapPipeTexture {
 
     this.primary = new Color(paints.primary);
     this.accent = new Color(paints.accent);
-    this.paint = new Color(paints.decal);
+
+    if (paints.paint != undefined) {
+      this.paint = new Color(paints.decal);
+    }
 
     if (paints.body != undefined) {
       this.bodyPaint = new Color(paints.body);
@@ -58,7 +61,7 @@ export class StaticSkin extends RgbaMapPipeTexture {
         overBlendColors(this.accent, this.primary, this.rgbaMap[i + 3], this.colorHolder);
       }
 
-      if (this.rgbaMap[i + 1] > 0) {
+      if (this.paint != undefined && this.rgbaMap[i + 1] > 0) {
         overBlendColors(this.paint, this.primary, this.rgbaMap[i + 3], this.colorHolder);
       }
     }

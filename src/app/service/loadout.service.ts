@@ -27,7 +27,7 @@ export class LoadoutService {
     primary: DEFAULT_BLUE_TEAM,
     accent: DEFAULT_ACCENT,
     body: undefined,
-    decal: '#FF0000',
+    decal: undefined,
     wheel: '#888888'
   };
   private paintSubject: Subject<any> = new Subject();
