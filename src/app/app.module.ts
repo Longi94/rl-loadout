@@ -25,7 +25,6 @@ import { LoadoutGridSelectorComponent } from './components/loadout-grid-selector
 import { ColorSelectorComponent } from './components/color-selector/color-selector.component';
 import { HttpClientModule } from "@angular/common/http";
 import { AboutDialogComponent } from './components/about-dialog/about-dialog.component';
-import { PaintedSelectorComponent } from './components/color-selector/painted-selector/painted-selector.component';
 
 @NgModule({
   declarations: [
@@ -35,8 +34,7 @@ import { PaintedSelectorComponent } from './components/color-selector/painted-se
     LoadoutToolbarComponent,
     LoadoutGridSelectorComponent,
     ColorSelectorComponent,
-    AboutDialogComponent,
-    PaintedSelectorComponent
+    AboutDialogComponent
   ],
   imports: [
     BrowserModule,

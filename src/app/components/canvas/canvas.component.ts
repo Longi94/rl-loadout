@@ -276,21 +276,22 @@ export class CanvasComponent implements OnInit {
   }
 
   private changePaint(paint) {
+    const color = paint.color != undefined ? new Color(paint.color) : undefined;
     switch (paint.type) {
       case 'primary':
-        this.skin.primary = new Color(paint.color);
+        this.skin.primary = color;
         this.refreshSkin();
         break;
       case 'accent':
-        this.skin.accent = new Color(paint.color);
+        this.skin.accent = color;
         this.refreshSkin();
         break;
       case 'body':
-        this.skin.bodyPaint = new Color(paint.color);
+        this.skin.bodyPaint = color;
         this.refreshSkin();
         break;
       case 'decal':
-        this.skin.paint = new Color(paint.color);
+        this.skin.paint = color;
         this.refreshSkin();
         break;
       case 'wheel':

@@ -10,12 +10,12 @@
       <div class="color-expansion-content">
         <div class="primary-color-container">
           <div class="color-picker-button" *ngFor="let color of blueColors" [style.background]="color"
-            (click)="selectColor($event, 'primary', color)">
+            (click)="selectColor('primary', color)">
           </div>
         </div>
         <div class="primary-color-container">
           <div class="color-picker-button" *ngFor="let color of orangeColors" [style.background]="color"
-            (click)="selectColor($event, 'primary', color)">
+            (click)="selectColor('primary', color)">
           </div>
         </div>
         <div class="expansion-actions">
@@ -37,7 +37,7 @@
       <div class="color-expansion-content">
         <div class="accent-color-container">
           <div class="color-picker-button" *ngFor="let color of accentColors" [style.background]="color"
-            (click)="selectColor($event, 'accent', color)">
+            (click)="selectColor('accent', color)">
           </div>
         </div>
         <div class="expansion-actions">
@@ -50,37 +50,28 @@
       </div>
     </mat-expansion-panel>
 
-    <mat-expansion-panel>
-      <mat-expansion-panel-header [style.background]="colors.body.value"
-        [ngClass]="{'dark-color': colors.body.textColor === 'white', 'bright-color': colors.body.textColor === 'black'}">
-        <mat-panel-title>Body paint</mat-panel-title>
+    <mat-expansion-panel *ngFor="let key of paintColorTypes">
+      <mat-expansion-panel-header [style.background]="colors[key].value"
+        [ngClass]="{'dark-color': colors[key].textColor === 'white', 'bright-color': colors[key].textColor === 'black'}">
+        <mat-panel-title>{{colors[key].label}}</mat-panel-title>
       </mat-expansion-panel-header>
 
       <div class="color-expansion-content">
-        <app-painted-selector [color]="colors.body" type="body"></app-painted-selector>
+        <div class="paint-color-container">
+          <div class="color-picker-button" *ngFor="let color of paintColors" [style.background]="color"
+            (click)="selectColor(key, color)">
+          </div>
+        </div>
+        <div class="expansion-actions">
+          <button mat-button
+            [(colorPicker)]="colors[key].value"
+            (colorPickerChange)="colorChanged(colors[key].value, key)"
+                  cpAlphaChannel="disabled">Custom
+          </button>
+          <button (click)="clearColor(key)" mat-button>Clear</button>
+        </div>
       </div>
     </mat-expansion-panel>
 
-    <mat-expansion-panel>
-      <mat-expansion-panel-header [style.background]="colors.decal.value"
-        [ngClass]="{'dark-color': colors.decal.textColor === 'white', 'bright-color': colors.decal.textColor === 'black'}">
-        <mat-panel-title>Decal paint</mat-panel-title>
-      </mat-expansion-panel-header>
-
-      <div class="color-expansion-content">
-        <app-painted-selector [color]="colors.decal" type="decal"></app-painted-selector>
-      </div>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel>
-      <mat-expansion-panel-header [style.background]="colors.wheel.value"
-        [ngClass]="{'dark-color': colors.wheel.textColor === 'white', 'bright-color': colors.wheel.textColor === 'black'}">
-        <mat-panel-title>Wheel paint</mat-panel-title>
-      </mat-expansion-panel-header>
-
-      <div class="color-expansion-content">
-        <app-painted-selector [color]="colors.wheel" type="wheel"></app-painted-selector>
-      </div>
-    </mat-expansion-panel>
   </mat-accordion>
 </div>

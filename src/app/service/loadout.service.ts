@@ -6,7 +6,7 @@ import { Body } from "../model/body";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import { Item } from "../model/item";
-import { DEFAULT_ACCENT, DEFAULT_BLUE_TEAM, DEFAULT_BODY_PAINT } from "../utils/color";
+import { DEFAULT_ACCENT, DEFAULT_BLUE_TEAM } from "../utils/color";
 
 const HOST = `${environment.backend}/api`;
 
@@ -26,7 +26,7 @@ export class LoadoutService {
   paints = {
     primary: DEFAULT_BLUE_TEAM,
     accent: DEFAULT_ACCENT,
-    body: DEFAULT_BODY_PAINT,
+    body: undefined,
     decal: '#FF0000',
     wheel: '#888888'
   };

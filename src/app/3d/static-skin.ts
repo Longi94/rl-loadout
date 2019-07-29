@@ -22,7 +22,10 @@ export class StaticSkin extends RgbaMapPipeTexture {
     this.primary = new Color(paints.primary);
     this.accent = new Color(paints.accent);
     this.paint = new Color(paints.decal);
-    this.bodyPaint = new Color(paints.body);
+
+    if (paints.body != undefined) {
+      this.bodyPaint = new Color(paints.body);
+    }
   }
 
   getColor(i: number): Color {
@@ -39,7 +42,7 @@ export class StaticSkin extends RgbaMapPipeTexture {
     if (this.blankSkinMap !== undefined) {
       if (this.blankSkinMap[i] > 150) {
         this.colorHolder.set(this.primary);
-      } else if (this.blankSkinMap[i] >= 30 && this.blankSkinMap[i] <= 50) {
+      } else if (this.blankSkinMap[i] >= 30 && this.blankSkinMap[i] <= 50 && this.bodyPaint != undefined) {
         return this.bodyPaint;
       } else {
         return this.colorHolder;

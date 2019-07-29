@@ -274,7 +274,6 @@ export const PAINT_COLORS = [
 export const DEFAULT_BLUE_TEAM = BLUE_PRIMARY_COLORS[35];
 export const DEFAULT_ORANGE_TEAM = ORANGE_PRIMARY_COLORS[33];
 export const DEFAULT_ACCENT = ACCENT_COLORS[0];
-export const DEFAULT_BODY_PAINT = '#292929';
 
 export const BLACK = new Color(0, 0, 0);
 
@@ -293,6 +292,9 @@ export function overBlendColors(foreground: Color, background: Color, foreground
  * @param backgroundColor
  */
 export function getTextColor(backgroundColor: string) {
+  if (backgroundColor ==  undefined) {
+    return 'white';
+  }
   const bg = hexToRgb(backgroundColor);
   const o = Math.round(((bg.r * 299) + (bg.g * 587) + (bg.b * 114)) / 1000);
   return (o > 125) ? 'black' : 'white';
