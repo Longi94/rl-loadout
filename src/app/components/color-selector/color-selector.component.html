@@ -53,7 +53,9 @@
     <mat-expansion-panel *ngFor="let key of paintColorTypes">
       <mat-expansion-panel-header [style.background]="colors[key].value"
         [ngClass]="{'dark-color': colors[key].textColor === 'white', 'bright-color': colors[key].textColor === 'black'}">
-        <mat-panel-title>{{colors[key].label}}</mat-panel-title>
+        <mat-panel-title>{{colors[key].label}}
+          <mat-icon *ngIf="colors[key].value == undefined">format_color_reset</mat-icon>
+        </mat-panel-title>
       </mat-expansion-panel-header>
 
       <div class="color-expansion-content">

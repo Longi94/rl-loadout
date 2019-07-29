@@ -58,19 +58,6 @@
   color: rgba(0, 0, 0, 0.7);
 }
 
-.empty-color {
-  background-image: -moz-linear-gradient(45deg, #000 25%, transparent 25%),
-  -moz-linear-gradient(-45deg, #000 25%, transparent 25%),
-  -moz-linear-gradient(45deg, transparent 75%, #000 75%),
-  -moz-linear-gradient(-45deg, transparent 75%, #000 75%);
-  background-image: -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.25, #000), color-stop(.25, transparent)),
-  -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.25, #000), color-stop(.25, transparent)),
-  -webkit-gradient(linear, 0 100%, 100% 0, color-stop(.75, transparent), color-stop(.75, #000)),
-  -webkit-gradient(linear, 0 0, 100% 100%, color-stop(.75, transparent), color-stop(.75, #000));
-
-  -moz-background-size: 100px 100px;
-  background-size: 100px 100px;
-  -webkit-background-size: 100px 101px; /* override value for shitty webkit */
-
-  background-position: 0 0, 50px 0, 50px -50px, 0px 50px;
+mat-panel-title {
+  align-items: center;
 }
