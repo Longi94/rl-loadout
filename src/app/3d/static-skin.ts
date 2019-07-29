@@ -43,9 +43,13 @@ export class StaticSkin extends RgbaMapPipeTexture {
     }
 
     if (this.blankSkinMap !== undefined) {
+      if (this.blankSkinMap[i + 2] == 255) {
+        return BLACK;
+      }
+
       if (this.blankSkinMap[i] > 150) {
         this.colorHolder.set(this.primary);
-      } else if (this.blankSkinMap[i] >= 30 && this.blankSkinMap[i] <= 50 && this.bodyPaint != undefined) {
+      } else if (this.bodyPaint != undefined) {
         return this.bodyPaint;
       } else {
         return this.colorHolder;
