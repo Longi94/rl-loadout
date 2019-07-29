@@ -1,0 +1,10 @@
+@import "../color-selector.component";
+
+.paint-color-container {
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: auto;
+}
+

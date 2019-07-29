@@ -255,6 +255,22 @@ export const ACCENT_COLORS = [
   '#330008'
 ];
 
+export const PAINT_COLORS = [
+  '#000000', // black
+  '#ffffff', // titanium white
+  '#8f8f8f', // grey
+  '#ff0000', // crimson
+  '#ff5d00', // orange
+  '#e3e300', // saffron
+  '#a9ff00', // lime
+  '#00ba09', // forest green
+  '#00b5e8', // sky blue
+  '#0048ed', // cobalt
+  '#ff38f8', // pink
+  '#8800cc', // purple
+  '#843d00'  // burnt sienna
+];
+
 export const DEFAULT_BLUE_TEAM = BLUE_PRIMARY_COLORS[35];
 export const DEFAULT_ORANGE_TEAM = ORANGE_PRIMARY_COLORS[33];
 export const DEFAULT_ACCENT = ACCENT_COLORS[0];

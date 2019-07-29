@@ -8,7 +8,6 @@ import { ACCENT_COLORS, BLUE_PRIMARY_COLORS, getTextColor, ORANGE_PRIMARY_COLORS
   styleUrls: ['./color-selector.component.scss']
 })
 export class ColorSelectorComponent implements OnInit {
-  objectKeys = Object.keys;
 
   blueColors = BLUE_PRIMARY_COLORS;
   orangeColors = ORANGE_PRIMARY_COLORS;
