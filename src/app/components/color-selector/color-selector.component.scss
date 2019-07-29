@@ -15,4 +15,20 @@
   height: 24px;
   border-radius: 5px;
   border: solid 1px black;
+  cursor: pointer;
+}
+
+.primary-color-container {
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+  width: 280px;
+  justify-content: center;
+}
+
+.dropdown-button {
+  margin-top: 8px;
+  padding: 0 8px;
+  display: flex;
+  justify-content: flex-end;
 }

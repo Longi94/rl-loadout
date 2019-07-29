@@ -1,5 +1,12 @@
 <div class="color-selector-container">
   <table>
+    <tr>
+      <td><span class="color-label">Primary</span></td>
+      <td>
+        <div class="color-picker-button" [style.background]="colors['primary'].value" [matMenuTriggerFor]="primaryMenu">
+        </div>
+      </td>
+    </tr>
     <tr *ngFor="let key of objectKeys(colors)">
       <td><span class="color-label">{{colors[key].label}}</span></td>
       <td>
@@ -10,3 +17,22 @@
     </tr>
   </table>
 </div>
+
+<mat-menu #primaryMenu="matMenu" xPosition="after">
+  <div class="primary-color-container">
+    <div class="color-picker-button" *ngFor="let color of blueColors" [style.background]="color"
+      (click)="selectColor($event, 'primary', color)">
+    </div>
+  </div>
+  <div class="primary-color-container">
+    <div class="color-picker-button" *ngFor="let color of orangeColors" [style.background]="color"
+      (click)="selectColor($event, 'primary', color)">
+    </div>
+  </div>
+  <div (click)="$event.stopPropagation()" class="dropdown-button">
+    <button mat-button
+      [(colorPicker)]="colors['primary'].value"
+      (colorPickerChange)="colorChanged(colors['primary'].value, 'primary')"
+      cpAlphaChannel="disabled">Custom</button>
+  </div>
+</mat-menu>

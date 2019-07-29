@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { LoadoutService } from "../../service/loadout.service";
+import { BLUE_PRIMARY_COLORS, ORANGE_PRIMARY_COLORS } from "../../utils/color";
+import { MatMenuTrigger } from "@angular/material";
 
 @Component({
   selector: 'app-color-selector',
@@ -8,6 +10,12 @@ import { LoadoutService } from "../../service/loadout.service";
 })
 export class ColorSelectorComponent implements OnInit {
   objectKeys = Object.keys;
+
+  blueColors = BLUE_PRIMARY_COLORS;
+  orangeColors = ORANGE_PRIMARY_COLORS;
+
+  @ViewChild('primaryMenu', {static: true})
+  primaryMenu: MatMenuTrigger;
 
   colors = {
     primary: {
@@ -44,5 +52,11 @@ export class ColorSelectorComponent implements OnInit {
 
   colorChanged(color: string, type: string) {
     this.loadoutService.setPaint(type, color);
+  }
+
+  selectColor(event, key, color) {
+    this.colors[key].value = color;
+    this.colorChanged(color, key);
+    event.stopPropagation();
   }
 }
