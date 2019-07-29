@@ -18,17 +18,22 @@
   cursor: pointer;
 }
 
-.primary-color-container {
+.primary-color-container, .accent-color-container {
   display: flex;
   flex-flow: row;
   flex-wrap: wrap;
-  width: 280px;
+  width: 260px;
   justify-content: center;
 }
 
 .dropdown-button {
   margin-top: 8px;
-  padding: 0 8px;
-  display: flex;
-  justify-content: flex-end;
+}
+
+.accent-color-container {
+  width: 390px;
+}
+
+.color-expansion-content {
+  padding-top: 16px;
 }

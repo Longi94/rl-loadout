@@ -1,14 +1,9 @@
 <div class="color-selector-container">
   <table>
-    <tr>
-      <td><span class="color-label">Primary</span></td>
-      <td>
-        <div class="color-picker-button" [style.background]="colors['primary'].value" [matMenuTriggerFor]="primaryMenu">
-        </div>
-      </td>
-    </tr>
     <tr *ngFor="let key of objectKeys(colors)">
-      <td><span class="color-label">{{colors[key].label}}</span></td>
+      <td>
+        <span class="color-label">{{colors[key].label}}</span>
+      </td>
       <td>
         <div class="color-picker-button" [(colorPicker)]="colors[key].value" [style.background]="colors[key].value"
           (colorPickerChange)="colorChanged(colors[key].value, key)" cpAlphaChannel="disabled">
@@ -16,23 +11,56 @@
       </td>
     </tr>
   </table>
-</div>
 
-<mat-menu #primaryMenu="matMenu" xPosition="after">
-  <div class="primary-color-container">
-    <div class="color-picker-button" *ngFor="let color of blueColors" [style.background]="color"
-      (click)="selectColor($event, 'primary', color)">
-    </div>
-  </div>
-  <div class="primary-color-container">
-    <div class="color-picker-button" *ngFor="let color of orangeColors" [style.background]="color"
-      (click)="selectColor($event, 'primary', color)">
-    </div>
-  </div>
-  <div (click)="$event.stopPropagation()" class="dropdown-button">
-    <button mat-button
-      [(colorPicker)]="colors['primary'].value"
-      (colorPickerChange)="colorChanged(colors['primary'].value, 'primary')"
-      cpAlphaChannel="disabled">Custom</button>
-  </div>
-</mat-menu>
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header [style.background]="colors.primary.value">
+        <mat-panel-title>
+          Primary
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="color-expansion-content">
+        <div class="primary-color-container">
+          <div class="color-picker-button" *ngFor="let color of blueColors" [style.background]="color"
+            (click)="selectColor($event, 'primary', color)">
+          </div>
+        </div>
+        <div class="primary-color-container">
+          <div class="color-picker-button" *ngFor="let color of orangeColors" [style.background]="color"
+            (click)="selectColor($event, 'primary', color)">
+          </div>
+        </div>
+        <div (click)="$event.stopPropagation()" class="dropdown-button">
+          <button mat-button
+            [(colorPicker)]="colors['primary'].value"
+            (colorPickerChange)="colorChanged(colors['primary'].value, 'primary')"
+                  cpAlphaChannel="disabled">Custom
+          </button>
+        </div>
+      </div>
+    </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header [style.background]="colors.accent.value">
+        <mat-panel-title>
+          Accent
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="color-expansion-content">
+        <div class="accent-color-container">
+          <div class="color-picker-button" *ngFor="let color of accentColors" [style.background]="color"
+            (click)="selectColor($event, 'accent', color)">
+          </div>
+        </div>
+        <div (click)="$event.stopPropagation()" class="dropdown-button">
+          <button mat-button
+            [(colorPicker)]="colors['accent'].value"
+            (colorPickerChange)="colorChanged(colors['accent'].value, 'accent')"
+                  cpAlphaChannel="disabled">Custom
+          </button>
+        </div>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

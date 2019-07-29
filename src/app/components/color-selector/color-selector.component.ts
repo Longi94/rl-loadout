@@ -1,7 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { LoadoutService } from "../../service/loadout.service";
-import { BLUE_PRIMARY_COLORS, ORANGE_PRIMARY_COLORS } from "../../utils/color";
-import { MatMenuTrigger } from "@angular/material";
+import { ACCENT_COLORS, BLUE_PRIMARY_COLORS, ORANGE_PRIMARY_COLORS } from "../../utils/color";
 
 @Component({
   selector: 'app-color-selector',
@@ -13,9 +12,7 @@ export class ColorSelectorComponent implements OnInit {
 
   blueColors = BLUE_PRIMARY_COLORS;
   orangeColors = ORANGE_PRIMARY_COLORS;
-
-  @ViewChild('primaryMenu', {static: true})
-  primaryMenu: MatMenuTrigger;
+  accentColors = ACCENT_COLORS;
 
   colors = {
     primary: {

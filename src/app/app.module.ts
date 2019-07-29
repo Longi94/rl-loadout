@@ -19,7 +19,7 @@ import {
   MatIconModule,
   MatToolbarModule,
   MatDialogModule,
-  MatMenuModule
+  MatMenuModule, MatExpansionModule
 } from "@angular/material";
 import { LoadoutGridSelectorComponent } from './components/loadout-grid-selector/loadout-grid-selector.component';
 import { ColorSelectorComponent } from './components/color-selector/color-selector.component';
@@ -44,6 +44,7 @@ import { AboutDialogComponent } from './components/about-dialog/about-dialog.com
     HttpClientModule,
     MatButtonModule,
     MatDialogModule,
+    MatExpansionModule,
     MatGridListModule,
     MatIconModule,
     MatMenuModule,
