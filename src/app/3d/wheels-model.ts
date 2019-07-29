@@ -99,7 +99,7 @@ export class WheelsModel extends AbstractObject {
   }
 
   setPaint(paint: string) {
-    if (this.rimSkin != undefined) {
+    if (this.rimSkin != undefined && paint != undefined) {
       this.rimSkin.paint = new Color(paint);
     }
   }
@@ -118,7 +118,10 @@ class RimSkin extends RgbaMapPipeTexture {
 
   constructor(baseUrl, rgbaMapUrl, paint) {
     super(baseUrl, rgbaMapUrl);
-    this.paint = new Color(paint);
+
+    if (paint != undefined) {
+      this.paint = new Color(paint);
+    }
   }
 
   getColor(i: number): Color {
@@ -128,7 +131,11 @@ class RimSkin extends RgbaMapPipeTexture {
       this.base[i + 2] / 255
     );
 
-    overBlendColors(this.paint, this.baseHolder, 255 - this.rgbaMap[i], this.colorHolder);
+    if (this.paint != undefined) {
+      overBlendColors(this.paint, this.baseHolder, 255 - this.rgbaMap[i], this.colorHolder);
+    } else {
+      return this.baseHolder;
+    }
 
     return this.colorHolder;
   }
