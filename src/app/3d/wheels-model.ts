@@ -99,8 +99,8 @@ export class WheelsModel extends AbstractObject {
   }
 
   setPaint(paint: string) {
-    if (this.rimSkin != undefined && paint != undefined) {
-      this.rimSkin.paint = new Color(paint);
+    if (this.rimSkin != undefined) {
+      this.rimSkin.paint = paint != undefined ? new Color(paint) : undefined;
     }
   }
 
