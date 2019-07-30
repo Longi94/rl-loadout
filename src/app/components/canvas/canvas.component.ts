@@ -339,6 +339,12 @@ export class CanvasComponent implements OnInit {
     addTexture(this.textureService, 'body', this.body.bodyMaterial);
     addTexture(this.textureService, 'chassis', this.body.chassisMaterial);
     addTexture(this.textureService, 'rim', this.wheels.rimMaterial);
+
+    if (this.topper) {
+      addTexture(this.textureService, 'topper', this.topper.material);
+    } else {
+      this.textureService.set('topper', undefined);
+    }
   }
 
   private changeTopper(topper: Topper) {
@@ -355,6 +361,7 @@ export class CanvasComponent implements OnInit {
     this.topper = new TopperModel(topper, this.loadoutService.paints);
     this.topper.load().then(() => {
       this.applyTopperModel();
+      this.updateTextureService();
       this.loading.topper = false;
     });
   }

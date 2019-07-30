@@ -3,8 +3,8 @@
   <mat-form-field>
     <mat-label>Part</mat-label>
     <mat-select (selectionChange)="selectTexture()" [(ngModel)]="selected">
-      <mat-option *ngFor="let texture of textures" [value]="texture.value">
-        {{texture.name}}
+      <mat-option *ngFor="let texture of textures" [value]="texture">
+        {{texture}}
       </mat-option>
     </mat-select>
   </mat-form-field>

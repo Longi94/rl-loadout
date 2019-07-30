@@ -17,24 +17,7 @@ export class TextureViewerComponent implements OnInit {
   canvasWidth = 900;
   canvasHeight = 900;
 
-  textures = [
-    {
-      name: 'Body',
-      value: 'body'
-    },
-    {
-      name: 'Chassis',
-      value: 'chassis'
-    },
-    {
-      name: 'Rim',
-      value: 'rim'
-    },
-    {
-      name: 'Tire',
-      value: 'tire'
-    },
-  ];
+  textures: string[];
 
   selected: string;
 
@@ -43,6 +26,7 @@ export class TextureViewerComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.textures = this.textureService.getKeys();
     this.canvas = this.canvasRef.nativeElement;
     this.context = this.canvas.getContext('2d');
   }

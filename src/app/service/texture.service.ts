@@ -18,4 +18,8 @@ export class TextureService {
   get(key: string) {
     return this.textures[key];
   }
+
+  getKeys() {
+    return Object.keys(this.textures);
+  }
 }
