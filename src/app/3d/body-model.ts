@@ -151,8 +151,10 @@ export class BodyModel extends AbstractObject {
    * @param color
    */
   setPaint(color: Color) {
-    this.chassisSkin.paint = color;
-    this.chassisSkin.update();
+    if (this.chassisSkin != undefined) {
+      this.chassisSkin.paint = color;
+      this.chassisSkin.update();
+    }
   }
 }
 
