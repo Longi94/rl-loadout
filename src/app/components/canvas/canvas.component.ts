@@ -8,7 +8,7 @@ import {
   Color,
   SpotLight,
   TextureLoader,
-  Texture, WebGLRenderTarget, AmbientLight, Material
+  Texture, WebGLRenderTarget, AmbientLight
 } from "three";
 import { StaticSkin } from "../../3d/static-skin";
 import { LoadoutService } from "../../service/loadout.service";
@@ -25,6 +25,8 @@ import { PromiseLoader } from "../../utils/loader";
 import { PMREMGenerator } from "three/examples/jsm/pmrem/PMREMGenerator";
 import { PMREMCubeUVPacker } from "three/examples/jsm/pmrem/PMREMCubeUVPacker";
 import { TextureService } from "../../service/texture.service";
+import { Topper } from "../../model/topper";
+import { TopperModel } from "../../3d/topper-model";
 
 @Component({
   selector: 'app-canvas',
@@ -49,6 +51,7 @@ export class CanvasComponent implements OnInit {
   // 3D objects
   private body: BodyModel;
   private wheels: WheelsModel;
+  private topper: TopperModel;
 
   // colors
   private skin: StaticSkin;
@@ -60,7 +63,8 @@ export class CanvasComponent implements OnInit {
   loading = {
     body: false,
     decal: false,
-    wheel: false
+    wheel: false,
+    topper: false
   };
 
   constructor(private loadoutService: LoadoutService,
@@ -70,6 +74,7 @@ export class CanvasComponent implements OnInit {
     this.loadoutService.paintChanged$.subscribe(paint => this.changePaint(paint));
     this.loadoutService.wheelChanged$.subscribe(wheel => this.changeWheel(wheel));
     this.loadoutService.bodyChanged$.subscribe(body => this.changeBody(body));
+    this.loadoutService.topperChanged$.subscribe(topper => this.changeTopper(topper));
   }
 
   isLoading() {
@@ -231,6 +236,11 @@ export class CanvasComponent implements OnInit {
     ]).then(() => {
       this.applySkin();
       this.wheels.applyWheelPositions(this.body.getWheelPositions());
+
+      if (this.topper) {
+        this.topper.applyAnchor(this.body.topperAnchor);
+      }
+
       this.applyBodyModel();
       this.updateTextureService();
       this.loading.body = false;
@@ -329,5 +339,29 @@ export class CanvasComponent implements OnInit {
     addTexture(this.textureService, 'body', this.body.bodyMaterial);
     addTexture(this.textureService, 'chassis', this.body.chassisMaterial);
     addTexture(this.textureService, 'rim', this.wheels.rimMaterial);
+  }
+
+  private changeTopper(topper: Topper) {
+    if (this.topper) {
+      this.topper.removeFromScene(this.scene);
+    }
+
+    if (topper === Topper.NONE) {
+      this.topper = undefined;
+      return;
+    }
+
+    this.loading.topper = true;
+    this.topper = new TopperModel(topper, this.loadoutService.paints);
+    this.topper.load().then(() => {
+      this.applyTopperModel();
+      this.loading.topper = false;
+    });
+  }
+
+  private applyTopperModel() {
+    this.topper.setEnvMap(this.envMap);
+    this.topper.applyAnchor(this.body.topperAnchor);
+    this.topper.addToScene(this.scene);
   }
 }

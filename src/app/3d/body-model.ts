@@ -1,4 +1,4 @@
-import { Bone, Color, Mesh, MeshStandardMaterial, Scene, Texture } from "three";
+import { Bone, Color, Mesh, MeshStandardMaterial, Object3D, Scene, Texture } from "three";
 import { AbstractObject } from "./object";
 import { Body } from "../model/body";
 import { PromiseLoader } from "../utils/loader";
@@ -26,6 +26,8 @@ export class BodyModel extends AbstractObject {
 
   wheelScale: number[] = [1, 1];
 
+  topperAnchor: Object3D;
+
   constructor(body: Body) {
     super(getAssetUrl(body.model));
     this.apply(body);
@@ -41,6 +43,7 @@ export class BodyModel extends AbstractObject {
     this.blankSkinMap = undefined;
     this.baseSkinMap = undefined;
     this.chassisMaterial = undefined;
+    this.topperAnchor = undefined;
 
     if (body.chassis_base && body.chassis_n) {
       this.chassisSkin = new ChassisSkin(
@@ -86,10 +89,11 @@ export class BodyModel extends AbstractObject {
     }
 
     scene.traverse(object => {
-      if (object instanceof Bone && this.skeleton == undefined) {
+      if (object.name === 'topper_anchor') {
+        this.topperAnchor = object;
+      } else if (object instanceof Bone && this.skeleton == undefined) {
         this.skeleton = object;
-      }
-      if (object instanceof Mesh) {
+      } else if (object instanceof Mesh) {
         let mat = <MeshStandardMaterial>object.material;
         let matName = mat.name.toLowerCase();
         if (matName.includes('body')) {
