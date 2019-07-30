@@ -105,7 +105,6 @@ export class WheelsModel extends AbstractObject {
   }
 
   refresh() {
-    this.rimSkin.update();
     this.applyRimSkin();
   }
 }

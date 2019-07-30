@@ -288,6 +288,7 @@ export class CanvasComponent implements OnInit {
         break;
       case 'body':
         this.skin.bodyPaint = color;
+        this.body.setPaint(color);
         this.refreshSkin();
         break;
       case 'decal':

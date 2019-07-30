@@ -1,9 +1,11 @@
-import { Bone, Mesh, MeshStandardMaterial, Scene, Texture } from "three";
+import { Bone, Color, Mesh, MeshStandardMaterial, Scene, Texture } from "three";
 import { AbstractObject } from "./object";
 import { Body } from "../model/body";
 import { PromiseLoader } from "../utils/loader";
 import { TgaRgbaLoader } from "../utils/tga-rgba-loader";
 import { getAssetUrl } from "../utils/network";
+import { RgbaMapPipeTexture } from "./rgba-map-pipe-texture";
+import { overBlendColors } from "../utils/color";
 
 export class BodyModel extends AbstractObject {
 
@@ -11,9 +13,12 @@ export class BodyModel extends AbstractObject {
 
   skeleton: Bone;
   bodyMaterial: MeshStandardMaterial;
+  chassisMaterial: MeshStandardMaterial;
 
   blankSkinMapUrl: string;
   blankSkinMap: Uint8ClampedArray;
+
+  chassisSkin: ChassisSkin;
 
   // base colors of the body
   baseSkinMapUrl: string;
@@ -35,17 +40,39 @@ export class BodyModel extends AbstractObject {
     this.bodyMaterial = undefined;
     this.blankSkinMap = undefined;
     this.baseSkinMap = undefined;
+    this.chassisMaterial = undefined;
+
+    if (body.chassis_base && body.chassis_n) {
+      this.chassisSkin = new ChassisSkin(
+        getAssetUrl(body.chassis_base),
+        getAssetUrl(body.chassis_n),
+        undefined
+      )
+    } else {
+      this.chassisSkin = undefined;
+    }
   }
 
   load(): Promise<any> {
-    return new Promise((resolve, reject) => Promise.all([
+    const promises = [
       super.load(),
       this.textureLoader.load(this.blankSkinMapUrl),
       this.textureLoader.load(this.baseSkinMapUrl)
-    ]).then(values => {
+    ];
+
+    if (this.chassisSkin !== undefined) {
+      promises.push(this.chassisSkin.load());
+    }
+
+    return new Promise((resolve, reject) => Promise.all(promises).then(values => {
       this.blankSkinMap = values[1].data;
       if (values[2]) {
         this.baseSkinMap = values[2].data;
+      }
+
+      if (this.chassisSkin) {
+        this.chassisMaterial.map = this.chassisSkin.texture;
+        this.applyChassisSkin();
       }
       resolve();
     }, reject));
@@ -66,9 +93,18 @@ export class BodyModel extends AbstractObject {
         let mat = <MeshStandardMaterial>object.material;
         if (mat.name.toLowerCase().startsWith('body_')) {
           this.bodyMaterial = mat;
+        } else if (mat.name.toLowerCase().startsWith('chassis_')) {
+          this.chassisMaterial = mat;
         }
       }
     });
+  }
+
+  private applyChassisSkin() {
+    if (this.chassisMaterial != undefined && this.chassisSkin != undefined) {
+      this.chassisSkin.update();
+      this.chassisMaterial.needsUpdate = true;
+    }
   }
 
   applyBodyTexture(diffuseMap: Texture) {
@@ -107,5 +143,46 @@ export class BodyModel extends AbstractObject {
     }
 
     return config;
+  }
+
+  /**
+   * Set the paint color of this body. This only applies to the chassis, the paint of the body is set by the skin.
+   *
+   * @param color
+   */
+  setPaint(color: Color) {
+    this.chassisSkin.paint = color;
+    this.chassisSkin.update();
+  }
+}
+
+class ChassisSkin extends RgbaMapPipeTexture {
+
+  paint: Color;
+  colorHolder = new Color();
+  baseHolder = new Color();
+
+  constructor(baseUrl, rgbaMapUrl, paint) {
+    super(baseUrl, rgbaMapUrl);
+
+    if (paint != undefined) {
+      this.paint = new Color(paint);
+    }
+  }
+
+  getColor(i: number): Color {
+    this.baseHolder.setRGB(
+      this.base[i] / 255,
+      this.base[i + 1] / 255,
+      this.base[i + 2] / 255
+    );
+
+    if (this.paint != undefined && this.rgbaMap[i] === 255) {
+      overBlendColors(this.paint, this.baseHolder, 255, this.colorHolder);
+    } else {
+      return this.baseHolder;
+    }
+
+    return this.colorHolder;
   }
 }

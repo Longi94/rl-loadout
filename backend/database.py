@@ -26,6 +26,8 @@ class Body(Base, BaseItem):
     model = Column(String(255), nullable=False)
     blank_skin = Column(String(255), nullable=False)
     base_skin = Column(String(255), nullable=True)
+    chassis_base = Column(String(255), nullable=True)
+    chassis_n = Column(String(255), nullable=True)
     decals = relationship('Decal')
 
     def to_dict(self) -> Dict:
@@ -39,7 +41,9 @@ class Body(Base, BaseItem):
             'paintable': self.paintable,
             'model': self.model,
             'blank_skin': self.blank_skin,
-            'base_skin': self.base_skin
+            'base_skin': self.base_skin,
+            'chassis_base': self.chassis_base,
+            'chassis_n': self.chassis_n
         }
 
 
