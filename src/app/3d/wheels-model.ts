@@ -15,7 +15,7 @@ export class WheelsModel extends AbstractObject {
     bl: undefined
   };
 
-  paintableMaterial: MeshStandardMaterial;
+  rimMaterial: MeshStandardMaterial;
   rimSkin: RimSkin;
 
   constructor(wheel: Wheel, paints) {
@@ -38,7 +38,7 @@ export class WheelsModel extends AbstractObject {
 
     return new Promise((resolve, reject) => Promise.all(promises).then(() => {
       if (this.rimSkin){
-        this.paintableMaterial.map = this.rimSkin.texture;
+        this.rimMaterial.map = this.rimSkin.texture;
       }
       this.applyRimSkin();
       resolve();
@@ -49,8 +49,8 @@ export class WheelsModel extends AbstractObject {
     scene.traverse(object => {
       if (object instanceof Mesh) {
         let mat = <MeshStandardMaterial>object.material;
-        if (mat.name.endsWith('_paintable')) {
-          this.paintableMaterial = mat;
+        if (mat.name.includes('rim')) {
+          this.rimMaterial = mat;
         }
       }
     });
@@ -92,9 +92,9 @@ export class WheelsModel extends AbstractObject {
   }
 
   private applyRimSkin() {
-    if (this.paintableMaterial != undefined && this.rimSkin != undefined) {
+    if (this.rimMaterial != undefined && this.rimSkin != undefined) {
       this.rimSkin.update();
-      this.paintableMaterial.needsUpdate = true;
+      this.rimMaterial.needsUpdate = true;
     }
   }
 

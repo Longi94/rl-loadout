@@ -19,12 +19,17 @@ import {
   MatIconModule,
   MatToolbarModule,
   MatDialogModule,
-  MatMenuModule, MatExpansionModule
+  MatMenuModule,
+  MatExpansionModule,
+  MatInputModule,
+  MatSelectModule
 } from "@angular/material";
 import { LoadoutGridSelectorComponent } from './components/loadout-grid-selector/loadout-grid-selector.component';
 import { ColorSelectorComponent } from './components/color-selector/color-selector.component';
 import { HttpClientModule } from "@angular/common/http";
 import { AboutDialogComponent } from './components/about-dialog/about-dialog.component';
+import { TextureViewerComponent } from './components/debug/texture-viewer/texture-viewer.component';
+import { FormsModule } from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -34,22 +39,26 @@ import { AboutDialogComponent } from './components/about-dialog/about-dialog.com
     LoadoutToolbarComponent,
     LoadoutGridSelectorComponent,
     ColorSelectorComponent,
-    AboutDialogComponent
+    AboutDialogComponent,
+    TextureViewerComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     ColorPickerModule,
+    FormsModule,
     HttpClientModule,
     MatButtonModule,
     MatDialogModule,
     MatExpansionModule,
     MatGridListModule,
     MatIconModule,
+    MatInputModule,
     MatMenuModule,
     MatProgressBarModule,
     MatRippleModule,
+    MatSelectModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
     MatToolbarModule,
@@ -60,7 +69,8 @@ import { AboutDialogComponent } from './components/about-dialog/about-dialog.com
   entryComponents: [
     LoadoutGridSelectorComponent,
     ColorSelectorComponent,
-    AboutDialogComponent
+    AboutDialogComponent,
+    TextureViewerComponent
   ]
 })
 export class AppModule { }

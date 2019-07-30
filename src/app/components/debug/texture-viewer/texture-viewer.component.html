@@ -1,0 +1,12 @@
+<h1 mat-dialog-title>Texture viewer</h1>
+<mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Part</mat-label>
+    <mat-select (selectionChange)="selectTexture()" [(ngModel)]="selected">
+      <mat-option *ngFor="let texture of textures" [value]="texture.value">
+        {{texture.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <canvas #canvas [ngStyle]="{'width.px': canvasWidth, 'height.px': canvasHeight}"></canvas>
+</mat-dialog-content>

@@ -8,7 +8,7 @@ import {
   Color,
   SpotLight,
   TextureLoader,
-  Texture, WebGLRenderTarget, AmbientLight
+  Texture, WebGLRenderTarget, AmbientLight, Material
 } from "three";
 import { StaticSkin } from "../../3d/static-skin";
 import { LoadoutService } from "../../service/loadout.service";
@@ -24,6 +24,7 @@ import { EquirectangularToCubeGenerator } from "three/examples/jsm/loaders/Equir
 import { PromiseLoader } from "../../utils/loader";
 import { PMREMGenerator } from "three/examples/jsm/pmrem/PMREMGenerator";
 import { PMREMCubeUVPacker } from "three/examples/jsm/pmrem/PMREMCubeUVPacker";
+import { TextureService } from "../../service/texture.service";
 
 @Component({
   selector: 'app-canvas',
@@ -63,7 +64,8 @@ export class CanvasComponent implements OnInit {
   };
 
   constructor(private loadoutService: LoadoutService,
-              private loadoutStore: LoadoutStoreService) {
+              private loadoutStore: LoadoutStoreService,
+              private textureService: TextureService) {
     this.loadoutService.decalChanged$.subscribe(decal => this.changeDecal(decal));
     this.loadoutService.paintChanged$.subscribe(paint => this.changePaint(paint));
     this.loadoutService.wheelChanged$.subscribe(wheel => this.changeWheel(wheel));
@@ -122,6 +124,7 @@ export class CanvasComponent implements OnInit {
         this.applySkin();
         this.applyBodyModel();
         this.applyWheelModel();
+        this.updateTextureService();
         this.initializing = false;
       }).catch(console.error);
     }).catch(console.error);
@@ -228,6 +231,7 @@ export class CanvasComponent implements OnInit {
       this.applySkin();
       this.wheels.applyWheelPositions(this.body.getWheelPositions());
       this.applyBodyModel();
+      this.updateTextureService();
       this.loading.body = false;
     });
   }
@@ -237,6 +241,7 @@ export class CanvasComponent implements OnInit {
     this.clearSkin(decal);
     this.skin.load().then(() => {
       this.applySkin();
+      this.updateTextureService();
       this.loading.decal = false;
     });
   }
@@ -260,6 +265,7 @@ export class CanvasComponent implements OnInit {
     this.wheels = new WheelsModel(wheel, this.loadoutService.paints);
     this.wheels.load().then(() => {
       this.applyWheelModel();
+      this.updateTextureService();
       this.loading.wheel = false;
     });
   }
@@ -303,10 +309,24 @@ export class CanvasComponent implements OnInit {
         console.error(`Unknown paint type ${paint.type}`);
         return;
     }
+    this.updateTextureService();
   }
 
   private refreshSkin() {
     this.skin.update();
     (<MeshStandardMaterial>this.body.bodyMaterial).needsUpdate = true;
+  }
+
+  private updateTextureService() {
+    function addTexture(textureService: TextureService, key: string, material: MeshStandardMaterial) {
+      if (material != undefined) {
+        textureService.set(key, material.map);
+      } else {
+        textureService.set(key, undefined);
+      }
+    }
+    addTexture(this.textureService, 'body', this.body.bodyMaterial);
+    addTexture(this.textureService, 'chassis', this.body.chassisMaterial);
+    addTexture(this.textureService, 'rim', this.wheels.rimMaterial);
   }
 }

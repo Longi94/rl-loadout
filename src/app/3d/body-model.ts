@@ -91,9 +91,10 @@ export class BodyModel extends AbstractObject {
       }
       if (object instanceof Mesh) {
         let mat = <MeshStandardMaterial>object.material;
-        if (mat.name.toLowerCase().startsWith('body_')) {
+        let matName = mat.name.toLowerCase();
+        if (matName.includes('body')) {
           this.bodyMaterial = mat;
-        } else if (mat.name.toLowerCase().startsWith('chassis_')) {
+        } else if (matName.includes('chassis')) {
           this.chassisMaterial = mat;
         }
       }
@@ -179,7 +180,7 @@ class ChassisSkin extends RgbaMapPipeTexture {
       this.base[i + 2] / 255
     );
 
-    if (this.paint != undefined && this.rgbaMap[i] === 255) {
+    if (this.paint != undefined && this.rgbaMap[i] > 230) {
       overBlendColors(this.paint, this.baseHolder, 255, this.colorHolder);
     } else {
       return this.baseHolder;
