@@ -7,6 +7,7 @@ import { ColorSelectorComponent } from "../color-selector/color-selector.compone
 import { Wheel } from "../../model/wheel";
 import { LoadoutStoreService } from "../../service/loadout-store.service";
 import { Body } from "../../model/body";
+import { Topper } from "../../model/topper";
 
 @Component({
   selector: 'app-loadout-toolbar',
@@ -48,7 +49,7 @@ export class LoadoutToolbarComponent implements OnInit {
   }, {
     id: Toolbar.TOPPER,
     tooltip: 'Topper',
-    click: () => this.showUnsupported('Toppers'),
+    click: () => this.openTopperComponent(),
     img: 'assets/icons/Toppers-icon.png'
   }, {
     id: Toolbar.ANTENNA,
@@ -115,6 +116,17 @@ export class LoadoutToolbarComponent implements OnInit {
     component.instance.items = this.loadoutStore.wheels;
     component.instance.selectedItem = this.loadoutService.wheel;
     component.instance.onSelect = item => this.loadoutService.selectWheel(<Wheel>item);
+  }
+
+  openTopperComponent() {
+    const component = this.createNewGRidSelector(Toolbar.TOPPER);
+    if (component == undefined) {
+      return;
+    }
+    component.instance.items = this.loadoutStore.toppers.slice();
+    component.instance.items.unshift(Topper.NONE);
+    component.instance.selectedItem = this.loadoutService.topper;
+    component.instance.onSelect = item => this.loadoutService.selectTopper(<Topper>item);
   }
 
   openPaintsComponent() {

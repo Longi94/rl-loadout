@@ -108,19 +108,20 @@ export class CanvasComponent implements OnInit {
       this.skin = new StaticSkin(this.loadoutService.decal, this.loadoutService.paints);
 
       let promises = [
+        textureLoader.load('assets/mannfield_equirectangular.jpg'),
         this.body.load(),
         this.skin.load(),
         this.wheels.load(),
         this.loadoutStore.initBodies(),
         this.loadoutStore.initWheels(),
         this.loadoutStore.loadDecals(this.loadoutService.body.id),
-        textureLoader.load('assets/mannfield_equirectangular.jpg')
+        this.loadoutStore.initToppers()
       ];
 
       promiseProgress(promises, progress => {
         this.initProgress = 100 * (progress + 1) / (promises.length + 1)
       }).then(values => {
-        this.processBackground(values[6]);
+        this.processBackground(values[0]);
         this.applySkin();
         this.applyBodyModel();
         this.applyWheelModel();

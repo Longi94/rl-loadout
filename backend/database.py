@@ -20,6 +20,17 @@ class BaseItem:
     icon = Column(String(255), nullable=False)
     paintable = Column(Boolean, nullable=False, default=False)
 
+    def to_dict(self) -> Dict:
+        """Return object data in easily serializable format"""
+        return {
+            'id': self.id,
+            'replay_id': self.replay_id,
+            'name': self.name,
+            'quality': self.quality,
+            'icon': self.icon,
+            'paintable': self.paintable
+        }
+
 
 class Body(Base, BaseItem):
     __tablename__ = 'body'
@@ -31,20 +42,15 @@ class Body(Base, BaseItem):
     decals = relationship('Decal')
 
     def to_dict(self) -> Dict:
-        """Return object data in easily serializable format"""
-        return {
-            'id': self.id,
-            'replay_id': self.replay_id,
-            'name': self.name,
-            'quality': self.quality,
-            'icon': self.icon,
-            'paintable': self.paintable,
-            'model': self.model,
-            'blank_skin': self.blank_skin,
-            'base_skin': self.base_skin,
-            'chassis_base': self.chassis_base,
-            'chassis_n': self.chassis_n
-        }
+        d = super(Body, self).to_dict()
+
+        d['model'] = self.model
+        d['blank_skin'] = self.blank_skin
+        d['base_skin'] = self.base_skin
+        d['chassis_base'] = self.chassis_base
+        d['chassis_n'] = self.chassis_n
+
+        return d
 
 
 class Wheel(Base, BaseItem):
@@ -54,18 +60,13 @@ class Wheel(Base, BaseItem):
     rim_rgb_map = Column(String(255), nullable=True)
 
     def to_dict(self) -> Dict:
-        """Return object data in easily serializable format"""
-        return {
-            'id': self.id,
-            'replay_id': self.replay_id,
-            'name': self.name,
-            'quality': self.quality,
-            'icon': self.icon,
-            'paintable': self.paintable,
-            'model': self.model,
-            'rim_base': self.rim_base,
-            'rim_rgb_map': self.rim_rgb_map
-        }
+        d = super(Wheel, self).to_dict()
+
+        d['model'] = self.model
+        d['rim_base'] = self.rim_base
+        d['rim_rgb_map'] = self.rim_rgb_map
+
+        return d
 
 
 class DecalDetail(Base, BaseItem):
@@ -101,6 +102,22 @@ class Decal(Base):
             'base_texture': self.base_texture,
             'rgba_map': self.rgba_map
         }
+
+
+class Topper(Base, BaseItem):
+    __tablename__ = 'topper'
+    model = Column(String(255), nullable=False)
+    base_texture = Column(String(255), nullable=True)
+    rgba_map = Column(String(255), nullable=True)
+
+    def to_dict(self) -> Dict:
+        d = super(Topper, self).to_dict()
+
+        d['model'] = self.model
+        d['base_texture'] = self.base_texture
+        d['rgba_map'] = self.rgba_map
+
+        return d
 
 
 class Db(object):
@@ -158,3 +175,10 @@ class Db(object):
         """
         session = self.Session()
         return session.query(Body).filter(Body.name == 'Octane').first()
+
+    def get_toppers(self) -> List[Topper]:
+        """
+        :return: all the toppers
+        """
+        session = self.Session()
+        return session.query(Topper)

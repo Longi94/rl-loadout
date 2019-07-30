@@ -7,6 +7,7 @@ import { HttpClient } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import { Item } from "../model/item";
 import { DEFAULT_ACCENT, DEFAULT_BLUE_TEAM } from "../utils/color";
+import { Topper } from "../model/topper";
 
 const HOST = `${environment.backend}/api`;
 
@@ -37,6 +38,10 @@ export class LoadoutService {
   private wheelSubject: Subject<Wheel> = new Subject<Wheel>();
   wheelChanged$: Observable<Wheel> = this.wheelSubject.asObservable();
 
+  topper: Topper = Topper.NONE;
+  private topperSubject: Subject<Topper> = new Subject<Topper>();
+  topperChanged$: Observable<Topper> = this.topperSubject.asObservable();
+
   constructor(private httpClient: HttpClient) {
   }
 
@@ -62,6 +67,11 @@ export class LoadoutService {
     this.body = body;
     this.decal = Decal.NONE;
     this.bodySubject.next(body);
+  }
+
+  selectTopper(topper: Topper) {
+    this.topper = topper;
+    this.topperSubject.next(topper);
   }
 
   loadDefaults(): Promise<any> {

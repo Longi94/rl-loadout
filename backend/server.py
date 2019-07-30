@@ -51,6 +51,12 @@ def get_decals():
     return jsonify([item.to_dict() for item in decals])
 
 
+@app.route('/api/toppers', methods=['GET'])
+def get_toppers():
+    toppers = database.get_toppers()
+    return jsonify([item.to_dict() for item in toppers])
+
+
 if __name__ == '__main__':
     logging_config()
     port = int(config.get('server', 'port'))
