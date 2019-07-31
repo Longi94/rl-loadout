@@ -120,6 +120,31 @@ class Topper(Base, BaseItem):
         return d
 
 
+class Antenna(Base, BaseItem):
+    __tablename__ = 'antenna'
+    model = Column(String(255), nullable=False)
+    base_texture = Column(String(255), nullable=True)
+    rgba_map = Column(String(255), nullable=True)
+    stick_id = Column(Integer, ForeignKey('antenna_stick.id'), nullable=False)
+    stick = relationship('AntennaStick')
+
+    def to_dict(self) -> Dict:
+        d = super(Antenna, self).to_dict()
+
+        d['model'] = self.model
+        d['base_texture'] = self.base_texture
+        d['rgba_map'] = self.rgba_map
+        d['stick'] = self.stick.model
+
+        return d
+
+
+class AntennaStick(Base):
+    __tablename__ = 'antenna_stick'
+    id = Column(Integer, primary_key=True)
+    model = Column(String(255), nullable=False)
+
+
 class Db(object):
     def __init__(self):
         self.url = URL(
@@ -182,3 +207,10 @@ class Db(object):
         """
         session = self.Session()
         return session.query(Topper)
+
+    def get_antennas(self) -> List[Antenna]:
+        """
+        :return: all the antennas
+        """
+        session = self.Session()
+        return session.query(Antenna)

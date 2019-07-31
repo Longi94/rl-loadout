@@ -8,6 +8,7 @@ import { environment } from "../../environments/environment";
 import { Item } from "../model/item";
 import { DEFAULT_ACCENT, DEFAULT_BLUE_TEAM } from "../utils/color";
 import { Topper } from "../model/topper";
+import { Antenna } from "../model/antenna";
 
 const HOST = `${environment.backend}/api`;
 
@@ -43,6 +44,10 @@ export class LoadoutService {
   private topperSubject: Subject<Topper> = new Subject<Topper>();
   topperChanged$: Observable<Topper> = this.topperSubject.asObservable();
 
+  antenna: Antenna = Antenna.NONE;
+  private antennaSubject: Subject<Antenna> = new Subject<Antenna>();
+  antennaChanged$: Observable<Antenna> = this.antennaSubject.asObservable();
+
   constructor(private httpClient: HttpClient) {
   }
 
@@ -73,6 +78,11 @@ export class LoadoutService {
   selectTopper(topper: Topper) {
     this.topper = topper;
     this.topperSubject.next(topper);
+  }
+
+  selectAntenna(antenna: Antenna) {
+    this.antenna = antenna;
+    this.antennaSubject.next(antenna);
   }
 
   loadDefaults(): Promise<any> {

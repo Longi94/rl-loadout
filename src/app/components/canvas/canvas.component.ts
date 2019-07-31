@@ -122,7 +122,8 @@ export class CanvasComponent implements OnInit {
         this.loadoutStore.initBodies(),
         this.loadoutStore.initWheels(),
         this.loadoutStore.loadDecals(this.loadoutService.body.id),
-        this.loadoutStore.initToppers()
+        this.loadoutStore.initToppers(),
+        this.loadoutStore.initAntennas()
       ];
 
       promiseProgress(promises, progress => {

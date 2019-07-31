@@ -8,6 +8,7 @@ import { Wheel } from "../../model/wheel";
 import { LoadoutStoreService } from "../../service/loadout-store.service";
 import { Body } from "../../model/body";
 import { Topper } from "../../model/topper";
+import { Antenna } from "../../model/antenna";
 
 @Component({
   selector: 'app-loadout-toolbar',
@@ -54,7 +55,7 @@ export class LoadoutToolbarComponent implements OnInit {
   }, {
     id: Toolbar.ANTENNA,
     tooltip: 'Antenna',
-    click: () => this.showUnsupported('Antennas'),
+    click: () => this.openAntennaComponent()  ,
     img: 'assets/icons/Antennas-icon.png'
   }, {
     id: Toolbar.TRAIL,
@@ -127,6 +128,17 @@ export class LoadoutToolbarComponent implements OnInit {
     component.instance.items.unshift(Topper.NONE);
     component.instance.selectedItem = this.loadoutService.topper;
     component.instance.onSelect = item => this.loadoutService.selectTopper(<Topper>item);
+  }
+
+  openAntennaComponent() {
+    const component = this.createNewGRidSelector(Toolbar.ANTENNA);
+    if (component == undefined) {
+      return;
+    }
+    component.instance.items = this.loadoutStore.antennas.slice();
+    component.instance.items.unshift(Antenna.NONE);
+    component.instance.selectedItem = this.loadoutService.antenna;
+    component.instance.onSelect = item => this.loadoutService.selectAntenna(<Antenna>item);
   }
 
   openPaintsComponent() {

@@ -57,6 +57,12 @@ def get_toppers():
     return jsonify([item.to_dict() for item in toppers])
 
 
+@app.route('/api/antennas', methods=['GET'])
+def get_antennas():
+    antennas = database.get_antennas()
+    return jsonify([item.to_dict() for item in antennas])
+
+
 if __name__ == '__main__':
     logging_config()
     port = int(config.get('server', 'port'))
