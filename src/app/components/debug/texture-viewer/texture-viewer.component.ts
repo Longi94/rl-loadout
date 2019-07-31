@@ -46,6 +46,7 @@ export class TextureViewerComponent implements OnInit {
     this.canvas.width = width;
     this.canvas.height = height;
 
+    this.canvasWidth = Math.min(width, 900);
     this.canvasHeight = this.canvasWidth * (height / width);
 
     if (texture instanceof DataTexture) {
