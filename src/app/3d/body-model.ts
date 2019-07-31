@@ -31,7 +31,17 @@ export class BodyModel extends AbstractObject {
 
   constructor(body: Body) {
     super(getAssetUrl(body.model));
-    this.apply(body);
+    this.url = getAssetUrl(body.model);
+    this.blankSkinMapUrl = getAssetUrl(body.blank_skin);
+    this.baseSkinMapUrl = getAssetUrl(body.base_skin);
+
+    if (body.chassis_base && body.chassis_n) {
+      this.chassisSkin = new ChassisSkin(
+        getAssetUrl(body.chassis_base),
+        getAssetUrl(body.chassis_n),
+        undefined
+      )
+    }
   }
 
   dispose() {
@@ -41,29 +51,6 @@ export class BodyModel extends AbstractObject {
     disposeIfExists(this.chassisSkin);
     this.blankSkinMap = undefined;
     this.baseSkinMap = undefined;
-  }
-
-  apply(body: Body) {
-    this.url = getAssetUrl(body.model);
-    this.blankSkinMapUrl = getAssetUrl(body.blank_skin);
-    this.baseSkinMapUrl = getAssetUrl(body.base_skin);
-    this.wheelScale = [1, 1];
-    this.skeleton = undefined;
-    this.bodyMaterial = undefined;
-    this.blankSkinMap = undefined;
-    this.baseSkinMap = undefined;
-    this.chassisMaterial = undefined;
-    this.topperAnchor = undefined;
-
-    if (body.chassis_base && body.chassis_n) {
-      this.chassisSkin = new ChassisSkin(
-        getAssetUrl(body.chassis_base),
-        getAssetUrl(body.chassis_n),
-        undefined
-      )
-    } else {
-      this.chassisSkin = undefined;
-    }
   }
 
   load(): Promise<any> {

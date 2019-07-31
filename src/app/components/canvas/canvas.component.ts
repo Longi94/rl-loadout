@@ -227,7 +227,9 @@ export class CanvasComponent implements OnInit {
   private changeBody(body: Body) {
     this.loading.body = true;
     this.body.removeFromScene(this.scene);
-    this.body.apply(body);
+    this.body.dispose();
+
+    this.body = new BodyModel(body);
 
     this.clearSkin(this.loadoutService.decal);
 
