@@ -1,5 +1,5 @@
 import { AbstractObject } from "./object";
-import { Color, Mesh, MeshStandardMaterial, Object3D, Scene } from "three";
+import { Color, Mesh, MeshStandardMaterial, Scene } from "three";
 import { Topper } from "../model/topper";
 import { RgbaMapPipeTexture } from "./rgba-map-pipe-texture";
 import { overBlendColors } from "../utils/color";
@@ -52,6 +52,16 @@ export class TopperModel extends AbstractObject {
       this.material.needsUpdate = true;
     }
   }
+
+  setPaint(color: Color) {
+    if (this.skin) {
+      this.skin.paint = color;
+    }
+  }
+
+  refresh() {
+    this.applyTexture();
+  }
 }
 
 class TopperSkin extends RgbaMapPipeTexture {
@@ -75,12 +85,11 @@ class TopperSkin extends RgbaMapPipeTexture {
       this.base[i + 2] / 255
     );
 
-    if (this.paint != undefined) {
-      overBlendColors(this.paint, this.baseHolder, 255 - this.rgbaMap[i], this.colorHolder);
+    if (this.paint != undefined && this.rgbaMap[i + 3] > 0) {
+      overBlendColors(this.paint, this.baseHolder, this.rgbaMap[i + 3], this.colorHolder);
+      return this.colorHolder;
     } else {
       return this.baseHolder;
     }
-
-    return this.colorHolder;
   }
 }

@@ -98,9 +98,9 @@ export class WheelsModel extends AbstractObject {
     }
   }
 
-  setPaint(paint: string) {
+  setPaint(paint: Color) {
     if (this.rimSkin != undefined) {
-      this.rimSkin.paint = paint != undefined ? new Color(paint) : undefined;
+      this.rimSkin.paint = paint;
     }
   }
 
@@ -132,10 +132,9 @@ class RimSkin extends RgbaMapPipeTexture {
 
     if (this.paint != undefined) {
       overBlendColors(this.paint, this.baseHolder, 255 - this.rgbaMap[i], this.colorHolder);
+      return this.colorHolder;
     } else {
       return this.baseHolder;
     }
-
-    return this.colorHolder;
   }
 }

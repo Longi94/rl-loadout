@@ -186,10 +186,9 @@ class ChassisSkin extends RgbaMapPipeTexture {
 
     if (this.paint != undefined && this.rgbaMap[i] > 230) {
       overBlendColors(this.paint, this.baseHolder, 255, this.colorHolder);
+      return this.colorHolder;
     } else {
       return this.baseHolder;
     }
-
-    return this.colorHolder;
   }
 }

@@ -44,11 +44,16 @@ export class ColorSelectorComponent implements OnInit {
       label: 'Wheel Paint',
       value: '',
       textColor: 'white'
+    },
+    topper: {
+      label: 'Topper Paint',
+      value: '',
+      textColor: 'white'
     }
   };
 
   paintColors = PAINT_COLORS;
-  paintColorTypes = ['body', 'decal', 'wheel'];
+  paintColorTypes = ['body', 'decal', 'wheel', 'topper'];
 
   constructor(private loadoutService: LoadoutService) {
 

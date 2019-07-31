@@ -29,7 +29,8 @@ export class LoadoutService {
     accent: DEFAULT_ACCENT,
     body: undefined,
     decal: undefined,
-    wheel: undefined
+    wheel: undefined,
+    topper: undefined
   };
   private paintSubject: Subject<any> = new Subject();
   paintChanged$: Observable<any> = this.paintSubject.asObservable();

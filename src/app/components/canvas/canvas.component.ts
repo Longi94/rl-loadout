@@ -313,8 +313,14 @@ export class CanvasComponent implements OnInit {
         this.refreshSkin();
         break;
       case 'wheel':
-        this.wheels.setPaint(paint.color);
+        this.wheels.setPaint(color);
         this.wheels.refresh();
+        break;
+      case 'topper':
+        if (this.topper) {
+          this.topper.setPaint(color);
+          this.topper.refresh();
+        }
         break;
       default:
         console.error(`Unknown paint type ${paint.type}`);
