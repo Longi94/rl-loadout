@@ -55,6 +55,7 @@ export abstract class AbstractObject {
   applyAnchor(anchor: Object3D) {
     if (anchor == undefined) {
       console.warn('got undefined anchor');
+      return;
     }
 
     this.scene.position.set(
