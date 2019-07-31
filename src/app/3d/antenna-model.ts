@@ -10,7 +10,6 @@ export class AntennaModel extends AbstractObject {
   private antennaLoader = new PromiseLoader(new GLTFLoader());
 
   antennaUrl: string;
-  stickUrl: string;
 
   anchor: Object3D;
 
@@ -35,6 +34,13 @@ export class AntennaModel extends AbstractObject {
           this.anchor.position.y,
           this.anchor.position.z
         );
+
+        antenna.rotation.set(
+          this.anchor.rotation.x,
+          this.anchor.rotation.y,
+          this.anchor.rotation.z,
+          this.anchor.rotation.order
+        )
       } else {
         console.warn('antenna stick has no anchor');
       }
