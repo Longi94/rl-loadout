@@ -28,6 +28,7 @@ export class BodyModel extends AbstractObject {
   wheelScale: number[] = [1, 1];
 
   topperAnchor: Object3D;
+  antennaAnchor: Object3D;
 
   constructor(body: Body, paints: { [key: string]: string }) {
     super(getAssetUrl(body.model));
@@ -88,6 +89,8 @@ export class BodyModel extends AbstractObject {
     scene.traverse(object => {
       if (object.name === 'topper_anchor') {
         this.topperAnchor = object;
+      } else if (object.name === 'antenna_anchor') {
+        this.antennaAnchor = object;
       } else if (object instanceof Bone && this.skeleton == undefined) {
         this.skeleton = object;
       } else if (object instanceof Mesh) {

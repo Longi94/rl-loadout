@@ -29,6 +29,8 @@ import { PMREMCubeUVPacker } from "three/examples/jsm/pmrem/PMREMCubeUVPacker";
 import { TextureService } from "../../service/texture.service";
 import { Topper } from "../../model/topper";
 import { TopperModel } from "../../3d/topper-model";
+import { AntennaModel } from "../../3d/antenna-model";
+import { Antenna } from "../../model/antenna";
 
 @Component({
   selector: 'app-canvas',
@@ -54,6 +56,7 @@ export class CanvasComponent implements OnInit {
   private body: BodyModel;
   private wheels: WheelsModel;
   private topper: TopperModel;
+  private antenna: AntennaModel;
 
   // colors
   private skin: StaticSkin;
@@ -66,7 +69,8 @@ export class CanvasComponent implements OnInit {
     body: false,
     decal: false,
     wheel: false,
-    topper: false
+    topper: false,
+    antenna: false
   };
 
   constructor(private loadoutService: LoadoutService,
@@ -77,6 +81,7 @@ export class CanvasComponent implements OnInit {
     this.loadoutService.wheelChanged$.subscribe(wheel => this.changeWheel(wheel));
     this.loadoutService.bodyChanged$.subscribe(body => this.changeBody(body));
     this.loadoutService.topperChanged$.subscribe(topper => this.changeTopper(topper));
+    this.loadoutService.antennaChanged$.subscribe(antenna => this.changeAntenna(antenna));
   }
 
   isLoading() {
@@ -246,6 +251,10 @@ export class CanvasComponent implements OnInit {
         this.topper.applyAnchor(this.body.topperAnchor);
       }
 
+      if (this.antenna) {
+        this.antenna.applyAnchor(this.body.antennaAnchor);
+      }
+
       this.applyBodyModel();
       this.updateTextureService();
       this.loading.body = false;
@@ -383,5 +392,31 @@ export class CanvasComponent implements OnInit {
     this.topper.setEnvMap(this.envMap);
     this.topper.applyAnchor(this.body.topperAnchor);
     this.topper.addToScene(this.scene);
+  }
+
+  private changeAntenna(antenna: Antenna) {
+    if (this.antenna) {
+      this.antenna.removeFromScene(this.scene);
+      this.antenna.dispose();
+      this.antenna = undefined;
+    }
+
+    if (antenna === Antenna.NONE) {
+      return;
+    }
+
+    this.loading.antenna = true;
+    this.antenna = new AntennaModel(antenna, this.loadoutService.paints);
+    this.antenna.load().then(() => {
+      this.applyAntennaModel();
+      this.updateTextureService();
+      this.loading.antenna = false;
+    });
+  }
+
+  private applyAntennaModel() {
+    this.antenna.setEnvMap(this.envMap);
+    this.antenna.applyAnchor(this.body.antennaAnchor);
+    this.antenna.addToScene(this.scene);
   }
 }
