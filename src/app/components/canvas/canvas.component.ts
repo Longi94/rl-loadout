@@ -110,7 +110,7 @@ export class CanvasComponent implements OnInit {
     const textureLoader = new PromiseLoader(new TextureLoader());
 
     this.loadoutService.loadDefaults().then(() => {
-      this.body = new BodyModel(this.loadoutService.body);
+      this.body = new BodyModel(this.loadoutService.body, this.loadoutService.paints);
       this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints);
       this.skin = new StaticSkin(this.loadoutService.decal, this.loadoutService.paints);
 
@@ -229,7 +229,7 @@ export class CanvasComponent implements OnInit {
     this.body.removeFromScene(this.scene);
     this.body.dispose();
 
-    this.body = new BodyModel(body);
+    this.body = new BodyModel(body, this.loadoutService.paints);
 
     this.clearSkin(this.loadoutService.decal);
 

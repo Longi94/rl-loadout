@@ -29,7 +29,7 @@ export class BodyModel extends AbstractObject {
 
   topperAnchor: Object3D;
 
-  constructor(body: Body) {
+  constructor(body: Body, paints: { [key: string]: string }) {
     super(getAssetUrl(body.model));
     this.url = getAssetUrl(body.model);
     this.blankSkinMapUrl = getAssetUrl(body.blank_skin);
@@ -39,7 +39,7 @@ export class BodyModel extends AbstractObject {
       this.chassisSkin = new ChassisSkin(
         getAssetUrl(body.chassis_base),
         getAssetUrl(body.chassis_n),
-        undefined
+        paints.body
       )
     }
   }

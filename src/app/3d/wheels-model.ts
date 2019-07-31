@@ -19,7 +19,7 @@ export class WheelsModel extends AbstractObject {
   rimMaterial: MeshStandardMaterial;
   rimSkin: RimSkin;
 
-  constructor(wheel: Wheel, paints) {
+  constructor(wheel: Wheel, paints: { [key: string]: string }) {
     super(getAssetUrl(wheel.model));
     if (wheel.rim_base && wheel.rim_rgb_map) {
       this.rimSkin = new RimSkin(
