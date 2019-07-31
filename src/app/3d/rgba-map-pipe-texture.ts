@@ -1,5 +1,6 @@
 import { TgaRgbaLoader } from "../utils/tga-rgba-loader";
 import { Color, DataTexture, RGBAFormat } from "three";
+import { disposeIfExists } from "../utils/util";
 
 export abstract class RgbaMapPipeTexture {
   baseUrl: string;
@@ -17,6 +18,13 @@ export abstract class RgbaMapPipeTexture {
   protected constructor(baseUrl, rgbaMapUrl) {
     this.baseUrl = baseUrl;
     this.rgbaMapUrl = rgbaMapUrl;
+  }
+
+  dispose() {
+    this.base = undefined;
+    this.rgbaMap = undefined;
+    this.data = undefined;
+    disposeIfExists(this.texture);
   }
 
   /**

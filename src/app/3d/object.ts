@@ -70,4 +70,11 @@ export abstract class AbstractObject {
       anchor.rotation.order,
     );
   }
+
+  /**
+   * Dispose of the object
+   */
+  dispose() {
+    this.scene.dispose();
+  }
 }

@@ -5,6 +5,7 @@ import { Wheel } from "../model/wheel";
 import { getAssetUrl } from "../utils/network";
 import { SkeletonUtils } from "three/examples/jsm/utils/SkeletonUtils";
 import { overBlendColors } from "../utils/color";
+import { disposeIfExists } from "../utils/util";
 
 export class WheelsModel extends AbstractObject {
 
@@ -27,6 +28,16 @@ export class WheelsModel extends AbstractObject {
         paints.wheel
       );
     }
+  }
+
+  dispose() {
+    super.dispose();
+    disposeIfExists(this.rimMaterial);
+    disposeIfExists(this.rimSkin);
+    disposeIfExists(this.wheels.fr);
+    disposeIfExists(this.wheels.fl);
+    disposeIfExists(this.wheels.br);
+    disposeIfExists(this.wheels.bl);
   }
 
   load(): Promise<any> {

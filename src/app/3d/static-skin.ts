@@ -77,4 +77,10 @@ export class StaticSkin extends RgbaMapPipeTexture {
     this.base = undefined;
     this.rgbaMap = undefined;
   }
+
+  dispose() {
+    super.dispose();
+    this.blankSkinMap = undefined;
+    this.baseSkinMap = undefined;
+  }
 }

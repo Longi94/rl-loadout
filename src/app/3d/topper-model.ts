@@ -4,6 +4,7 @@ import { Topper } from "../model/topper";
 import { RgbaMapPipeTexture } from "./rgba-map-pipe-texture";
 import { overBlendColors } from "../utils/color";
 import { getAssetUrl } from "../utils/network";
+import { disposeIfExists } from "../utils/util";
 
 export class TopperModel extends AbstractObject {
 
@@ -20,6 +21,12 @@ export class TopperModel extends AbstractObject {
         paints.topper
       );
     }
+  }
+
+  dispose() {
+    super.dispose();
+    disposeIfExists(this.material);
+    disposeIfExists(this.skin);
   }
 
   handleModel(scene: Scene) {

@@ -8,7 +8,9 @@ import {
   Color,
   SpotLight,
   TextureLoader,
-  Texture, WebGLRenderTarget, AmbientLight
+  Texture,
+  WebGLRenderTarget,
+  AmbientLight
 } from "three";
 import { StaticSkin } from "../../3d/static-skin";
 import { LoadoutService } from "../../service/loadout.service";
@@ -273,6 +275,7 @@ export class CanvasComponent implements OnInit {
   private changeWheel(wheel: Wheel) {
     this.loading.wheel = true;
     this.wheels.removeFromScene(this.scene);
+    this.wheels.dispose();
     this.wheels = new WheelsModel(wheel, this.loadoutService.paints);
     this.wheels.load().then(() => {
       this.applyWheelModel();
@@ -356,10 +359,11 @@ export class CanvasComponent implements OnInit {
   private changeTopper(topper: Topper) {
     if (this.topper) {
       this.topper.removeFromScene(this.scene);
+      this.topper.dispose();
+      this.topper = undefined;
     }
 
     if (topper === Topper.NONE) {
-      this.topper = undefined;
       return;
     }
 

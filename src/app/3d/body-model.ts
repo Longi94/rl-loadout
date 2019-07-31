@@ -6,6 +6,7 @@ import { TgaRgbaLoader } from "../utils/tga-rgba-loader";
 import { getAssetUrl } from "../utils/network";
 import { RgbaMapPipeTexture } from "./rgba-map-pipe-texture";
 import { overBlendColors } from "../utils/color";
+import { disposeIfExists } from "../utils/util";
 
 export class BodyModel extends AbstractObject {
 
@@ -31,6 +32,15 @@ export class BodyModel extends AbstractObject {
   constructor(body: Body) {
     super(getAssetUrl(body.model));
     this.apply(body);
+  }
+
+  dispose() {
+    super.dispose();
+    disposeIfExists(this.bodyMaterial);
+    disposeIfExists(this.chassisMaterial);
+    disposeIfExists(this.chassisSkin);
+    this.blankSkinMap = undefined;
+    this.baseSkinMap = undefined;
   }
 
   apply(body: Body) {
