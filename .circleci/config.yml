@@ -2,7 +2,7 @@ version: 2.1
 
 jobs:
   frontend-build:
-    working_directory: ~/rl-loadout/frontend
+    working_directory: ~/rl-loadout
     docker:
       - image: circleci/node:10.16-browsers
     steps:
@@ -12,33 +12,35 @@ jobs:
           command: |
             echo 'export NG_CLI_ANALYTICS=ci' >> $BASH_ENV
       - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-{{ checksum "frontend/package-lock.json" }}
       - run:
           name: install angular cli
           command: sudo npm install -g @angular/cli > /dev/null
       - run:
           name: install-dependencies
           command: npm install
+          working_directory: $CIRCLE_WORKING_DIRECTORY/frontend
       - save_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
+          key: dependency-cache-{{ checksum "frontend/package-lock.json" }}
           paths:
             - ./node_modules
       - run:
           name: angular-build
           command: ng build --prod
+          working_directory: $CIRCLE_WORKING_DIRECTORY/frontend
       - store_artifacts:
-          path: dist/rl-loadout
+          path: frontend/dist/rl-loadout
       - persist_to_workspace:
-          root: dist
+          root: frontend/dist
           paths:
             - rl-loadout
   frontend-deploy:
-    working_directory: ~/rl-loadout/frontend
+    working_directory: ~/rl-loadout
     machine:
       enabled: true
     steps:
       - attach_workspace:
-          at: dist
+          at: frontend/dist
       - run:
           name: Remove old files
           command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "echo $SSH_PASS | sudo -S rm -rf $FRONTEND_DIR/*"
@@ -47,7 +49,7 @@ jobs:
           command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "mkdir -p ~/rl-loadout-frontend"
       - run:
           name: Copy artifacts to host
-          command: scp -rP $SSH_PORT dist/rl-loadout/* "$SSH_USER@$SSH_HOST:/home/$SSH_USER/rl-loadout-frontend/"
+          command: scp -rP $SSH_PORT frontend/dist/rl-loadout/* "$SSH_USER@$SSH_HOST:/home/$SSH_USER/rl-loadout-frontend/"
       - run:
           name: Copy artifacts to deploy folder
           command: ssh $SSH_USER@$SSH_HOST -p $SSH_PORT "echo $SSH_PASS | sudo -S cp -r ~/rl-loadout-frontend/* $FRONTEND_DIR/"
