@@ -1,0 +1,63 @@
+.color-selector-container {
+  padding: 16px;
+  height: 100%;
+  box-shadow: -12px 0px 35px 15px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 50;
+}
+
+.color-label {
+  margin-right: 8px;
+}
+
+.color-picker-button {
+  width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  border: solid 1px black;
+  cursor: pointer;
+}
+
+.primary-color-container, .accent-color-container, .paint-color-container {
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+  width: 260px;
+  justify-content: center;
+}
+
+.paint-color-container {
+  width: auto;
+}
+
+.expansion-actions {
+  margin-top: 8px;
+}
+
+.accent-color-container {
+  width: 390px;
+}
+
+.color-expansion-content {
+  padding-top: 16px;
+}
+
+::ng-deep .dark-color .mat-expansion-panel-header-title {
+  color: white;
+}
+
+::ng-deep .dark-color .mat-expansion-indicator::after {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+::ng-deep .bright-color .mat-expansion-panel-header-title {
+  color: black;
+}
+
+::ng-deep .bright-color .mat-expansion-indicator::after {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+mat-panel-title {
+  align-items: center;
+}

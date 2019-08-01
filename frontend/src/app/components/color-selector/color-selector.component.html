@@ -1,0 +1,79 @@
+<div class="color-selector-container">
+
+  <mat-accordion>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header [style.background]="colors.primary.value"
+        [ngClass]="{'dark-color': colors.primary.textColor === 'white', 'bright-color': colors.primary.textColor === 'black'}">
+        <mat-panel-title>Primary</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="color-expansion-content">
+        <div class="primary-color-container">
+          <div class="color-picker-button" *ngFor="let color of blueColors" [style.background]="color"
+            (click)="selectColor('primary', color)">
+          </div>
+        </div>
+        <div class="primary-color-container">
+          <div class="color-picker-button" *ngFor="let color of orangeColors" [style.background]="color"
+            (click)="selectColor('primary', color)">
+          </div>
+        </div>
+        <div class="expansion-actions">
+          <button mat-button
+            [(colorPicker)]="colors['primary'].value"
+            (colorPickerChange)="colorChanged(colors['primary'].value, 'primary')"
+                  cpAlphaChannel="disabled">Custom
+          </button>
+        </div>
+      </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel>
+      <mat-expansion-panel-header [style.background]="colors.accent.value"
+        [ngClass]="{'dark-color': colors.accent.textColor === 'white', 'bright-color': colors.accent.textColor === 'black'}">
+        <mat-panel-title>Accent</mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="color-expansion-content">
+        <div class="accent-color-container">
+          <div class="color-picker-button" *ngFor="let color of accentColors" [style.background]="color"
+            (click)="selectColor('accent', color)">
+          </div>
+        </div>
+        <div class="expansion-actions">
+          <button mat-button
+            [(colorPicker)]="colors['accent'].value"
+            (colorPickerChange)="colorChanged(colors['accent'].value, 'accent')"
+                  cpAlphaChannel="disabled">Custom
+          </button>
+        </div>
+      </div>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel *ngFor="let key of paintColorTypes">
+      <mat-expansion-panel-header [style.background]="colors[key].value"
+        [ngClass]="{'dark-color': colors[key].textColor === 'white', 'bright-color': colors[key].textColor === 'black'}">
+        <mat-panel-title>{{colors[key].label}}
+          <mat-icon *ngIf="colors[key].value == undefined">format_color_reset</mat-icon>
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div class="color-expansion-content">
+        <div class="paint-color-container">
+          <div class="color-picker-button" *ngFor="let color of paintColors" [style.background]="color"
+            (click)="selectColor(key, color)">
+          </div>
+        </div>
+        <div class="expansion-actions">
+          <button mat-button
+            [(colorPicker)]="colors[key].value"
+            (colorPickerChange)="colorChanged(colors[key].value, key)"
+                  cpAlphaChannel="disabled">Custom
+          </button>
+          <button (click)="clearColor(key)" mat-button>Clear</button>
+        </div>
+      </div>
+    </mat-expansion-panel>
+
+  </mat-accordion>
+</div>

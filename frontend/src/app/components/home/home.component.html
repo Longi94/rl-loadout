@@ -1,0 +1,19 @@
+<div class="main-container">
+  <mat-toolbar>
+    <span>Rocket Loadout</span><div class="alpha-container"><span class="alpha">Alpha</span></div>
+    <span class="flex-spacer"></span>
+    <button mat-icon-button [matMenuTriggerFor]="appMenu"><mat-icon>more_vert</mat-icon></button>
+  </mat-toolbar>
+  <app-loadout-toolbar></app-loadout-toolbar>
+  <app-canvas></app-canvas>
+</div>
+
+<mat-menu #appMenu="matMenu">
+  <button mat-menu-item [matMenuTriggerFor]="debugMenu" *ngIf="isDev">Debug</button>
+  <button mat-menu-item (click)="openAbout()">About</button>
+</mat-menu>
+
+<mat-menu #debugMenu="matMenu">
+  <button mat-menu-item (click)="openTextureViewer()">Texture viewer</button>
+  <a mat-menu-item href="https://pinetools.com/rgb-channels-image" target="_blank">RGB splitter</a>
+</mat-menu>
