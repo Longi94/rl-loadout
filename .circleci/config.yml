@@ -2,7 +2,7 @@ version: 2.1
 
 jobs:
   frontend-build:
-    working_directory: ~/rl-loadout
+    working_directory: ~/rl-loadout/frontend
     docker:
       - image: circleci/node:10.16-browsers
     steps:
@@ -33,7 +33,7 @@ jobs:
           paths:
             - rl-loadout
   frontend-deploy:
-    working_directory: ~/rl-loadout
+    working_directory: ~/rl-loadout/frontend
     machine:
       enabled: true
     steps:
