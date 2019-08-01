@@ -19,7 +19,7 @@ jobs:
       - run:
           name: install-dependencies
           command: npm install
-          working_directory: $CIRCLE_WORKING_DIRECTORY/frontend
+          working_directory: frontend
       - save_cache:
           key: dependency-cache-{{ checksum "frontend/package-lock.json" }}
           paths:
@@ -27,7 +27,7 @@ jobs:
       - run:
           name: angular-build
           command: ng build --prod
-          working_directory: $CIRCLE_WORKING_DIRECTORY/frontend
+          working_directory: frontend
       - store_artifacts:
           path: frontend/dist/rl-loadout
       - persist_to_workspace:
