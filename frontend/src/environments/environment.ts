@@ -6,7 +6,7 @@ export const environment = {
   // @ts-ignore
   version: require('../../package.json').version + '-DEV',
   production: false,
-  assetHost: 'https://storage.googleapis.com/rl-loadout',
+  assetHost: 'https://storage.googleapis.com/rl-loadout-dev',
   backend: 'http://localhost:10000'
 };
 
