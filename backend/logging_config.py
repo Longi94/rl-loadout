@@ -1,4 +1,5 @@
 import logging
+from logging.handlers import WatchedFileHandler
 from config import config
 
 
@@ -18,4 +19,9 @@ def logging_config():
     if config.get('log', 'file'):
         log_file = config.get('log', 'file')
 
-    logging.basicConfig(level=level, filename=log_file, format=LOG_FORMAT)
+    if log_file:
+        handlers = [WatchedFileHandler(log_file)]
+    else:
+        handlers = [logging.StreamHandler()]
+
+    logging.basicConfig(level=level, handlers=handlers, format=LOG_FORMAT)

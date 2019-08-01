@@ -70,5 +70,5 @@ def get_antennas():
 if __name__ == '__main__':
     logging_config()
     port = int(config.get('server', 'port'))
-    app.run(host='0.0.0.0', port=port)
     log.info(f'Running rl-loadout {__version__} on port {port}')
+    app.run(host='0.0.0.0', port=port)
