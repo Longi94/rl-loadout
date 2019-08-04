@@ -22,21 +22,9 @@ export class BodiesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.itemListComponent.createDialog = CreateBodyComponent;
     this.loadoutStore.initBodies().then(() => {
       this.itemListComponent.items = this.loadoutStore.bodies;
-    });
-  }
-
-  openCreateDialog() {
-    const dialogRef = this.dialog.open(CreateBodyComponent, {
-      width: '500px',
-      disableClose: true
-    });
-
-    dialogRef.afterClosed().subscribe(newBody => {
-      if (newBody != undefined) {
-        this.itemListComponent.items.push(newBody);
-      }
     });
   }
 }

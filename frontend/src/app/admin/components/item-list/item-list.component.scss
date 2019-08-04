@@ -9,3 +9,9 @@ mat-card {
   width: 1140px;
   margin: 16px 0;
 }
+
+.floating-action-button {
+  position: fixed;
+  right: 64px;
+  bottom: 64px;
+}
