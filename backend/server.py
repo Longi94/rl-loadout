@@ -26,6 +26,23 @@ def status():
     })
 
 
+@app.route('/api/all', methods=['GET'])
+def get_all():
+    result = {
+        'bodies': [item.to_dict() for item in database.get_bodies()],
+        'wheels': [item.to_dict() for item in database.get_wheels()],
+        'toppers': [item.to_dict() for item in database.get_toppers()],
+        'antennas': [item.to_dict() for item in database.get_antennas()]
+    }
+
+    body_id = request.args.get('body', default=None)
+
+    if body_id is not None:
+        result['decals'] = [item.to_dict() for item in database.get_decals(body_id)]
+
+    return jsonify(result)
+
+
 @app.route('/api/bodies', methods=['GET'])
 def get_bodies():
     bodies = database.get_bodies()
@@ -39,7 +56,7 @@ def get_wheels():
 
 
 @app.route('/api/defaults', methods=['GET'])
-def get_default_wheel():
+def get_defaults():
     result = {}
 
     body = database.get_default_body()
