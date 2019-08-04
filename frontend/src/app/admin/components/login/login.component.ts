@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from "../../../auth/auth.service";
 import { Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material";
+import { handleErrorSnackbar } from "../../../utils/network";
 
 @Component({
   selector: 'app-login',
@@ -26,16 +27,6 @@ export class LoginComponent implements OnInit {
   login() {
     this.authService.login(this.username, this.password).subscribe(() => {
       this.router.navigate(['admin']).then();
-    }, error => {
-      if (error.status === 401) {
-        this.snackBar.open('Invalid username of password', null, {
-          duration: 2000
-        });
-      } else {
-        this.snackBar.open(error.error.msg, null, {
-          duration: 2000
-        });
-      }
-    });
+    }, error => handleErrorSnackbar(error, this.snackBar));
   }
 }

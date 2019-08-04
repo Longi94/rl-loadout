@@ -198,6 +198,11 @@ class Db(object):
         session = self.Session()
         return session.query(Body)
 
+    def add_body(self, body: Body):
+        session = self.Session()
+        new_body = session.add(body)
+        session.commit()
+
     def get_wheels(self) -> List[Wheel]:
         """
         :return: all the wheels

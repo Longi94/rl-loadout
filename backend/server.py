@@ -1,9 +1,12 @@
 import logging
+from typing import List
+from functools import wraps
+from datetime import timedelta
 from flask import Flask, jsonify, request, abort
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from config import config
-from database import Db
+from database import Db, Body
 from logging_config import logging_config
 from auth import verify_password
 from _version import __version__
@@ -12,9 +15,31 @@ log = logging.getLogger(__name__)
 
 app = Flask(__name__)
 app.config['JWT_SECRET_KEY'] = config.get('server', 'jwt_secret')
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=1)
 jwt = JWTManager(app)
 CORS(app)
 database = Db()
+
+
+def json_required_params(params: List[str]):
+    """
+    Checks if the provided params are provided in the json body.
+    :param params:
+    """
+
+    def decorator(function):
+        @wraps(function)
+        def wrapper(*args, **kwargs):
+            if not request.is_json:
+                return jsonify({'msg': 'Missing JSON in request'}), 400
+            for param in params:
+                if param not in request.json or request.json[param] == '':
+                    return jsonify({'msg': f'Missing {param} parameter in JSON'}), 400
+            return function(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
 
 
 @app.after_request
@@ -31,16 +56,10 @@ def status():
 
 
 @app.route('/auth', methods=['POST'])
+@json_required_params(['username', 'password'])
 def auth():
-    if not request.is_json:
-        return jsonify({"msg": "Missing JSON in request"}), 400
-
-    username = request.json.get('username', None)
-    password = request.json.get('password', None)
-    if not username:
-        return jsonify({"msg": "Missing username parameter"}), 400
-    if not password:
-        return jsonify({"msg": "Missing password parameter"}), 400
+    username = request.json['username']
+    password = request.json['password']
 
     user = database.get_user(username)
 
@@ -75,6 +94,31 @@ def get_all():
 def get_bodies():
     bodies = database.get_bodies()
     return jsonify([body.to_dict() for body in bodies])
+
+
+@app.route('/api/bodies', methods=['POST'])
+@json_required_params(['name', 'icon', 'quality', 'paintable', 'blank_skin'])
+@jwt_required
+def add_body():
+    body = Body(
+        name=request.json['name'],
+        icon=request.json['icon'],
+        quality=request.json['quality'],
+        paintable=request.json['paintable'],
+        blank_skin=request.json['blank_skin'],
+        model=request.json['model'],
+        base_skin=request.json.get('base_skin', None),
+        chassis_base=request.json.get('chassis_base', None),
+        chassis_n=request.json.get('chassis_n', None)
+    )
+
+    try:
+        database.add_body(body)
+    except Exception as e:
+        log.error('Failed to insert body', exc_info=e)
+        database.Session().rollback()
+
+    return jsonify(body.to_dict())
 
 
 @app.route('/api/wheels', methods=['GET'])

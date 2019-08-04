@@ -1,0 +1,20 @@
+<div class="container">
+  <mat-card>
+    <mat-card-content>
+      <mat-list role="list">
+        <mat-list-item *ngFor="let item of items last as last" role="listitem">
+          <img matListAvatar [src]="assetHost + '/' + item.icon"/>
+          <span matLine>{{item.name}}</span>
+          <span class="flex-spacer"></span>
+          <button mat-icon-button matTooltip="Edit" (click)="openEditDialog(project)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button matTooltip="Delete" (click)="deleteProject(project)">
+            <mat-icon>delete</mat-icon>
+          </button>
+          <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+</div>

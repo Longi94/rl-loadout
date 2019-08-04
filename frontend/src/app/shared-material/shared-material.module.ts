@@ -14,9 +14,11 @@ import {
   MatMenuModule,
   MatExpansionModule,
   MatInputModule,
-  MatSelectModule
+  MatSelectModule,
+  MatCardModule,
+  MatListModule,
+  MatCheckboxModule
 } from "@angular/material";
-import { BrowserModule } from "@angular/platform-browser";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { FormsModule } from "@angular/forms";
 
@@ -29,6 +31,7 @@ import { FormsModule } from "@angular/forms";
     BrowserAnimationsModule,
     FormsModule,
     MatButtonModule,
+    MatCardModule,
     MatRippleModule,
     MatTooltipModule,
     MatSnackBarModule,
@@ -41,13 +44,16 @@ import { FormsModule } from "@angular/forms";
     MatMenuModule,
     MatExpansionModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
+    MatListModule,
+    MatCheckboxModule
   ],
   exports: [
     CommonModule,
     BrowserAnimationsModule,
     FormsModule,
     MatButtonModule,
+    MatCardModule,
     MatRippleModule,
     MatTooltipModule,
     MatSnackBarModule,
@@ -60,7 +66,9 @@ import { FormsModule } from "@angular/forms";
     MatMenuModule,
     MatExpansionModule,
     MatInputModule,
-    MatSelectModule
+    MatSelectModule,
+    MatListModule,
+    MatCheckboxModule
   ]
 })
 export class SharedMaterialModule { }
