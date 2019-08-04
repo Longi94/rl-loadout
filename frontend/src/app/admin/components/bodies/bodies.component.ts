@@ -3,6 +3,8 @@ import { LoadoutStoreService } from "../../../service/loadout-store.service";
 import { ItemListComponent } from "../item-list/item-list.component";
 import { MatDialog } from "@angular/material";
 import { CreateBodyComponent } from "../dialog/create-body/create-body.component";
+import { Body } from "../../../model/body";
+import { ItemService } from "../../../service/item.service";
 
 @Component({
   selector: 'app-bodies',
@@ -15,7 +17,8 @@ export class BodiesComponent implements OnInit {
   itemListComponent: ItemListComponent;
 
   constructor(private loadoutStore: LoadoutStoreService,
-              private dialog: MatDialog) {
+              private dialog: MatDialog,
+              private itemService: ItemService) {
   }
 
   ngOnInit() {
@@ -34,5 +37,9 @@ export class BodiesComponent implements OnInit {
         this.itemListComponent.items.push(newBody);
       }
     });
+  }
+
+  deleteBody(body: Body) {
+    this.itemService.deleteBody(body.id)
   }
 }

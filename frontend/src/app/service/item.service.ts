@@ -18,4 +18,8 @@ export class ItemService {
   addBody(body: Body): Observable<Body> {
     return this.httpClient.post<Body>(`${HOST}/bodies`, body, {headers: HEADERS});
   }
+
+  deleteBody(id: number): Observable<any> {
+    return this.httpClient.delete(`${HOST}/bodies/${id}`);
+  }
 }

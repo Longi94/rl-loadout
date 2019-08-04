@@ -117,8 +117,22 @@ def add_body():
     except Exception as e:
         log.error('Failed to insert body', exc_info=e)
         database.Session().rollback()
+        return jsonify({'msg': 'Failed to insert body'}), 500
 
     return jsonify(body.to_dict())
+
+
+@app.route('/api/bodies/<body_id>', methods=['DELETE'])
+@jwt_required
+def delete_body(body_id):
+    try:
+        database.delete_body(body_id)
+    except Exception as e:
+        log.error('Failed to delete body', exc_info=e)
+        database.Session().rollback()
+        return jsonify({'msg': 'Failed to delete body'}), 500
+
+    return '', 204
 
 
 @app.route('/api/wheels', methods=['GET'])

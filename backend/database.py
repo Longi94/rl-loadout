@@ -198,6 +198,11 @@ class Db(object):
         session = self.Session()
         return session.query(Body)
 
+    def delete_body(self, body_id):
+        session = self.Session()
+        session.query(Body).filter(Body.id == body_id).delete()
+        session.commit()
+
     def add_body(self, body: Body):
         session = self.Session()
         new_body = session.add(body)

@@ -6,10 +6,10 @@
           <img matListAvatar [src]="assetHost + '/' + item.icon"/>
           <span matLine>{{item.name}}</span>
           <span class="flex-spacer"></span>
-          <button mat-icon-button matTooltip="Edit" (click)="openEditDialog(project)">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button mat-icon-button matTooltip="Delete" (click)="deleteProject(project)">
+<!--          <button mat-icon-button matTooltip="Edit" (click)="openEditDialog(item)">-->
+<!--            <mat-icon>edit</mat-icon>-->
+<!--          </button>-->
+          <button mat-icon-button matTooltip="Delete" (click)="deleteItem(item)">
             <mat-icon>delete</mat-icon>
           </button>
           <mat-divider [inset]="true" *ngIf="!last"></mat-divider>
