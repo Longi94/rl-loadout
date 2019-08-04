@@ -4,6 +4,7 @@ import { Router } from "@angular/router";
 import { Observable } from "rxjs";
 import { environment } from "../../environments/environment";
 import { tap } from "rxjs/operators";
+import { parseJwt } from "../utils/network";
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +42,14 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean {
-    return localStorage.getItem('token') != null;
+    const token = localStorage.getItem('token');
+
+    if (token == undefined) {
+      return false;
+    }
+
+    const jwt = parseJwt(token);
+    return Date.now() < jwt.exp * 1000;
   }
 
   getUsername(): string {
