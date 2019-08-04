@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
 import { environment } from "../../environments/environment";
@@ -15,15 +15,18 @@ export class AuthService {
   }
 
   login(username: string, password: string): Observable<any> {
-    const  formData = new FormData();
-    formData.append('username', username);
-    formData.append('password', password);
+    const json = JSON.stringify({
+      username: username,
+      password: password
+    });
 
-    return this.httpClient.post(`${environment.backend}/auth`, formData).pipe(
+    const headers = new HttpHeaders({'Content-Type': 'application/json'});
+
+    return this.httpClient.post(`${environment.backend}/auth`, json, {headers: headers}).pipe(
       tap(
-        () => {
+        response => {
           localStorage.setItem('username', username);
-          localStorage.setItem('token', btoa(`${username}:${password}`));
+          localStorage.setItem('token', response.access_token);
         },
         () => {
           localStorage.clear();
