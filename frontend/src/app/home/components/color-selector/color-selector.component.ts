@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { LoadoutService } from "../../service/loadout.service";
+import { LoadoutService } from '../../../service/loadout.service';
 import {
   ACCENT_COLORS,
   BLUE_PRIMARY_COLORS,
   getTextColor,
   ORANGE_PRIMARY_COLORS,
   PAINT_COLORS
-} from "../../utils/color";
+} from '../../../utils/color';
 
 @Component({
   selector: 'app-color-selector',

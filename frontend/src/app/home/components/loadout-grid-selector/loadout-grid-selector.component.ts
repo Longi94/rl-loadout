@@ -1,7 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Item } from "../../model/item";
-import { Quality } from "../../model/quality";
-import { environment } from "../../../environments/environment";
+import { Item } from '../../../model/item';
+import { Quality } from '../../../model/quality';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-loadout-grid-selector',
