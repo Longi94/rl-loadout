@@ -29,7 +29,8 @@ export class BodiesComponent implements OnInit {
 
   openCreateDialog() {
     const dialogRef = this.dialog.open(CreateBodyComponent, {
-      width: '500px'
+      width: '500px',
+      disableClose: true
     });
 
     dialogRef.afterClosed().subscribe(newBody => {
