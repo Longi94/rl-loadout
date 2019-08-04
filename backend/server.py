@@ -19,6 +19,13 @@ def after_request(response):
     return response
 
 
+@app.route('/api/status', methods=['GET'])
+def status():
+    return jsonify({
+        'version': __version__
+    })
+
+
 @app.route('/api/bodies', methods=['GET'])
 def get_bodies():
     bodies = database.get_bodies()
