@@ -4,6 +4,7 @@ import { LoadoutStoreService } from "../../../service/loadout-store.service";
 import { MatDialog } from "@angular/material";
 import { ItemService } from "../../../service/item.service";
 import { CreateBodyComponent } from "../dialog/create-body/create-body.component";
+import { CreateAntennaStickComponent } from "../dialog/create-antenna-stick/create-antenna-stick.component";
 
 @Component({
   selector: 'app-antenna-sticks',
@@ -20,7 +21,7 @@ export class AntennaSticksComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.itemListComponent.createDialog = undefined;
+    this.itemListComponent.createDialog = CreateAntennaStickComponent;
     this.itemService.getAntennaSticks().subscribe(items => this.itemListComponent.items = items);
   }
 }

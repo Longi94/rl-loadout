@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Body } from "../../../../model/body";
+import { Decal } from "../../../../model/decal";
 import { Quality } from "../../../../model/quality";
 import { MatDialogRef, MatSnackBar } from "@angular/material";
 import { CloudStorageService } from "../../../../service/cloud-storage.service";
@@ -8,17 +8,17 @@ import { handleErrorSnackbar } from "../../../../utils/network";
 import { CreateDialog } from "../create-dialog";
 
 @Component({
-  selector: 'app-create-body',
-  templateUrl: './create-body.component.html',
-  styleUrls: ['./create-body.component.scss']
+  selector: 'app-create-decal',
+  templateUrl: './create-decal.component.html',
+  styleUrls: ['./create-decal.component.scss']
 })
-export class CreateBodyComponent extends CreateDialog implements OnInit{
+export class CreateDecalComponent extends CreateDialog implements OnInit {
 
-  body: Body = new Body(
-    undefined, undefined, '', Quality.COMMON, false
+  decal: Decal = new Decal(
+    undefined, undefined, '', Quality.COMMON, false, undefined, undefined
   );
 
-  constructor(dialogRef: MatDialogRef<CreateBodyComponent>,
+  constructor(dialogRef: MatDialogRef<CreateDecalComponent>,
               cloudService: CloudStorageService,
               private itemService: ItemService,
               private snackBar: MatSnackBar) {
@@ -29,8 +29,8 @@ export class CreateBodyComponent extends CreateDialog implements OnInit{
   }
 
   save() {
-    this.itemService.addBody(this.body).subscribe(newBody => {
-      this.dialogRef.close(newBody);
+    this.itemService.addDecal(this.decal).subscribe(newItem => {
+      this.dialogRef.close(newItem);
     }, error => handleErrorSnackbar(error, this.snackBar));
   }
 }

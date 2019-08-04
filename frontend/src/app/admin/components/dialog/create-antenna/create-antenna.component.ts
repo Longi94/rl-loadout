@@ -1,24 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { Body } from "../../../../model/body";
 import { Quality } from "../../../../model/quality";
 import { MatDialogRef, MatSnackBar } from "@angular/material";
 import { CloudStorageService } from "../../../../service/cloud-storage.service";
 import { ItemService } from "../../../../service/item.service";
 import { handleErrorSnackbar } from "../../../../utils/network";
+import { Antenna } from "../../../../model/antenna";
 import { CreateDialog } from "../create-dialog";
 
 @Component({
-  selector: 'app-create-body',
-  templateUrl: './create-body.component.html',
-  styleUrls: ['./create-body.component.scss']
+  selector: 'app-create-antenna',
+  templateUrl: './create-antenna.component.html',
+  styleUrls: ['./create-antenna.component.scss']
 })
-export class CreateBodyComponent extends CreateDialog implements OnInit{
+export class CreateAntennaComponent extends CreateDialog implements OnInit {
 
-  body: Body = new Body(
-    undefined, undefined, '', Quality.COMMON, false
+  antenna: Antenna = new Antenna(
+    undefined, undefined, '', Quality.COMMON, false, undefined, undefined, undefined, undefined
   );
 
-  constructor(dialogRef: MatDialogRef<CreateBodyComponent>,
+  constructor(dialogRef: MatDialogRef<CreateAntennaComponent>,
               cloudService: CloudStorageService,
               private itemService: ItemService,
               private snackBar: MatSnackBar) {
@@ -29,8 +29,8 @@ export class CreateBodyComponent extends CreateDialog implements OnInit{
   }
 
   save() {
-    this.itemService.addBody(this.body).subscribe(newBody => {
-      this.dialogRef.close(newBody);
+    this.itemService.addAntenna(this.antenna).subscribe(newItem => {
+      this.dialogRef.close(newItem);
     }, error => handleErrorSnackbar(error, this.snackBar));
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ItemListComponent } from "../item-list/item-list.component";
 import { MatDialog } from "@angular/material";
 import { ItemService } from "../../../service/item.service";
+import { CreateDecalComponent } from "../dialog/create-decal/create-decal.component";
 
 @Component({
   selector: 'app-decals',
@@ -18,7 +19,7 @@ export class DecalsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.itemListComponent.createDialog = undefined;
+    this.itemListComponent.createDialog = CreateDecalComponent;
     this.itemService.getDecals().subscribe(items => this.itemListComponent.items = items);
   }
 }
