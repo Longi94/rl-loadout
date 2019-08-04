@@ -179,7 +179,7 @@ def get_decals():
 
 @app.route('/api/decals', methods=['POST'])
 @jwt_required
-@json_required_params(['name', 'icon', 'quality', 'paintable'])
+@json_required_params(['rgba_map', 'decal_detail_id'])
 @rollback_on_exc
 def add_decal():
     decal = Decal()
@@ -204,7 +204,7 @@ def get_decal_details():
 
 @app.route('/api/decal-details', methods=['POST'])
 @jwt_required
-@json_required_params(['name', 'icon', 'quality', 'paintable', 'model'])
+@json_required_params(['name', 'icon', 'quality', 'paintable'])
 @rollback_on_exc
 def add_decal_detail():
     decal_detail = DecalDetail()
@@ -279,7 +279,7 @@ def get_antenna_sticks():
 
 @app.route('/api/antenna-sticks', methods=['POST'])
 @jwt_required
-@json_required_params(['name', 'icon', 'quality', 'paintable', 'model'])
+@json_required_params(['model'])
 @rollback_on_exc
 def add_antenna_stick():
     antenna_stick = AntennaStick()

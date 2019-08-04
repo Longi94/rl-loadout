@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { DecalDetail } from "../../../../model/decal";
 import { Quality } from "../../../../model/quality";
 import { MatDialogRef, MatSnackBar } from "@angular/material";
@@ -12,7 +12,7 @@ import { CreateDialog } from "../create-dialog";
   templateUrl: './create-decal-detail.component.html',
   styleUrls: ['./create-decal-detail.component.scss']
 })
-export class CreateDecalDetailComponent extends CreateDialog implements OnInit {
+export class CreateDecalDetailComponent extends CreateDialog {
 
   decalDetail: DecalDetail = new DecalDetail(
     undefined, undefined, '', Quality.COMMON, false
@@ -23,9 +23,6 @@ export class CreateDecalDetailComponent extends CreateDialog implements OnInit {
               private itemService: ItemService,
               private snackBar: MatSnackBar) {
     super(dialogRef, cloudService)
-  }
-
-  ngOnInit() {
   }
 
   save() {

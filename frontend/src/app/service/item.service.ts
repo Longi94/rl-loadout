@@ -64,7 +64,7 @@ export class ItemService {
   }
 
   deleteAntennaStick(id: number): Observable<any> {
-    return this.httpClient.delete(`${HOST}/antennaSticks/${id}`);
+    return this.httpClient.delete(`${HOST}/antenna-sticks/${id}`);
   }
 
   getWheels(): Observable<Wheel[]> {

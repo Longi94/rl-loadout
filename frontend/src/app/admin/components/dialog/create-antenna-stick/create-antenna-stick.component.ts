@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { MatDialogRef, MatSnackBar } from "@angular/material";
 import { CloudStorageService } from "../../../../service/cloud-storage.service";
 import { ItemService } from "../../../../service/item.service";
@@ -11,7 +11,7 @@ import { CreateDialog } from "../create-dialog";
   templateUrl: './create-antenna-stick.component.html',
   styleUrls: ['./create-antenna-stick.component.scss']
 })
-export class CreateAntennaStickComponent extends CreateDialog implements OnInit {
+export class CreateAntennaStickComponent extends CreateDialog {
 
   antennaStick: AntennaStick = new AntennaStick();
 
@@ -20,9 +20,6 @@ export class CreateAntennaStickComponent extends CreateDialog implements OnInit 
               private itemService: ItemService,
               private snackBar: MatSnackBar) {
     super(dialogRef, cloudService)
-  }
-
-  ngOnInit() {
   }
 
   save() {

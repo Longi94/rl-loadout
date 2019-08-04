@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Topper } from "../../../../model/topper";
 import { Quality } from "../../../../model/quality";
 import { MatDialogRef, MatSnackBar } from "@angular/material";
@@ -12,7 +12,7 @@ import { CreateDialog } from "../create-dialog";
   templateUrl: './create-topper.component.html',
   styleUrls: ['./create-topper.component.scss']
 })
-export class CreateTopperComponent extends CreateDialog implements OnInit {
+export class CreateTopperComponent extends CreateDialog {
 
   topper: Topper = new Topper(
     undefined, undefined, '', Quality.COMMON, false, undefined, undefined, undefined
@@ -23,9 +23,6 @@ export class CreateTopperComponent extends CreateDialog implements OnInit {
               private itemService: ItemService,
               private snackBar: MatSnackBar) {
     super(dialogRef, cloudService)
-  }
-
-  ngOnInit() {
   }
 
   save() {

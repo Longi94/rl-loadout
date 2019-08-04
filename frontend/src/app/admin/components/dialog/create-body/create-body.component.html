@@ -21,7 +21,7 @@
   </mat-form-field>
   <mat-checkbox [(ngModel)]="body.paintable">Paintable</mat-checkbox>
   <mat-form-field>
-    <mat-label>Models</mat-label>
+    <mat-label>Model</mat-label>
     <mat-select [(ngModel)]="body.model">
       <mat-option *ngFor="let obj of objects.models" [value]="obj.name">
         {{obj.name}}
