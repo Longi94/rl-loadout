@@ -1,0 +1,24 @@
+<div class="container-div">
+  <mat-toolbar class="mat-elevation-z6" color="primary">
+    <span class="title">Admin</span>
+    <button mat-button [matMenuTriggerFor]="itemsMenu">Items <mat-icon>arrow_drop_down</mat-icon></button>
+    <span class="flex-spacer"></span>
+    <button mat-button [matMenuTriggerFor]="profileMenu">
+      {{ username }} <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+  </mat-toolbar>
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+<mat-menu #profileMenu="matMenu">
+  <button mat-menu-item (click)="logout()">Logout</button>
+</mat-menu>
+<mat-menu #itemsMenu="matMenu">
+  <button mat-menu-item (click)="router.navigate(['admin/bodies']).then()">Bodies</button>
+  <button mat-menu-item (click)="router.navigate(['admin/decals']).then()">Decals</button>
+  <button mat-menu-item (click)="router.navigate(['admin/wheels']).then()">Wheels</button>
+  <button mat-menu-item (click)="router.navigate(['admin/toppers']).then()">Toppers</button>
+  <button mat-menu-item (click)="router.navigate(['admin/antennas']).then()">Antennas</button>
+</mat-menu>
+
