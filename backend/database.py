@@ -11,6 +11,13 @@ log = logging.getLogger(__name__)
 Base = declarative_base()
 
 
+class User(Base):
+    __tablename__ = 'user'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False, unique=True)
+    password = Column(String(255), nullable=False)
+
+
 class BaseItem:
     __tablename__ = ''
     id = Column(Integer, primary_key=True)
@@ -157,8 +164,31 @@ class Db(object):
         )
 
         self.engine = create_engine(self.url)
-        Base.metadata.create_all(self.engine)
+
+        if config.get('database', 'create_all').lower() == 'true':
+            Base.metadata.create_all(self.engine)
+
         self.Session = scoped_session(sessionmaker(bind=self.engine))
+
+    def add_user(self, username, hash):
+        """
+        Add a user to the db
+        :param username:
+        :param hash:
+        """
+        session = self.Session()
+        user = User(name=username, password=hash)
+        session.add(user)
+        session.commit()
+
+    def get_user(self, username):
+        """
+        Find user by username
+        :param username: username
+        :return:
+        """
+        session = self.Session()
+        return session.query(User).filter(User.name == username).first()
 
     def get_bodies(self) -> List[Body]:
         """

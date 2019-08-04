@@ -5,6 +5,7 @@ from flask_jwt_extended import JWTManager, jwt_required, create_access_token, ge
 from config import config
 from database import Db
 from logging_config import logging_config
+from auth import verify_password
 from _version import __version__
 
 log = logging.getLogger(__name__)
@@ -41,7 +42,12 @@ def auth():
     if not password:
         return jsonify({"msg": "Missing password parameter"}), 400
 
-    if username != 'test' or password != 'test':
+    user = database.get_user(username)
+
+    if user is None:
+        return jsonify({"msg": "User does not exist"}), 404
+
+    if not verify_password(user.password, password):
         return jsonify({"msg": "Bad username or password"}), 401
 
     access_token = create_access_token(identity=username)

@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
           duration: 2000
         });
       } else {
-        this.snackBar.open(`${error.error.error} - ${error.error.message}`, null, {
+        this.snackBar.open(error.error.msg, null, {
           duration: 2000
         });
       }
