@@ -2,6 +2,8 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Item } from "../../../model/item";
 import { environment } from "../../../../environments/environment";
 import { ItemService } from "../../../service/item.service";
+import { confirmMaterial } from "../../../shared/confirm-dialog/confirm-dialog.component";
+import { MatDialog } from "@angular/material";
 
 @Component({
   selector: 'app-item-list',
@@ -16,19 +18,22 @@ export class ItemListComponent implements OnInit {
   @Input('type')
   type: string;
 
-  constructor(private itemService: ItemService) { }
+  constructor(private itemService: ItemService,
+              private dialog: MatDialog) { }
 
   ngOnInit() {
   }
 
   deleteItem(item: Item) {
-    switch (this.type) {
-      case 'body':
-        this.itemService.deleteBody(item.id).subscribe(() => this.items.splice(this.items.indexOf(item), 1));
-        break;
-      default:
-        console.warn(`Unknown item type: ${this.type}`);
-        break;
-    }
+    confirmMaterial(`Delete ${item.name}?`, this.dialog, () => {
+      switch (this.type) {
+        case 'body':
+          this.itemService.deleteBody(item.id).subscribe(() => this.items.splice(this.items.indexOf(item), 1));
+          break;
+        default:
+          console.warn(`Unknown item type: ${this.type}`);
+          break;
+      }
+    });
   }
 }

@@ -7,6 +7,7 @@ import { RouterModule } from "@angular/router";
 import { BodiesComponent } from './components/bodies/bodies.component';
 import { ItemListComponent } from './components/item-list/item-list.component';
 import { CreateBodyComponent } from './components/dialog/create-body/create-body.component';
+import { SharedModule } from "../shared/shared.module";
 
 
 
@@ -21,6 +22,7 @@ import { CreateBodyComponent } from './components/dialog/create-body/create-body
   imports: [
     CommonModule,
     RouterModule,
+    SharedModule,
     SharedMaterialModule
   ],
   entryComponents: [

@@ -38,8 +38,4 @@ export class BodiesComponent implements OnInit {
       }
     });
   }
-
-  deleteBody(body: Body) {
-    this.itemService.deleteBody(body.id)
-  }
 }
