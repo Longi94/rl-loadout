@@ -4,7 +4,6 @@ import { environment } from "../../../../environments/environment";
 import { ItemService } from "../../../service/item.service";
 import { confirmMaterial } from "../../../shared/confirm-dialog/confirm-dialog.component";
 import { MatDialog } from "@angular/material";
-import { CreateBodyComponent } from "../dialog/create-body/create-body.component";
 
 @Component({
   selector: 'app-item-list',
@@ -39,7 +38,25 @@ export class ItemListComponent implements OnInit {
     confirmMaterial(`Delete ${item[this.line1]}?`, this.dialog, () => {
       switch (this.type) {
         case 'body':
-          this.itemService.deleteBody(item.id).subscribe(() => this.items.splice(this.items.indexOf(item), 1));
+          this.itemService.deleteBody(item.id).subscribe(() => this.removeItem(item));
+          break;
+        case 'antenna':
+          this.itemService.deleteAntenna(item.id).subscribe(() => this.removeItem(item));
+          break;
+        case 'antenna_stick':
+          this.itemService.deleteAntennaStick(item.id).subscribe(() => this.removeItem(item));
+          break;
+        case 'decal':
+          this.itemService.deleteDecal(item.id).subscribe(() => this.removeItem(item));
+          break;
+        case 'decal_detail':
+          this.itemService.deleteDecalDetail(item.id).subscribe(() => this.removeItem(item));
+          break;
+        case 'topper':
+          this.itemService.deleteTopper(item.id).subscribe(() => this.removeItem(item));
+          break;
+        case 'wheel':
+          this.itemService.deleteWheel(item.id).subscribe(() => this.removeItem(item));
           break;
         default:
           console.warn(`Unknown item type: ${this.type}`);
@@ -47,6 +64,11 @@ export class ItemListComponent implements OnInit {
       }
     });
   }
+
+  removeItem(item: Item) {
+    this.items.splice(this.items.indexOf(item), 1)
+  }
+
   openCreateDialog() {
     const dialogRef = this.dialog.open(this.createDialog, {
       width: '500px',
