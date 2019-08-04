@@ -8,6 +8,12 @@ import { BodiesComponent } from './components/bodies/bodies.component';
 import { ItemListComponent } from './components/item-list/item-list.component';
 import { CreateBodyComponent } from './components/dialog/create-body/create-body.component';
 import { SharedModule } from "../shared/shared.module";
+import { DecalDetailsComponent } from './components/decal-details/decal-details.component';
+import { DecalsComponent } from './components/decals/decals.component';
+import { WheelsComponent } from './components/wheels/wheels.component';
+import { ToppersComponent } from './components/toppers/toppers.component';
+import { AntennasComponent } from './components/antennas/antennas.component';
+import { AntennaSticksComponent } from './components/antenna-sticks/antenna-sticks.component';
 
 
 
@@ -17,7 +23,13 @@ import { SharedModule } from "../shared/shared.module";
     MainComponent,
     BodiesComponent,
     ItemListComponent,
-    CreateBodyComponent
+    CreateBodyComponent,
+    DecalDetailsComponent,
+    DecalsComponent,
+    WheelsComponent,
+    ToppersComponent,
+    AntennasComponent,
+    AntennaSticksComponent
   ],
   imports: [
     CommonModule,

@@ -138,7 +138,8 @@ class Decal(Base):
             'paintable': self.decal_detail.paintable,
             'base_texture': self.base_texture,
             'rgba_map': self.rgba_map,
-            'body_id': self.body_id
+            'body_id': self.body_id,
+            'body_name': self.body.name
         }
 
 
@@ -275,10 +276,12 @@ class Db(object):
         :return: decal
         """
         session = self.Session()
-        body = session.query(Body).get(body_id)
-        if body is None:
-            return []
-        return body.decals
+        if body_id is not None:
+            body = session.query(Body).get(body_id)
+            if body is None:
+                return []
+            return body.decals
+        return session.query(Decal)
 
     def delete_decal(self, decal_id: int):
         session = self.Session()

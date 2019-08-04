@@ -16,15 +16,12 @@ export class BodiesComponent implements OnInit {
   @ViewChild('itemListComponent', {static: true})
   itemListComponent: ItemListComponent;
 
-  constructor(private loadoutStore: LoadoutStoreService,
-              private dialog: MatDialog,
+  constructor(private dialog: MatDialog,
               private itemService: ItemService) {
   }
 
   ngOnInit() {
     this.itemListComponent.createDialog = CreateBodyComponent;
-    this.loadoutStore.initBodies().then(() => {
-      this.itemListComponent.items = this.loadoutStore.bodies;
-    });
+    this.itemService.getBodies().subscribe(items => this.itemListComponent.items = items);
   }
 }

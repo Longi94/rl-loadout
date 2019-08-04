@@ -14,11 +14,20 @@ import { CreateBodyComponent } from "../dialog/create-body/create-body.component
 export class ItemListComponent implements OnInit {
 
   assetHost = environment.assetHost;
-  items: Item[] = [];
+  items: any[] = [];
   createDialog;
 
   @Input('type')
   type: string;
+
+  @Input('show-img')
+  showImg: boolean = true;
+
+  @Input('line1')
+  line1: string = 'name';
+
+  @Input('line2')
+  line2: string;
 
   constructor(private itemService: ItemService,
               private dialog: MatDialog) { }

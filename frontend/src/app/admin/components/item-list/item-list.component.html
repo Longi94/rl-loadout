@@ -3,8 +3,9 @@
     <mat-card-content>
       <mat-list role="list">
         <mat-list-item *ngFor="let item of items last as last" role="listitem">
-          <img matListAvatar [src]="assetHost + '/' + item.icon"/>
-          <span matLine>{{item.name}}</span>
+          <img *ngIf="showImg" matListAvatar [src]="assetHost + '/' + item.icon"/>
+          <span matLine>{{item[line1]}}</span>
+          <span *ngIf="line2" matLine>{{item[line2]}}</span>
           <span class="flex-spacer"></span>
 <!--          <button mat-icon-button matTooltip="Edit" (click)="openEditDialog(item)">-->
 <!--            <mat-icon>edit</mat-icon>-->

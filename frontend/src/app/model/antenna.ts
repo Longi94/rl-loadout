@@ -6,6 +6,7 @@ export class Antenna extends Item {
   base_texture: string;
   rgba_map: string;
   stick: string;
+  stick_id: number;
 
   constructor(id: number, icon: string, name: string, quality: Quality, paintable: boolean, model: string,
               base_texture: string, rgba_map: string, stick: string) {
@@ -19,4 +20,9 @@ export class Antenna extends Item {
   static NONE = new Antenna(
     -1, '','None', Quality.COMMON, false, undefined, undefined, undefined, undefined
   );
+}
+
+export class AntennaStick {
+  id: number;
+  model: string;
 }

@@ -173,8 +173,6 @@ def get_defaults():
 @app.route('/api/decals', methods=['GET'])
 def get_decals():
     body_id = request.args.get('body', default=None)
-    if body_id is None:
-        abort(400)
     decals = database.get_decals(body_id)
     return jsonify([item.to_dict() for item in decals])
 
@@ -198,13 +196,13 @@ def delete_decal(decal_id):
     return '', 200
 
 
-@app.route('/api/decal_details', methods=['GET'])
+@app.route('/api/decal-details', methods=['GET'])
 def get_decal_details():
     decal_details = database.get_decal_details()
     return jsonify([item.to_dict() for item in decal_details])
 
 
-@app.route('/api/decal_details', methods=['POST'])
+@app.route('/api/decal-details', methods=['POST'])
 @jwt_required
 @json_required_params(['name', 'icon', 'quality', 'paintable', 'model'])
 @rollback_on_exc
@@ -215,7 +213,7 @@ def add_decal_detail():
     return jsonify(decal_detail.to_dict())
 
 
-@app.route('/api/decal_details/<decal_detail_id>', methods=['DELETE'])
+@app.route('/api/decal-details/<decal_detail_id>', methods=['DELETE'])
 @jwt_required
 @rollback_on_exc
 def delete_decal_detail(decal_detail_id):
@@ -273,13 +271,13 @@ def delete_antenna(antenna_id):
     return '', 200
 
 
-@app.route('/api/antenna_sticks', methods=['GET'])
+@app.route('/api/antenna-sticks', methods=['GET'])
 def get_antenna_sticks():
     antenna_sticks = database.get_antenna_sticks()
     return jsonify([item.to_dict() for item in antenna_sticks])
 
 
-@app.route('/api/antenna_sticks', methods=['POST'])
+@app.route('/api/antenna-sticks', methods=['POST'])
 @jwt_required
 @json_required_params(['name', 'icon', 'quality', 'paintable', 'model'])
 @rollback_on_exc
@@ -290,7 +288,7 @@ def add_antenna_stick():
     return jsonify(antenna_stick.to_dict())
 
 
-@app.route('/api/antenna_sticks/<antenna_stick_id>', methods=['DELETE'])
+@app.route('/api/antenna-sticks/<antenna_stick_id>', methods=['DELETE'])
 @jwt_required
 @rollback_on_exc
 def delete_antenna_stick(antenna_stick_id):
