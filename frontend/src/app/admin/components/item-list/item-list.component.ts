@@ -36,7 +36,7 @@ export class ItemListComponent implements OnInit {
   }
 
   deleteItem(item: Item) {
-    confirmMaterial(`Delete ${item.name}?`, this.dialog, () => {
+    confirmMaterial(`Delete ${item[this.line1]}?`, this.dialog, () => {
       switch (this.type) {
         case 'body':
           this.itemService.deleteBody(item.id).subscribe(() => this.items.splice(this.items.indexOf(item), 1));
