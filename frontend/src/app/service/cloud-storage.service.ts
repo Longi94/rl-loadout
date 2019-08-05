@@ -18,14 +18,26 @@ export class CloudStorageService {
       map(value => {
         const items = value.items;
 
+        let icons = items.filter(item => item.name.startsWith('icons/') && item.name.length > 6);
+        let textures = items.filter(item => item.name.startsWith('textures/') && item.name.length > 9);
+        let models = items.filter(item => item.name.startsWith('models/') && item.name.length > 7);
+
+        icons.sort(sortByDate);
+        textures.sort(sortByDate);
+        models.sort(sortByDate);
+
         return {
-          icons: items.filter(item => item.name.startsWith('icons/') && item.name.length > 6),
-          textures: items.filter(item => item.name.startsWith('textures/') && item.name.length > 9),
-          models: items.filter(item => item.name.startsWith('models/') && item.name.length > 7)
+          icons: icons,
+          textures: textures,
+          models: models
         }
       })
     );
   }
+}
+
+function sortByDate(a, b) {
+  return (a.updated < b.updated) ? 1 : ((a.updated > b.updated) ? -1 : 0);
 }
 
 class ObjectsResponse {
