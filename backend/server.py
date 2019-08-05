@@ -2,9 +2,9 @@ import logging
 from typing import List
 from functools import wraps
 from datetime import timedelta
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
+from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 from config import config
 from database import Db, Body, Wheel, Topper, Antenna, AntennaStick, Decal, DecalDetail
 from logging_config import logging_config
@@ -42,25 +42,13 @@ def json_required_params(params: List[str]):
     return decorator
 
 
-def rollback_on_exc(function):
-    @wraps(function)
-    def wrapper(*args, **kwargs):
-        try:
-            return function(*args, **kwargs)
-        except Exception as e:
-            log.error('Exception occurred during database session', exc_info=e)
-            database.Session().rollback()
-            return jsonify({'msg': f'Internal server error occurred'}), 500
-
-    return wrapper
-
-
-@app.after_request
-def after_request(response):
+@app.teardown_request
+def teardown_request(exception):
+    if exception:
+        database.Session.rollback()
     if database.Session.is_active:
         database.Session.commit()
     database.Session.remove()
-    return response
 
 
 @app.route('/api/status', methods=['GET'])
@@ -114,7 +102,6 @@ def get_bodies():
 @app.route('/api/bodies', methods=['POST'])
 @jwt_required
 @json_required_params(['name', 'icon', 'quality', 'paintable', 'model', 'blank_skin'])
-@rollback_on_exc
 def add_body():
     body = Body()
     body.apply_dict(request.json)
@@ -124,7 +111,6 @@ def add_body():
 
 @app.route('/api/bodies/<body_id>', methods=['DELETE'])
 @jwt_required
-@rollback_on_exc
 def delete_body(body_id):
     database.delete_body(body_id)
     return '', 200
@@ -139,7 +125,6 @@ def get_wheels():
 @app.route('/api/wheels', methods=['POST'])
 @jwt_required
 @json_required_params(['name', 'icon', 'quality', 'paintable', 'model'])
-@rollback_on_exc
 def add_wheel():
     wheel = Wheel()
     wheel.apply_dict(request.json)
@@ -149,7 +134,6 @@ def add_wheel():
 
 @app.route('/api/wheels/<wheel_id>', methods=['DELETE'])
 @jwt_required
-@rollback_on_exc
 def delete_wheel(wheel_id):
     database.delete_wheel(wheel_id)
     return '', 200
@@ -180,7 +164,6 @@ def get_decals():
 @app.route('/api/decals', methods=['POST'])
 @jwt_required
 @json_required_params(['rgba_map', 'decal_detail_id'])
-@rollback_on_exc
 def add_decal():
     decal = Decal()
     decal.apply_dict(request.json)
@@ -190,7 +173,6 @@ def add_decal():
 
 @app.route('/api/decals/<decal_id>', methods=['DELETE'])
 @jwt_required
-@rollback_on_exc
 def delete_decal(decal_id):
     database.delete_decal(decal_id)
     return '', 200
@@ -205,7 +187,6 @@ def get_decal_details():
 @app.route('/api/decal-details', methods=['POST'])
 @jwt_required
 @json_required_params(['name', 'icon', 'quality', 'paintable'])
-@rollback_on_exc
 def add_decal_detail():
     decal_detail = DecalDetail()
     decal_detail.apply_dict(request.json)
@@ -215,7 +196,6 @@ def add_decal_detail():
 
 @app.route('/api/decal-details/<decal_detail_id>', methods=['DELETE'])
 @jwt_required
-@rollback_on_exc
 def delete_decal_detail(decal_detail_id):
     database.delete_decal_detail(decal_detail_id)
     return '', 200
@@ -230,7 +210,6 @@ def get_toppers():
 @app.route('/api/toppers', methods=['POST'])
 @jwt_required
 @json_required_params(['name', 'icon', 'quality', 'paintable', 'model'])
-@rollback_on_exc
 def add_topper():
     topper = Topper()
     topper.apply_dict(request.json)
@@ -240,7 +219,6 @@ def add_topper():
 
 @app.route('/api/toppers/<topper_id>', methods=['DELETE'])
 @jwt_required
-@rollback_on_exc
 def delete_topper(topper_id):
     database.delete_topper(topper_id)
     return '', 200
@@ -255,7 +233,6 @@ def get_antennas():
 @app.route('/api/antennas', methods=['POST'])
 @jwt_required
 @json_required_params(['name', 'icon', 'quality', 'paintable', 'model', 'stick_id'])
-@rollback_on_exc
 def add_antenna():
     antenna = Antenna()
     antenna.apply_dict(request.json)
@@ -265,7 +242,6 @@ def add_antenna():
 
 @app.route('/api/antennas/<antenna_id>', methods=['DELETE'])
 @jwt_required
-@rollback_on_exc
 def delete_antenna(antenna_id):
     database.delete_antenna(antenna_id)
     return '', 200
@@ -280,7 +256,6 @@ def get_antenna_sticks():
 @app.route('/api/antenna-sticks', methods=['POST'])
 @jwt_required
 @json_required_params(['model'])
-@rollback_on_exc
 def add_antenna_stick():
     antenna_stick = AntennaStick()
     antenna_stick.apply_dict(request.json)
@@ -290,7 +265,6 @@ def add_antenna_stick():
 
 @app.route('/api/antenna-sticks/<antenna_stick_id>', methods=['DELETE'])
 @jwt_required
-@rollback_on_exc
 def delete_antenna_stick(antenna_stick_id):
     database.delete_antenna_stick(antenna_stick_id)
     return '', 200
