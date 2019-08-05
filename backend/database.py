@@ -11,6 +11,13 @@ log = logging.getLogger(__name__)
 Base = declarative_base()
 
 
+class User(Base):
+    __tablename__ = 'user'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(255), nullable=False, unique=True)
+    password = Column(String(255), nullable=False)
+
+
 class BaseItem:
     __tablename__ = ''
     id = Column(Integer, primary_key=True)
@@ -19,6 +26,14 @@ class BaseItem:
     quality = Column(Integer, nullable=False)
     icon = Column(String(255), nullable=False)
     paintable = Column(Boolean, nullable=False, default=False)
+
+    def apply_dict(self, item_dict: Dict):
+        self.id = item_dict.get('id', None)
+        self.replay_id = item_dict.get('replay_id', None)
+        self.name = item_dict.get('name', None)
+        self.quality = item_dict.get('quality', None)
+        self.icon = item_dict.get('icon', None)
+        self.paintable = item_dict.get('paintable', None)
 
     def to_dict(self) -> Dict:
         """Return object data in easily serializable format"""
@@ -41,6 +56,15 @@ class Body(Base, BaseItem):
     chassis_n = Column(String(255), nullable=True)
     decals = relationship('Decal')
 
+    def apply_dict(self, item_dict: Dict):
+        super().apply_dict(item_dict)
+        self.model = item_dict.get('model', None)
+        self.blank_skin = item_dict.get('blank_skin', None)
+        self.base_skin = item_dict.get('base_skin', None)
+        self.chassis_base = item_dict.get('chassis_base', None)
+        self.chassis_n = item_dict.get('chassis_n', None)
+        self.decals = item_dict.get('decals', None)
+
     def to_dict(self) -> Dict:
         d = super(Body, self).to_dict()
 
@@ -58,6 +82,12 @@ class Wheel(Base, BaseItem):
     model = Column(String(255), nullable=False)
     rim_base = Column(String(255), nullable=True)
     rim_rgb_map = Column(String(255), nullable=True)
+
+    def apply_dict(self, item_dict: Dict):
+        super().apply_dict(item_dict)
+        self.model = item_dict.get('model', None)
+        self.rim_base = item_dict.get('rim_base', None)
+        self.rim_rgb_map = item_dict.get('rim_rgb_map', None)
 
     def to_dict(self) -> Dict:
         d = super(Wheel, self).to_dict()
@@ -85,12 +115,24 @@ class Decal(Base):
     decal_detail = relationship('DecalDetail', back_populates='decals')
     quality = Column(Integer, nullable=True)
 
+    def apply_dict(self, item_dict: Dict):
+        self.id = item_dict.get('id', None)
+        self.base_texture = item_dict.get('base_texture', None)
+        self.rgba_map = item_dict.get('rgba_map', None)
+        self.body_id = item_dict.get('body_id', None)
+        self.decal_detail_id = item_dict.get('decal_detail_id', None)
+        self.quality = item_dict.get('quality', None)
+
     def to_dict(self) -> Dict:
         """Return object data in easily serializable format"""
         quality = self.quality
 
         if quality is None:
             quality = self.decal_detail.quality
+
+        body_name = None
+        if self.body:
+            body_name = self.body.name
 
         return {
             'id': self.id,
@@ -100,7 +142,9 @@ class Decal(Base):
             'icon': self.decal_detail.icon,
             'paintable': self.decal_detail.paintable,
             'base_texture': self.base_texture,
-            'rgba_map': self.rgba_map
+            'rgba_map': self.rgba_map,
+            'body_id': self.body_id,
+            'body_name': body_name
         }
 
 
@@ -109,6 +153,12 @@ class Topper(Base, BaseItem):
     model = Column(String(255), nullable=False)
     base_texture = Column(String(255), nullable=True)
     rgba_map = Column(String(255), nullable=True)
+
+    def apply_dict(self, item_dict: Dict):
+        super().apply_dict(item_dict)
+        self.model = item_dict.get('model', None)
+        self.base_texture = item_dict.get('base_texture', None)
+        self.rgba_map = item_dict.get('rgba_map', None)
 
     def to_dict(self) -> Dict:
         d = super(Topper, self).to_dict()
@@ -128,6 +178,13 @@ class Antenna(Base, BaseItem):
     stick_id = Column(Integer, ForeignKey('antenna_stick.id'), nullable=False)
     stick = relationship('AntennaStick')
 
+    def apply_dict(self, item_dict: Dict):
+        super().apply_dict(item_dict)
+        self.model = item_dict.get('model', None)
+        self.base_texture = item_dict.get('base_texture', None)
+        self.rgba_map = item_dict.get('rgba_map', None)
+        self.stick_id = item_dict.get('stick_id', None)
+
     def to_dict(self) -> Dict:
         d = super(Antenna, self).to_dict()
 
@@ -143,6 +200,16 @@ class AntennaStick(Base):
     __tablename__ = 'antenna_stick'
     id = Column(Integer, primary_key=True)
     model = Column(String(255), nullable=False)
+    
+    def apply_dict(self, item_dict):
+        self.id = item_dict.get('id', None)
+        self.model = item_dict.get('model', None)
+
+    def to_dict(self) -> Dict:
+        return {
+            'id': self.id,
+            'model': self.model
+        }
 
 
 class Db(object):
@@ -157,22 +224,61 @@ class Db(object):
         )
 
         self.engine = create_engine(self.url)
-        Base.metadata.create_all(self.engine)
+
+        if config.get('database', 'create_all').lower() == 'true':
+            Base.metadata.create_all(self.engine)
+
         self.Session = scoped_session(sessionmaker(bind=self.engine))
 
+    def commit(self):
+        self.Session().commit()
+
+    def add_user(self, username: str, password: str):
+        """
+        Add a user to the db
+        :param username:
+        :param password:
+        """
+        session = self.Session()
+        user = User(name=username.lower(), password=password)
+        session.add(user)
+        session.commit()
+
+    def get_user(self, username: str):
+        """
+        Find user by username
+        :param username: username
+        :return:
+        """
+        session = self.Session()
+        username = username.lower()
+        return session.query(User).filter(User.name == username).first()
+
     def get_bodies(self) -> List[Body]:
-        """
-        :return: all the bodies
-        """
         session = self.Session()
         return session.query(Body)
 
+    def get_body(self, body_id) -> Body:
+        session = self.Session()
+        return session.query(Body).get(body_id)
+
+    def delete_body(self, body_id: int):
+        session = self.Session()
+        session.query(Body).filter(Body.id == body_id).delete()
+
+    def add_body(self, body: Body):
+        self.Session().add(body)
+
     def get_wheels(self) -> List[Wheel]:
-        """
-        :return: all the wheels
-        """
         session = self.Session()
         return session.query(Wheel)
+
+    def delete_wheel(self, wheel_id: int):
+        session = self.Session()
+        session.query(Wheel).filter(Wheel.id == wheel_id).delete()
+
+    def add_wheel(self, wheel: Wheel):
+        self.Session().add(wheel)
 
     def get_decals(self, body_id: int) -> List[Decal]:
         """
@@ -182,10 +288,34 @@ class Db(object):
         :return: decal
         """
         session = self.Session()
-        body = session.query(Body).get(body_id)
-        if body is None:
-            return []
-        return body.decals
+        if body_id is not None:
+            body = session.query(Body).get(body_id)
+            if body is None:
+                return []
+            return body.decals
+        return session.query(Decal)
+
+    def delete_decal(self, decal_id: int):
+        session = self.Session()
+        session.query(Decal).filter(Decal.id == decal_id).delete()
+
+    def add_decal(self, decal: Decal):
+        self.Session().add(decal)
+
+    def get_decal_details(self) -> List[DecalDetail]:
+        session = self.Session()
+        return session.query(DecalDetail)
+
+    def get_decal_detail(self, detail_id) -> DecalDetail:
+        session = self.Session()
+        return session.query(DecalDetail).get(detail_id)
+
+    def delete_decal_detail(self, decal_detail_id: int):
+        session = self.Session()
+        session.query(DecalDetail).filter(DecalDetail.id == decal_detail_id).delete()
+
+    def add_decal_detail(self, decal_detail: DecalDetail):
+        self.Session().add(decal_detail)
 
     def get_default_wheel(self) -> Wheel:
         """
@@ -202,15 +332,38 @@ class Db(object):
         return session.query(Body).filter(Body.name == 'Octane').first()
 
     def get_toppers(self) -> List[Topper]:
-        """
-        :return: all the toppers
-        """
         session = self.Session()
         return session.query(Topper)
 
+    def delete_topper(self, topper_id: int):
+        session = self.Session()
+        session.query(Topper).filter(Topper.id == topper_id).delete()
+
+    def add_topper(self, topper: Topper):
+        self.Session().add(topper)
+
     def get_antennas(self) -> List[Antenna]:
-        """
-        :return: all the antennas
-        """
         session = self.Session()
         return session.query(Antenna)
+
+    def delete_antenna(self, antenna_id: int):
+        session = self.Session()
+        session.query(Antenna).filter(Antenna.id == antenna_id).delete()
+
+    def add_antenna(self, antenna: Antenna):
+        self.Session().add(antenna)
+
+    def get_antenna_sticks(self) -> List[AntennaStick]:
+        session = self.Session()
+        return session.query(AntennaStick)
+
+    def get_antenna_stick(self, stick_id) -> AntennaStick:
+        session = self.Session()
+        return session.query(AntennaStick).get(stick_id)
+
+    def delete_antenna_stick(self, antenna_stick_id: int):
+        session = self.Session()
+        session.query(AntennaStick).filter(AntennaStick.id == antenna_stick_id).delete()
+
+    def add_antenna_stick(self, antenna_stick: AntennaStick):
+        self.Session().add(antenna_stick)

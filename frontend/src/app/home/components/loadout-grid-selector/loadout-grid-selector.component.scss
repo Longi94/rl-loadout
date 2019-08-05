@@ -1,0 +1,61 @@
+@import "../../../../theme";
+
+.grid-container {
+  background-color: $background;
+  height: 100%;
+  padding: 10px;
+  overflow-y: auto;
+  box-shadow: -12px 0px 35px 15px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 50;
+  box-sizing: border-box;
+}
+
+mat-grid-list {
+  width: 500px;
+}
+
+mat-grid-tile {
+  background-color: black;
+}
+
+mat-grid-tile img {
+  width: 100%;
+  height: 100%;
+}
+
+mat-grid-tile:hover {
+  cursor: pointer;
+}
+
+mat-grid-tile-footer.rare {
+  background-color: rgba(99, 116, 195, 0.4);
+}
+
+mat-grid-tile-footer.very-rare {
+  background-color: rgba(123, 95, 195, 0.4);
+}
+
+mat-grid-tile-footer.import {
+  background-color: rgba(195, 81, 73, 0.4);
+}
+
+mat-grid-tile-footer.exotic {
+  background-color: rgba(195, 180, 91, 0.4);
+}
+
+mat-grid-tile-footer.black-market {
+  background-color: rgba(195, 0, 195, 0.4);
+}
+
+mat-grid-tile-footer.limited {
+  background-color: rgba(195, 102, 45, 0.4);
+}
+
+mat-grid-tile-footer.premium {
+  background-color: rgba(82, 195, 144, 0.4);
+}
+
+.selected {
+  box-shadow: 0 0 14px 0 map-get($app-primary, 700);
+}

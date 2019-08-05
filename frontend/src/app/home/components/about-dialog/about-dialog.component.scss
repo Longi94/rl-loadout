@@ -1,0 +1,5 @@
+@import "../../../../theme";
+
+a, a:visited, a:hover, a:active {
+  color: map-get($app-primary, 300);
+}

@@ -1,0 +1,61 @@
+<h1 mat-dialog-title>Edit Antenna</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <input matInput placeholder="Name" [(ngModel)]="antenna.name">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Quality</mat-label>
+    <mat-select [(ngModel)]="antenna.quality">
+      <mat-option *ngFor="let obj of qualities" [value]="obj.value">
+        {{obj.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Icon</mat-label>
+    <mat-select [(ngModel)]="antenna.icon">
+      <mat-option *ngFor="let obj of objects.icons" [value]="obj.name">
+        {{obj.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-checkbox [(ngModel)]="antenna.paintable">Paintable</mat-checkbox>
+  <mat-form-field>
+    <mat-label>Model</mat-label>
+    <mat-select [(ngModel)]="antenna.model">
+      <mat-option *ngFor="let obj of objects.models" [value]="obj.name">
+        {{obj.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Base texture</mat-label>
+    <mat-option [value]="undefined">None</mat-option>
+    <mat-select [(ngModel)]="antenna.base_texture">
+      <mat-option *ngFor="let obj of objects.textures" [value]="obj.name">
+        {{obj.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>RGBA map</mat-label>
+    <mat-option [value]="undefined">None</mat-option>
+    <mat-select [(ngModel)]="antenna.rgba_map">
+      <mat-option *ngFor="let obj of objects.textures" [value]="obj.name">
+        {{obj.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Stick</mat-label>
+    <mat-select [(ngModel)]="antenna.stick_id">
+      <mat-option *ngFor="let stick of sticks" [value]="stick.id">
+        {{stick.model}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-button (click)="save()">Save</button>
+</div>

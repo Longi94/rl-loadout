@@ -1,0 +1,50 @@
+<h1 mat-dialog-title>Edit Decal</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Base texture</mat-label>
+    <mat-select [(ngModel)]="decal.base_texture">
+      <mat-option [value]="undefined">None</mat-option>
+      <mat-option *ngFor="let obj of objects.textures" [value]="obj.name">
+        {{obj.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>RGBA map</mat-label>
+    <mat-select [(ngModel)]="decal.rgba_map">
+      <mat-option *ngFor="let obj of objects.textures" [value]="obj.name">
+        {{obj.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Body</mat-label>
+    <mat-select [(ngModel)]="decal.body_id">
+      <mat-option [value]="undefined">None</mat-option>
+      <mat-option *ngFor="let obj of bodies" [value]="obj.id">
+        {{obj.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Details</mat-label>
+    <mat-select [(ngModel)]="decal.decal_detail_id">
+      <mat-option *ngFor="let obj of decalDetails" [value]="obj.id">
+        {{obj.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Quality</mat-label>
+    <mat-select [(ngModel)]="decal.quality">
+      <mat-option [value]="undefined">None</mat-option>
+      <mat-option *ngFor="let obj of qualities" [value]="obj.value">
+        {{obj.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-button (click)="save()">Save</button>
+</div>

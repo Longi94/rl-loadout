@@ -1,0 +1,12 @@
+<div class="container-div">
+  <div class="col-md-4">
+    <span class="mat-title">Admin login</span>
+    <mat-form-field>
+      <input matInput placeholder="Username" [(ngModel)]="username">
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput placeholder="Password" [(ngModel)]="password" type="password">
+    </mat-form-field>
+    <button mat-raised-button color="primary" (click)="login()">Login</button>
+  </div>
+</div>

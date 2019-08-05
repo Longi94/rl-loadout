@@ -1,0 +1,37 @@
+@import "../../../../theme";
+
+.toolbar-container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-flow: row;
+}
+
+.toolbar {
+  height: 100%;
+  display: flex;
+  flex-flow: column;
+  background-color: $background;
+  overflow-y: auto;
+  z-index: 100;
+  box-shadow: -12px 0px 35px 15px rgba(0, 0, 0, 0.4);
+}
+
+.toolbar-button {
+  cursor: pointer;
+  padding: 0 8px;
+}
+
+.toolbar-button.selected {
+  background: rgba(255, 255, 255, 0.31);
+}
+
+.toolbar-button img {
+  width: 48px;
+  height: 48px;
+}
+
+.loadout-dropdown {
+  height: 100%;
+  background-color: $background;
+}

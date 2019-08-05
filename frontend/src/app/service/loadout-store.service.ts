@@ -24,6 +24,41 @@ export class LoadoutStoreService {
   constructor(private httpClient: HttpClient) {
   }
 
+  initAll(bodyId?: number): Promise<any> {
+    let params = new HttpParams();
+    if (bodyId != undefined) {
+      params = params.set('body', bodyId.toString())
+    }
+    return new Promise((resolve) => {
+      this.httpClient.get<any>(`${HOST}/all`, {params: params}).subscribe(
+        response => {
+          this.bodies = response['bodies'];
+          this.bodies.sort(itemCompare);
+
+          this.wheels = response['wheels'];
+          this.wheels.sort(itemCompare);
+
+          this.toppers = response['toppers'];
+          this.toppers.sort(itemCompare);
+
+          this.antennas = response['antennas'];
+          this.antennas.sort(itemCompare);
+
+          if ('decals' in response) {
+            this.decals = response['decals'];
+            this.decals.sort(itemCompare);
+          }
+
+          resolve();
+        },
+        error => {
+          console.error(error);
+          resolve();
+        }
+      )
+    });
+  }
+
   /**
    * Load the list of bodies and store them.
    */
