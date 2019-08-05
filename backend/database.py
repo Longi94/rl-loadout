@@ -63,7 +63,6 @@ class Body(Base, BaseItem):
         self.base_skin = item_dict.get('base_skin', None)
         self.chassis_base = item_dict.get('chassis_base', None)
         self.chassis_n = item_dict.get('chassis_n', None)
-        self.decals = item_dict.get('decals', None)
 
     def to_dict(self) -> Dict:
         d = super(Body, self).to_dict()
