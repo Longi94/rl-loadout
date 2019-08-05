@@ -28,6 +28,24 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
+  <mat-form-field>
+    <mat-label>Rim base</mat-label>
+    <mat-select [(ngModel)]="wheel.rim_base">
+      <mat-option [value]="undefined">None</mat-option>
+      <mat-option *ngFor="let obj of objects.textures" [value]="obj.name">
+        {{obj.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Rim RGBA map</mat-label>
+    <mat-select [(ngModel)]="wheel.rim_rgb_map">
+      <mat-option [value]="undefined">None</mat-option>
+      <mat-option *ngFor="let obj of objects.textures" [value]="obj.name">
+        {{obj.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="cancel()">Cancel</button>

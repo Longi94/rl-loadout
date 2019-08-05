@@ -28,6 +28,24 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
+  <mat-form-field>
+    <mat-label>Base texture</mat-label>
+    <mat-select [(ngModel)]="topper.base_texture">
+      <mat-option [value]="undefined">None</mat-option>
+      <mat-option *ngFor="let obj of objects.textures" [value]="obj.name">
+        {{obj.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>RGBA map</mat-label>
+    <mat-select [(ngModel)]="topper.rgba_map">
+      <mat-option [value]="undefined">None</mat-option>
+      <mat-option *ngFor="let obj of objects.textures" [value]="obj.name">
+        {{obj.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="cancel()">Cancel</button>
