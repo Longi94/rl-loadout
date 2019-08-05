@@ -8,16 +8,16 @@ export function getAssetUrl(asset: string) {
   return `${environment.assetHost}/${asset}`;
 }
 
-export function handleErrorSnackbar(error, snackBar: MatSnackBar) {
-  if (error.status === 401) {
-    snackBar.open('Invalid username of password', null, {
-      duration: 2000
-    });
+export function handleErrorSnackbar(error, snackBar: MatSnackBar, msg?: string) {
+  let message = undefined;
+  if (msg) {
+    message = msg;
+  } else if ('msg' in error.error) {
+    message = error.error.msg;
   } else {
-    snackBar.open(error.error.msg, null, {
-      duration: 2000
-    });
+    message = error.statusText;
   }
+  snackBar.open(message, null, {duration: 2000});
 }
 
 export function parseJwt(token: string) {

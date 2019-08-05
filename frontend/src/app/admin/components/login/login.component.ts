@@ -16,7 +16,8 @@ export class LoginComponent implements OnInit {
 
   constructor(private authService: AuthService,
               private router: Router,
-              private snackBar: MatSnackBar) { }
+              private snackBar: MatSnackBar) {
+  }
 
   ngOnInit() {
     if (this.authService.isAuthenticated()) {
@@ -27,6 +28,12 @@ export class LoginComponent implements OnInit {
   login() {
     this.authService.login(this.username, this.password).subscribe(() => {
       this.router.navigate(['admin']).then();
-    }, error => handleErrorSnackbar(error, this.snackBar));
+    }, error => {
+      if (error.status === 401) {
+        handleErrorSnackbar(error, this.snackBar, 'Invalid username of password');
+      } else {
+        handleErrorSnackbar(error, this.snackBar);
+      }
+    });
   }
 }
