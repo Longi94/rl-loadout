@@ -15,12 +15,12 @@
   <button mat-menu-item (click)="logout()">Logout</button>
 </mat-menu>
 <mat-menu #itemsMenu="matMenu">
+  <button mat-menu-item (click)="router.navigate(['admin/antennas']).then()">Antennas</button>
+  <button mat-menu-item (click)="router.navigate(['admin/antenna-sticks']).then()">Antenna sticks</button>
   <button mat-menu-item (click)="router.navigate(['admin/bodies']).then()">Bodies</button>
   <button mat-menu-item (click)="router.navigate(['admin/decals']).then()">Decals</button>
   <button mat-menu-item (click)="router.navigate(['admin/decal-details']).then()">Decal details</button>
-  <button mat-menu-item (click)="router.navigate(['admin/wheels']).then()">Wheels</button>
   <button mat-menu-item (click)="router.navigate(['admin/toppers']).then()">Toppers</button>
-  <button mat-menu-item (click)="router.navigate(['admin/antennas']).then()">Antennas</button>
-  <button mat-menu-item (click)="router.navigate(['admin/antenna-sticks']).then()">Antenna sticks</button>
+  <button mat-menu-item (click)="router.navigate(['admin/wheels']).then()">Wheels</button>
 </mat-menu>
 
