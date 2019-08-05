@@ -32,6 +32,7 @@ class BaseItem:
         self.replay_id = item_dict.get('replay_id', None)
         self.name = item_dict.get('name', None)
         self.quality = item_dict.get('quality', None)
+        self.icon = item_dict.get('icon', None)
         self.paintable = item_dict.get('paintable', None)
 
     def to_dict(self) -> Dict:
@@ -129,6 +130,10 @@ class Decal(Base):
         if quality is None:
             quality = self.decal_detail.quality
 
+        body_name = None
+        if self.body:
+            body_name = self.body.name
+
         return {
             'id': self.id,
             'replay_id': self.decal_detail.replay_id,
@@ -139,7 +144,7 @@ class Decal(Base):
             'base_texture': self.base_texture,
             'rgba_map': self.rgba_map,
             'body_id': self.body_id,
-            'body_name': self.body.name
+            'body_name': body_name
         }
 
 
@@ -253,6 +258,10 @@ class Db(object):
         session = self.Session()
         return session.query(Body)
 
+    def get_body(self, body_id) -> Body:
+        session = self.Session()
+        return session.query(Body).get(body_id)
+
     def delete_body(self, body_id: int):
         session = self.Session()
         session.query(Body).filter(Body.id == body_id).delete()
@@ -296,6 +305,10 @@ class Db(object):
     def get_decal_details(self) -> List[DecalDetail]:
         session = self.Session()
         return session.query(DecalDetail)
+
+    def get_decal_detail(self, detail_id) -> DecalDetail:
+        session = self.Session()
+        return session.query(DecalDetail).get(detail_id)
 
     def delete_decal_detail(self, decal_detail_id: int):
         session = self.Session()
@@ -343,6 +356,10 @@ class Db(object):
     def get_antenna_sticks(self) -> List[AntennaStick]:
         session = self.Session()
         return session.query(AntennaStick)
+
+    def get_antenna_stick(self, stick_id) -> AntennaStick:
+        session = self.Session()
+        return session.query(AntennaStick).get(stick_id)
 
     def delete_antenna_stick(self, antenna_stick_id: int):
         session = self.Session()

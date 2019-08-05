@@ -185,6 +185,17 @@ def get_decals():
 def add_decal():
     decal = Decal()
     decal.apply_dict(request.json)
+
+    detail = database.get_decal_detail(decal.decal_detail_id)
+    if detail is None:
+        return jsonify({'msg': 'Decal detail ID does not exist'}), 400
+
+    if decal.body_id:
+        body = database.get_body(decal.body_id)
+        if body is not None:
+            decal.body = body
+
+    decal.decal_detail = detail
     database.add_decal(decal)
     database.commit()
     return jsonify(decal.to_dict())
@@ -260,6 +271,10 @@ def get_antennas():
 def add_antenna():
     antenna = Antenna()
     antenna.apply_dict(request.json)
+    stick = database.get_antenna_stick(antenna.stick_id)
+    if stick is None:
+        return jsonify({'msg': 'Stick ID does not exist'}), 400
+    antenna.stick = stick
     database.add_antenna(antenna)
     database.commit()
     return jsonify(antenna.to_dict())

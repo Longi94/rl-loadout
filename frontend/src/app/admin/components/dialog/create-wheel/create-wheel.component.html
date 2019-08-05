@@ -20,6 +20,14 @@
     </mat-select>
   </mat-form-field>
   <mat-checkbox [(ngModel)]="wheel.paintable">Paintable</mat-checkbox>
+  <mat-form-field>
+    <mat-label>Model</mat-label>
+    <mat-select [(ngModel)]="wheel.model">
+      <mat-option *ngFor="let obj of objects.models" [value]="obj.name">
+        {{obj.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="cancel()">Cancel</button>
