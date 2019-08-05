@@ -225,6 +225,9 @@ class Db(object):
 
         self.Session = scoped_session(sessionmaker(bind=self.engine))
 
+    def commit(self):
+        self.Session().commit()
+
     def add_user(self, username: str, password: str):
         """
         Add a user to the db

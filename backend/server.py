@@ -116,11 +116,11 @@ def get_bodies():
 @app.route('/api/bodies', methods=['POST'])
 @jwt_required
 @json_required_params(['name', 'icon', 'quality', 'paintable', 'model', 'blank_skin'])
-@commit_after
 def add_body():
     body = Body()
     body.apply_dict(request.json)
     database.add_body(body)
+    database.commit()
     return jsonify(body.to_dict())
 
 
@@ -141,11 +141,11 @@ def get_wheels():
 @app.route('/api/wheels', methods=['POST'])
 @jwt_required
 @json_required_params(['name', 'icon', 'quality', 'paintable', 'model'])
-@commit_after
 def add_wheel():
     wheel = Wheel()
     wheel.apply_dict(request.json)
     database.add_wheel(wheel)
+    database.commit()
     return jsonify(wheel.to_dict())
 
 
@@ -182,11 +182,11 @@ def get_decals():
 @app.route('/api/decals', methods=['POST'])
 @jwt_required
 @json_required_params(['rgba_map', 'decal_detail_id'])
-@commit_after
 def add_decal():
     decal = Decal()
     decal.apply_dict(request.json)
     database.add_decal(decal)
+    database.commit()
     return jsonify(decal.to_dict())
 
 
@@ -207,11 +207,11 @@ def get_decal_details():
 @app.route('/api/decal-details', methods=['POST'])
 @jwt_required
 @json_required_params(['name', 'icon', 'quality', 'paintable'])
-@commit_after
 def add_decal_detail():
     decal_detail = DecalDetail()
     decal_detail.apply_dict(request.json)
     database.add_decal_detail(decal_detail)
+    database.commit()
     return jsonify(decal_detail.to_dict())
 
 
@@ -232,11 +232,11 @@ def get_toppers():
 @app.route('/api/toppers', methods=['POST'])
 @jwt_required
 @json_required_params(['name', 'icon', 'quality', 'paintable', 'model'])
-@commit_after
 def add_topper():
     topper = Topper()
     topper.apply_dict(request.json)
     database.add_topper(topper)
+    database.commit()
     return jsonify(topper.to_dict())
 
 
@@ -257,11 +257,11 @@ def get_antennas():
 @app.route('/api/antennas', methods=['POST'])
 @jwt_required
 @json_required_params(['name', 'icon', 'quality', 'paintable', 'model', 'stick_id'])
-@commit_after
 def add_antenna():
     antenna = Antenna()
     antenna.apply_dict(request.json)
     database.add_antenna(antenna)
+    database.commit()
     return jsonify(antenna.to_dict())
 
 
@@ -282,11 +282,11 @@ def get_antenna_sticks():
 @app.route('/api/antenna-sticks', methods=['POST'])
 @jwt_required
 @json_required_params(['model'])
-@commit_after
 def add_antenna_stick():
     antenna_stick = AntennaStick()
     antenna_stick.apply_dict(request.json)
     database.add_antenna_stick(antenna_stick)
+    database.commit()
     return jsonify(antenna_stick.to_dict())
 
 
