@@ -28,6 +28,10 @@ mat-grid-tile:hover {
   cursor: pointer;
 }
 
+mat-grid-tile-footer.uncommon {
+  background-color: rgba(73, 162, 195, 0.4);
+}
+
 mat-grid-tile-footer.rare {
   background-color: rgba(99, 116, 195, 0.4);
 }

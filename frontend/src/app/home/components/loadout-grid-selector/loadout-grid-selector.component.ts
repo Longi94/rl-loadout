@@ -19,6 +19,7 @@ export class LoadoutGridSelectorComponent implements OnInit {
   onSelect: (item: Item) => void;
 
   qCommon = Quality.COMMON;
+  qUncommon = Quality.UNCOMMON;
   qRare = Quality.RARE;
   qVeryRare = Quality.VERY_RARE;
   qImport = Quality.IMPORT;

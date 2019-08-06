@@ -7,6 +7,7 @@ export abstract class CreateDialog implements OnInit {
 
   qualities = [
     {value: Quality.COMMON, name: 'Common'},
+    {value: Quality.UNCOMMON, name: 'Uncommon'},
     {value: Quality.RARE, name: 'Rare'},
     {value: Quality.VERY_RARE, name: 'Very rare'},
     {value: Quality.IMPORT, name: 'Import'},
