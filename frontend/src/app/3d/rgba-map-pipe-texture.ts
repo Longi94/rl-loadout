@@ -1,5 +1,5 @@
 import { TgaRgbaLoader } from "../utils/tga-rgba-loader";
-import { Color, DataTexture, RGBAFormat } from "three";
+import { Color, DataTexture, RepeatWrapping, RGBAFormat } from "three";
 import { disposeIfExists } from "../utils/util";
 
 export abstract class RgbaMapPipeTexture {
@@ -60,6 +60,8 @@ export abstract class RgbaMapPipeTexture {
 
         this.data = new Uint8Array(this.width * this.height * 4);
         this.texture = new DataTexture(this.data, this.width, this.height, RGBAFormat);
+        this.texture.wrapS = RepeatWrapping;
+        this.texture.wrapT = RepeatWrapping;
         resolve();
       }, reject);
     });
