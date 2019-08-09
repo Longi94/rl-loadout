@@ -6,6 +6,7 @@
       <img *ngIf="item.name !== 'None'" [src]="assetHost + '/' + item.icon" alt="Icon"/>
       <mat-grid-tile-footer [ngClass]="{
       'common': item.quality === qCommon,
+      'uncommon': item.quality === qUncommon,
       'rare': item.quality === qRare,
       'very-rare': item.quality === qVeryRare,
       'import': item.quality === qImport,
