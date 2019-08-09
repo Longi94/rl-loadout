@@ -1,4 +1,4 @@
-# Rocket Loadout (https://rocket-loadout.com)
+# Rocket Loadout (https://rocket-loadout.com) [<img src="https://img.shields.io/discord/609050910731010048.svg?colorB=7581dc&logo=discord&logoColor=white">](https://discord.gg/c8cArY9)
 
 | master | develop |
 | --- | --- |
