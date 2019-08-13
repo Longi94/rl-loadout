@@ -4,3 +4,4 @@ psycopg2==2.8.3
 flask_cors==3.0.8
 flask-jwt-extended==3.21.0
 bcrypt==3.1.7
+connexion==2.3.0
