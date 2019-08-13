@@ -1,0 +1,37 @@
+openapi: 3.0.0
+info:
+  version: 0.3.0
+  title: "Rocket Loadout Public API"
+  contact:
+    name: "Rocket Loadout Discord"
+    url: "https://discord.gg/c8cArY9"
+servers:
+  - url: http://rocket-loadout/api
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: query
+      name: key
+      x-apikeyInfoFunc: api.verify_api_key
+security:
+  - ApiKeyAuth: []
+tags:
+  - name: assets
+paths:
+  /assets/bodies:
+    get:
+      summary: "Redirect to the URI of the body model"
+      operationId: controllers.assets.bodies.get
+      parameters:
+        - name: replay_id
+          in: query
+          schema:
+            type: integer
+      tags:
+        - assets
+      responses:
+        301:
+          description: "Redirect to the URI of the body model"
+        404:
+          description: "Model not found"

@@ -2,23 +2,25 @@ import logging
 from typing import List
 from functools import wraps
 from datetime import timedelta
-from flask import Flask, jsonify, request
+from flask import jsonify, request
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
+import connexion
 from config import config
-from database import Db, Body, Wheel, Topper, Antenna, AntennaStick, Decal, DecalDetail
+from database import database, Body, Wheel, Topper, Antenna, AntennaStick, Decal, DecalDetail
 from logging_config import logging_config
 from auth import verify_password
 from _version import __version__
 
 log = logging.getLogger(__name__)
 
-app = Flask(__name__)
+connexion_app = connexion.App(__name__)
+connexion_app.add_api('api_swagger.yml')
+app = connexion_app.app
 app.config['JWT_SECRET_KEY'] = config.get('server', 'jwt_secret')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=1)
 jwt = JWTManager(app)
 CORS(app)
-database = Db()
 
 
 def json_required_params(params: List[str]):

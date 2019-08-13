@@ -164,3 +164,6 @@ class Db(object):
 
     def add_antenna_stick(self, antenna_stick: AntennaStick):
         self.Session().add(antenna_stick)
+
+
+database = Db()
