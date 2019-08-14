@@ -2,6 +2,11 @@
   <mat-card>
     <mat-card-content>
       <mat-list role="list">
+        <mat-list-item *ngFor="let key of keys">
+          <span matLine>{{key.name}}</span>
+          <span matLine>{{key.description}}</span>
+          <span matLine>{{key.key}}</span>
+        </mat-list-item>
       </mat-list>
     </mat-card-content>
   </mat-card>

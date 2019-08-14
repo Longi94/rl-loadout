@@ -21,6 +21,7 @@ import { CreateDecalDetailComponent } from './components/dialog/create-decal-det
 import { CreateTopperComponent } from './components/dialog/create-topper/create-topper.component';
 import { CreateWheelComponent } from './components/dialog/create-wheel/create-wheel.component';
 import { ApiKeysComponent } from './components/api-keys/api-keys.component';
+import { CreateApiKeyComponent } from './components/api-keys/create-api-key/create-api-key.component';
 
 
 
@@ -43,7 +44,8 @@ import { ApiKeysComponent } from './components/api-keys/api-keys.component';
     CreateDecalDetailComponent,
     CreateTopperComponent,
     CreateWheelComponent,
-    ApiKeysComponent
+    ApiKeysComponent,
+    CreateApiKeyComponent
   ],
   imports: [
     CommonModule,
@@ -58,7 +60,8 @@ import { ApiKeysComponent } from './components/api-keys/api-keys.component';
     CreateDecalComponent,
     CreateDecalDetailComponent,
     CreateTopperComponent,
-    CreateWheelComponent
+    CreateWheelComponent,
+    CreateApiKeyComponent
   ]
 })
 export class AdminModule { }
