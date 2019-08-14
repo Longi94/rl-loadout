@@ -6,10 +6,10 @@ from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 import connexion
 from network.decorators import commit_after, json_required_params
 from config import config
-from database import database, Body, Wheel, Topper, Antenna, AntennaStick, Decal, DecalDetail
+from database import database, Topper, Antenna, AntennaStick, Decal, DecalDetail
 from logging_config import logging_config
 from auth import verify_password
-from blueprints.bodies import bodies_blueprint
+from blueprints import blueprints
 from _version import __version__
 
 log = logging.getLogger(__name__)
@@ -17,7 +17,10 @@ log = logging.getLogger(__name__)
 connexion_app = connexion.App(__name__)
 connexion_app.add_api('api_swagger.yml')
 app = connexion_app.app
-app.register_blueprint(bodies_blueprint)
+
+for blueprint in blueprints:
+    app.register_blueprint(blueprint)
+
 app.config['JWT_SECRET_KEY'] = config.get('server', 'jwt_secret')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=1)
 jwt = JWTManager(app)
@@ -71,56 +74,6 @@ def get_all():
         result['decals'] = [item.to_dict() for item in database.get_decals(body_id)]
 
     return jsonify(result)
-
-
-@app.route('/api/bodies', methods=['GET'])
-def get_bodies():
-    bodies = database.get_bodies()
-    return jsonify([body.to_dict() for body in bodies])
-
-
-@app.route('/api/bodies', methods=['POST'])
-@jwt_required
-@json_required_params(['name', 'icon', 'quality', 'paintable', 'model', 'blank_skin'])
-def add_body():
-    body = Body()
-    body.apply_dict(request.json)
-    database.add_body(body)
-    database.commit()
-    return jsonify(body.to_dict())
-
-
-@app.route('/api/bodies/<body_id>', methods=['DELETE'])
-@jwt_required
-@commit_after
-def delete_body(body_id):
-    database.delete_body(body_id)
-    return '', 200
-
-
-@app.route('/api/wheels', methods=['GET'])
-def get_wheels():
-    wheels = database.get_wheels()
-    return jsonify([item.to_dict() for item in wheels])
-
-
-@app.route('/api/wheels', methods=['POST'])
-@jwt_required
-@json_required_params(['name', 'icon', 'quality', 'paintable', 'model'])
-def add_wheel():
-    wheel = Wheel()
-    wheel.apply_dict(request.json)
-    database.add_wheel(wheel)
-    database.commit()
-    return jsonify(wheel.to_dict())
-
-
-@app.route('/api/wheels/<wheel_id>', methods=['DELETE'])
-@jwt_required
-@commit_after
-def delete_wheel(wheel_id):
-    database.delete_wheel(wheel_id)
-    return '', 200
 
 
 @app.route('/api/defaults', methods=['GET'])

@@ -51,17 +51,6 @@ class Db(object):
         username = username.lower()
         return session.query(User).filter(User.name == username).first()
 
-    def get_wheels(self) -> List[Wheel]:
-        session = self.Session()
-        return session.query(Wheel)
-
-    def delete_wheel(self, wheel_id: int):
-        session = self.Session()
-        session.query(Wheel).filter(Wheel.id == wheel_id).delete()
-
-    def add_wheel(self, wheel: Wheel):
-        self.Session().add(wheel)
-
     def get_decals(self, body_id: int) -> List[Decal]:
         """
         Find decals that are applicable to a body

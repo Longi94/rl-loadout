@@ -9,13 +9,13 @@ bodies_blueprint = Blueprint('bodies', __name__, url_prefix='/api/bodies')
 body_dao = BodyDao()
 
 
-@bodies_blueprint.route('/api/bodies', methods=['GET'])
+@bodies_blueprint.route('', methods=['GET'])
 def get_bodies():
     bodies = body_dao.get_all()
     return jsonify([body.to_dict() for body in bodies])
 
 
-@bodies_blueprint.route('/api/bodies', methods=['POST'])
+@bodies_blueprint.route('', methods=['POST'])
 @jwt_required
 @json_required_params(['name', 'icon', 'quality', 'paintable', 'model', 'blank_skin'])
 def add_body():
@@ -26,7 +26,7 @@ def add_body():
     return jsonify(body.to_dict())
 
 
-@bodies_blueprint.route('/api/bodies/<body_id>', methods=['DELETE'])
+@bodies_blueprint.route('/<body_id>', methods=['DELETE'])
 @jwt_required
 @commit_after
 def delete_body(body_id):

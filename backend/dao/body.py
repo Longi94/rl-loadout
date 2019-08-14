@@ -1,6 +1,6 @@
 from typing import List
 from .dao import BaseDao
-from entity.body import Body
+from entity import Body
 
 
 class BodyDao(BaseDao):
