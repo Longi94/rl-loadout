@@ -4,3 +4,4 @@ from .wheel import WheelDao
 from .topper import TopperDao
 from .decal import DecalDao
 from .antenna import AntennaDao
+from .user import UserDao

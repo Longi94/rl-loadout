@@ -29,26 +29,5 @@ class Db(object):
     def commit(self):
         self.Session().commit()
 
-    def add_user(self, username: str, password: str):
-        """
-        Add a user to the db
-        :param username:
-        :param password:
-        """
-        session = self.Session()
-        user = User(name=username.lower(), password=password)
-        session.add(user)
-        session.commit()
-
-    def get_user(self, username: str):
-        """
-        Find user by username
-        :param username: username
-        :return:
-        """
-        session = self.Session()
-        username = username.lower()
-        return session.query(User).filter(User.name == username).first()
-
 
 database = Db()

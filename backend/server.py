@@ -1,15 +1,12 @@
 import logging
 from datetime import timedelta
-from flask import jsonify, request
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager, create_access_token
+from flask_jwt_extended import JWTManager
 import connexion
-from utils.network.decorators import json_required_params
 from utils.network import log_endpoints
 from config import config
 from database import database
 from logging_config import logging_config
-from auth import verify_password
 from blueprints import blueprints
 from _version import __version__
 
@@ -33,24 +30,6 @@ def teardown_request(exception):
     if exception:
         database.Session.rollback()
     database.Session.remove()
-
-
-@app.route('/auth', methods=['POST'])
-@json_required_params(['username', 'password'])
-def auth():
-    username = request.json['username']
-    password = request.json['password']
-
-    user = database.get_user(username)
-
-    if user is None:
-        return jsonify({"msg": "User does not exist"}), 404
-
-    if not verify_password(user.password, password):
-        return jsonify({"msg": "Bad username or password"}), 401
-
-    access_token = create_access_token(identity=username)
-    return jsonify(access_token=access_token), 200
 
 
 if __name__ == '__main__':
