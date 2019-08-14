@@ -37,4 +37,4 @@ if __name__ == '__main__':
     port = int(config.get('server', 'port'))
     log.info(f'Running rl-loadout {__version__} on port {port}')
     log_endpoints(log, app)
-    app.run(host='0.0.0.0', port=port)
+    connexion_app.run(host='0.0.0.0', port=port)

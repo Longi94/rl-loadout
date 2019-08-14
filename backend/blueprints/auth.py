@@ -4,7 +4,7 @@ from dao import UserDao
 from auth import verify_password
 from utils.network.decorators import json_required_params
 
-auth_blueprint = Blueprint('auth', __name__, url_prefix='/api')
+auth_blueprint = Blueprint('auth', __name__,)
 user_dao = UserDao()
 
 
