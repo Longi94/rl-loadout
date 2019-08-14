@@ -6,6 +6,10 @@
           <span matLine>{{key.name}}</span>
           <span matLine>{{key.description}}</span>
           <span matLine>{{key.key}}</span>
+          <span class="flex-spacer"></span>
+          <button mat-icon-button matTooltip="Delete" (click)="deleteKey(key)">
+            <mat-icon>delete</mat-icon>
+          </button>
         </mat-list-item>
       </mat-list>
     </mat-card-content>

@@ -3,6 +3,7 @@ import { ApiKeysService } from "../../../service/api-keys.service";
 import { ApiKey } from "../../../model/api-key";
 import { MatDialog } from "@angular/material";
 import { CreateApiKeyComponent } from "./create-api-key/create-api-key.component";
+import { confirmMaterial } from "../../../shared/confirm-dialog/confirm-dialog.component";
 
 @Component({
   selector: 'app-api-keys',
@@ -27,6 +28,14 @@ export class ApiKeysComponent implements OnInit {
       if (newKey != undefined) {
         this.keys.push(newKey);
       }
-    })
+    });
+  }
+
+  deleteKey(key: ApiKey) {
+    confirmMaterial(`Delete API key ${key.name}?`, this.dialog, () => {
+      this.apiKeysService.deleteKey(key.id).subscribe(() => {
+        this.keys.splice(this.keys.indexOf(key), 1);
+      });
+    });
   }
 }
