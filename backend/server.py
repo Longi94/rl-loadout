@@ -1,15 +1,15 @@
 import logging
-from typing import List
-from functools import wraps
 from datetime import timedelta
 from flask import jsonify, request
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token
 import connexion
+from network.decorators import commit_after, json_required_params
 from config import config
 from database import database, Body, Wheel, Topper, Antenna, AntennaStick, Decal, DecalDetail
 from logging_config import logging_config
 from auth import verify_password
+from blueprints.bodies import bodies_blueprint
 from _version import __version__
 
 log = logging.getLogger(__name__)
@@ -17,31 +17,11 @@ log = logging.getLogger(__name__)
 connexion_app = connexion.App(__name__)
 connexion_app.add_api('api_swagger.yml')
 app = connexion_app.app
+app.register_blueprint(bodies_blueprint)
 app.config['JWT_SECRET_KEY'] = config.get('server', 'jwt_secret')
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=1)
 jwt = JWTManager(app)
 CORS(app)
-
-
-def json_required_params(params: List[str]):
-    """
-    Checks if the provided params are provided in the json body.
-    :param params:
-    """
-
-    def decorator(function):
-        @wraps(function)
-        def wrapper(*args, **kwargs):
-            if not request.is_json:
-                return jsonify({'msg': 'Missing JSON in request'}), 400
-            for param in params:
-                if param not in request.json or request.json[param] == '':
-                    return jsonify({'msg': f'Missing {param} parameter in JSON'}), 400
-            return function(*args, **kwargs)
-
-        return wrapper
-
-    return decorator
 
 
 @app.teardown_request
@@ -49,22 +29,6 @@ def teardown_request(exception):
     if exception:
         database.Session.rollback()
     database.Session.remove()
-
-
-def commit_after(function):
-    @wraps(function)
-    def wrapper(*args, **kwargs):
-        response = function(*args, **kwargs)
-        if database.Session.is_active:
-            try:
-                database.Session.commit()
-            except Exception as e:
-                log.error('exception occured during commit', exc_info=e)
-                database.Session.rollback()
-                return jsonify({'msg': 'Database exception occurred, check the logs'}), 500
-        return response
-
-    return wrapper
 
 
 @app.route('/api/status', methods=['GET'])
