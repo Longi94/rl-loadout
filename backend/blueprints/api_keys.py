@@ -24,6 +24,7 @@ def add():
     key = ApiKey()
     key.apply_dict(request.json)
     key.key = generate_api_key()
+    key_dao.add(key)
     database.commit()
     return jsonify(key.to_dict())
 

@@ -1,4 +1,5 @@
 from typing import List
+from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 from entity import ApiKey
 from .dao import BaseDao
 
@@ -11,9 +12,12 @@ class ApiKeyDao(BaseDao):
     def get_all(self) -> List[ApiKey]:
         return self.Session().query(ApiKey)
 
-    def get_by_value(self, key: str) -> ApiKey:
+    def get_by_value(self, key: str) -> ApiKey or None:
         session = self.Session()
-        return session.query(ApiKey).get(key)
+        try:
+            return session.query(ApiKey).filter(ApiKey.key == key).one()
+        except (MultipleResultsFound, NoResultFound):
+            return None
 
     def add(self, api_key: ApiKey):
         self.Session().add(api_key)

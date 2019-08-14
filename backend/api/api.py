@@ -13,6 +13,9 @@ def verify_api_key(apikey: str, required_scopes):
         log.info(f"Unknown API key: {apikey}")
         return None
 
+    if not api_key_record.active:
+        return None
+
     return {'sub': api_key_record.name}
 
 
