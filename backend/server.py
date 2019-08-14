@@ -7,7 +7,7 @@ import connexion
 from utils.network.decorators import commit_after, json_required_params
 from utils.network import log_endpoints
 from config import config
-from database import database, Antenna, AntennaStick, Decal, DecalDetail
+from database import database, Antenna, AntennaStick
 from logging_config import logging_config
 from auth import verify_password
 from blueprints import blueprints
@@ -91,67 +91,6 @@ def get_defaults():
 
     return jsonify(result)
 
-
-@app.route('/api/decals', methods=['GET'])
-def get_decals():
-    body_id = request.args.get('body', default=None)
-    decals = database.get_decals(body_id)
-    return jsonify([item.to_dict() for item in decals])
-
-
-@app.route('/api/decals', methods=['POST'])
-@jwt_required
-@json_required_params(['rgba_map', 'decal_detail_id'])
-def add_decal():
-    decal = Decal()
-    decal.apply_dict(request.json)
-
-    detail = database.get_decal_detail(decal.decal_detail_id)
-    if detail is None:
-        return jsonify({'msg': 'Decal detail ID does not exist'}), 400
-
-    if decal.body_id:
-        body = database.get_body(decal.body_id)
-        if body is not None:
-            decal.body = body
-
-    decal.decal_detail = detail
-    database.add_decal(decal)
-    database.commit()
-    return jsonify(decal.to_dict())
-
-
-@app.route('/api/decals/<decal_id>', methods=['DELETE'])
-@jwt_required
-@commit_after
-def delete_decal(decal_id):
-    database.delete_decal(decal_id)
-    return '', 200
-
-
-@app.route('/api/decal-details', methods=['GET'])
-def get_decal_details():
-    decal_details = database.get_decal_details()
-    return jsonify([item.to_dict() for item in decal_details])
-
-
-@app.route('/api/decal-details', methods=['POST'])
-@jwt_required
-@json_required_params(['name', 'icon', 'quality', 'paintable'])
-def add_decal_detail():
-    decal_detail = DecalDetail()
-    decal_detail.apply_dict(request.json)
-    database.add_decal_detail(decal_detail)
-    database.commit()
-    return jsonify(decal_detail.to_dict())
-
-
-@app.route('/api/decal-details/<decal_detail_id>', methods=['DELETE'])
-@jwt_required
-@commit_after
-def delete_decal_detail(decal_detail_id):
-    database.delete_decal_detail(decal_detail_id)
-    return '', 200
 
 @app.route('/api/antennas', methods=['GET'])
 def get_antennas():
