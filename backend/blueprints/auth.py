@@ -3,6 +3,7 @@ from flask_jwt_extended import create_access_token
 from dao import UserDao
 from auth import verify_password
 from utils.network.decorators import json_required_params
+from utils.network.exc import UnauthorizedException
 
 auth_blueprint = Blueprint('auth', __name__,)
 user_dao = UserDao()
@@ -17,10 +18,10 @@ def auth():
     user = user_dao.get(username)
 
     if user is None:
-        return jsonify({"msg": "User does not exist"}), 404
+        raise UnauthorizedException('Bad username or password')
 
     if not verify_password(user.password, password):
-        return jsonify({"msg": "Bad username or password"}), 401
+        raise UnauthorizedException('Bad username or password')
 
     access_token = create_access_token(identity=username)
     return jsonify(access_token=access_token), 200

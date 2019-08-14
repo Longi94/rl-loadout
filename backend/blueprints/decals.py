@@ -4,6 +4,7 @@ from utils.network.decorators import json_required_params, commit_after
 from database import database
 from entity import Decal
 from dao import DecalDao, BodyDao
+from utils.network.exc import NotFoundException
 
 decals_blueprint = Blueprint('decals', __name__, url_prefix='/api/decals')
 decal_dao = DecalDao()
@@ -26,7 +27,7 @@ def add_decal():
 
     detail = database.get_decal_detail(decal.decal_detail_id)
     if detail is None:
-        return jsonify({'msg': 'Decal detail ID does not exist'}), 400
+        raise NotFoundException('Decal detail ID does not exist')
 
     if decal.body_id:
         body = body_dao.get(decal.body_id)

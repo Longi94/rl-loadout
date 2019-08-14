@@ -1,8 +1,9 @@
 import logging
 from typing import List
 from functools import wraps
-from flask import request, jsonify
+from flask import request
 from database import database
+from utils.network.exc import BadRequestException, InternalServerErrorException
 
 log = logging.getLogger(__name__)
 
@@ -17,10 +18,10 @@ def json_required_params(params: List[str]):
         @wraps(function)
         def wrapper(*args, **kwargs):
             if not request.is_json:
-                return jsonify({'msg': 'Missing JSON in request'}), 400
+                raise BadRequestException('Missing JSON in request')
             for param in params:
                 if param not in request.json or request.json[param] == '':
-                    return jsonify({'msg': f'Missing {param} parameter in JSON'}), 400
+                    raise BadRequestException(f'Missing {param} parameter in JSON')
             return function(*args, **kwargs)
 
         return wrapper
@@ -36,9 +37,9 @@ def commit_after(function):
             try:
                 database.Session.commit()
             except Exception as e:
-                log.error('exception occured during commit', exc_info=e)
+                log.error('exception occurred during commit', exc_info=e)
                 database.Session.rollback()
-                return jsonify({'msg': 'Database exception occurred, check the logs'}), 500
+                raise InternalServerErrorException('Database exception occurred, check the logs')
         return response
 
     return wrapper

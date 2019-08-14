@@ -4,6 +4,7 @@ from utils.network.decorators import json_required_params, commit_after
 from database import database
 from entity import Antenna
 from dao import AntennaDao
+from utils.network.exc import NotFoundException
 
 antennas_blueprint = Blueprint('antennas', __name__, url_prefix='/api/antennas')
 antenna_dao = AntennaDao()
@@ -23,7 +24,7 @@ def add_antenna():
     antenna.apply_dict(request.json)
     stick = database.get_antenna_stick(antenna.stick_id)
     if stick is None:
-        return jsonify({'msg': 'Stick ID does not exist'}), 400
+        raise NotFoundException('Antenna stick ID does not exist')
     antenna.stick = stick
     antenna_dao.add(antenna)
     database.commit()

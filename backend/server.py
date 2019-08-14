@@ -1,9 +1,11 @@
 import logging
 from datetime import timedelta
+from flask import jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 import connexion
 from utils.network import log_endpoints
+from utils.network.exc import HttpException
 from config import config
 from database import database
 from logging_config import logging_config
@@ -30,6 +32,14 @@ def teardown_request(exception):
     if exception:
         database.Session.rollback()
     database.Session.remove()
+
+
+@app.errorhandler(HttpException)
+def handle_http_exception(e: HttpException):
+    return jsonify({
+        'status': e.code,
+        'message': e.message
+    }), e.code
 
 
 if __name__ == '__main__':

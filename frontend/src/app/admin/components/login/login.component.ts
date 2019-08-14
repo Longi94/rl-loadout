@@ -29,11 +29,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(this.username, this.password).subscribe(() => {
       this.router.navigate(['admin']).then();
     }, error => {
-      if (error.status === 401) {
-        handleErrorSnackbar(error, this.snackBar, 'Invalid username of password');
-      } else {
         handleErrorSnackbar(error, this.snackBar);
-      }
     });
   }
 }

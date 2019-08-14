@@ -5,6 +5,7 @@ from database import database
 from entity import ApiKey
 from dao import ApiKeyDao
 from api.api import generate_api_key
+from utils.network.exc import NotFoundException
 
 api_keys_blueprint = Blueprint('api_keys', __name__, url_prefix='/api/api-keys')
 key_dao = ApiKeyDao()
@@ -44,7 +45,7 @@ def put(key_id):
     key = key_dao.get(key_id)
 
     if key is None:
-        return jsonify({'msg': 'key not found'}), 404
+        raise NotFoundException('API key not found')
 
     key.name = request.json['name']
     key.description = request.json['description']
