@@ -4,6 +4,7 @@ import { ApiKey } from "../../../model/api-key";
 import { MatDialog } from "@angular/material";
 import { CreateApiKeyComponent } from "./create-api-key/create-api-key.component";
 import { confirmMaterial } from "../../../shared/confirm-dialog/confirm-dialog.component";
+import { copyMessage } from "../../../utils/util";
 
 @Component({
   selector: 'app-api-keys',
@@ -13,6 +14,8 @@ import { confirmMaterial } from "../../../shared/confirm-dialog/confirm-dialog.c
 export class ApiKeysComponent implements OnInit {
 
   keys: ApiKey[] = [];
+
+  copy = copyMessage;
 
   constructor(private apiKeysService: ApiKeysService,
               private dialog: MatDialog) {

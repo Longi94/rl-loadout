@@ -11,6 +11,9 @@
                   [ngClass]="{'inactive': !key.active}">
             {{key.active ? 'Active' : 'Inactive'}}
           </button>
+          <button mat-icon-button matTooltip="Copy" (click)="copy(key.key)">
+            <mat-icon>file_copy</mat-icon>
+          </button>
           <button mat-icon-button matTooltip="Delete" (click)="deleteKey(key)">
             <mat-icon>delete</mat-icon>
           </button>
