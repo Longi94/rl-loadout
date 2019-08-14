@@ -51,21 +51,6 @@ class Db(object):
         username = username.lower()
         return session.query(User).filter(User.name == username).first()
 
-    def get_bodies(self) -> List[Body]:
-        session = self.Session()
-        return session.query(Body)
-
-    def get_body(self, body_id) -> Body:
-        session = self.Session()
-        return session.query(Body).get(body_id)
-
-    def delete_body(self, body_id: int):
-        session = self.Session()
-        session.query(Body).filter(Body.id == body_id).delete()
-
-    def add_body(self, body: Body):
-        self.Session().add(body)
-
     def get_wheels(self) -> List[Wheel]:
         session = self.Session()
         return session.query(Wheel)
