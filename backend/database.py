@@ -102,17 +102,6 @@ class Db(object):
         session = self.Session()
         return session.query(Body).filter(Body.name == 'Octane').first()
 
-    def get_toppers(self) -> List[Topper]:
-        session = self.Session()
-        return session.query(Topper)
-
-    def delete_topper(self, topper_id: int):
-        session = self.Session()
-        session.query(Topper).filter(Topper.id == topper_id).delete()
-
-    def add_topper(self, topper: Topper):
-        self.Session().add(topper)
-
     def get_antennas(self) -> List[Antenna]:
         session = self.Session()
         return session.query(Antenna)

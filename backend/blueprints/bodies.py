@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
-from network.decorators import json_required_params, commit_after
+from utils.network.decorators import json_required_params, commit_after
 from database import database
 from entity.body import Body
 from dao import BodyDao
