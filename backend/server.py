@@ -3,6 +3,7 @@ from datetime import timedelta
 from flask import jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from werkzeug.exceptions import HTTPException, default_exceptions
 import connexion
 from utils.network import log_endpoints
 from utils.network.exc import HttpException
@@ -42,9 +43,24 @@ def handle_http_exception(e: HttpException):
     }), e.code
 
 
+@app.errorhandler(Exception)
+def handle_error(e):
+    code = 500
+    if isinstance(e, HTTPException):
+        code = e.code
+    return jsonify({
+        'status': code,
+        'message': str(e)
+    }), code
+
+
 if __name__ == '__main__':
     logging_config()
     port = int(config.get('server', 'port'))
     log.info(f'Running rl-loadout {__version__} on port {port}')
     log_endpoints(log, app)
+
+    for ex in default_exceptions:
+        app.register_error_handler(ex, handle_error)
+
     connexion_app.run(host='0.0.0.0', port=port)
