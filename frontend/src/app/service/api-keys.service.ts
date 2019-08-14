@@ -26,4 +26,8 @@ export class ApiKeysService {
   deleteKey(id: number): Observable<any> {
     return this.httpClient.delete(`${HOST}/api-keys/${id}`);
   }
+
+  updateKey(apiKey: ApiKey): Observable<any> {
+    return this.httpClient.put(`${HOST}/api-keys/${apiKey.id}`, apiKey, {headers: HEADERS});
+  }
 }

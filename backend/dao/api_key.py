@@ -25,3 +25,6 @@ class ApiKeyDao(BaseDao):
     def delete(self, key_id):
         session = self.Session()
         session.query(ApiKey).filter(ApiKey.id == key_id).delete()
+
+    def get(self, key_id):
+        return self.Session().query(ApiKey).get(key_id)

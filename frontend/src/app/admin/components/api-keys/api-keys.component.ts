@@ -38,4 +38,14 @@ export class ApiKeysComponent implements OnInit {
       });
     });
   }
+
+  toggleKey(key: ApiKey) {
+    let msg = key.active ? 'Deactivate' : 'Activate';
+    msg = msg + ` ${key.name}?`;
+
+    confirmMaterial(msg, this.dialog, () => {
+      key.active = !key.active;
+      this.apiKeysService.updateKey(key).subscribe();
+    });
+  }
 }

@@ -32,6 +32,24 @@ def add():
 @api_keys_blueprint.route('/<key_id>', methods=['DELETE'])
 @jwt_required
 @commit_after
-def delete_body(key_id):
+def delete(key_id):
     key_dao.delete(key_id)
+    return '', 200
+
+
+@api_keys_blueprint.route('/<key_id>', methods=['PUT'])
+@jwt_required
+@json_required_params(['name', 'description', 'active'])
+def put(key_id):
+    key = key_dao.get(key_id)
+
+    if key is None:
+        return jsonify({'msg': 'key not found'}), 404
+
+    key.name = request.json['name']
+    key.description = request.json['description']
+    key.active = request.json['active']
+
+    database.commit()
+
     return '', 200
