@@ -65,31 +65,5 @@ class Db(object):
         session = self.Session()
         return session.query(Body).filter(Body.name == 'Octane').first()
 
-    def get_antennas(self) -> List[Antenna]:
-        session = self.Session()
-        return session.query(Antenna)
-
-    def delete_antenna(self, antenna_id: int):
-        session = self.Session()
-        session.query(Antenna).filter(Antenna.id == antenna_id).delete()
-
-    def add_antenna(self, antenna: Antenna):
-        self.Session().add(antenna)
-
-    def get_antenna_sticks(self) -> List[AntennaStick]:
-        session = self.Session()
-        return session.query(AntennaStick)
-
-    def get_antenna_stick(self, stick_id) -> AntennaStick:
-        session = self.Session()
-        return session.query(AntennaStick).get(stick_id)
-
-    def delete_antenna_stick(self, antenna_stick_id: int):
-        session = self.Session()
-        session.query(AntennaStick).filter(AntennaStick.id == antenna_stick_id).delete()
-
-    def add_antenna_stick(self, antenna_stick: AntennaStick):
-        self.Session().add(antenna_stick)
-
 
 database = Db()

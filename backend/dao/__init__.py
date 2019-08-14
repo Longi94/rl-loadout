@@ -3,3 +3,4 @@ from .body import BodyDao
 from .wheel import WheelDao
 from .topper import TopperDao
 from .decal import DecalDao
+from .antenna import AntennaDao

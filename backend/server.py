@@ -2,12 +2,12 @@ import logging
 from datetime import timedelta
 from flask import jsonify, request
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager, jwt_required, create_access_token
+from flask_jwt_extended import JWTManager, create_access_token
 import connexion
-from utils.network.decorators import commit_after, json_required_params
+from utils.network.decorators import json_required_params
 from utils.network import log_endpoints
 from config import config
-from database import database, Antenna, AntennaStick
+from database import database
 from logging_config import logging_config
 from auth import verify_password
 from blueprints import blueprints
@@ -90,60 +90,6 @@ def get_defaults():
         result['wheel'] = wheel.to_dict()
 
     return jsonify(result)
-
-
-@app.route('/api/antennas', methods=['GET'])
-def get_antennas():
-    antennas = database.get_antennas()
-    return jsonify([item.to_dict() for item in antennas])
-
-
-@app.route('/api/antennas', methods=['POST'])
-@jwt_required
-@json_required_params(['name', 'icon', 'quality', 'paintable', 'model', 'stick_id'])
-def add_antenna():
-    antenna = Antenna()
-    antenna.apply_dict(request.json)
-    stick = database.get_antenna_stick(antenna.stick_id)
-    if stick is None:
-        return jsonify({'msg': 'Stick ID does not exist'}), 400
-    antenna.stick = stick
-    database.add_antenna(antenna)
-    database.commit()
-    return jsonify(antenna.to_dict())
-
-
-@app.route('/api/antennas/<antenna_id>', methods=['DELETE'])
-@jwt_required
-@commit_after
-def delete_antenna(antenna_id):
-    database.delete_antenna(antenna_id)
-    return '', 200
-
-
-@app.route('/api/antenna-sticks', methods=['GET'])
-def get_antenna_sticks():
-    antenna_sticks = database.get_antenna_sticks()
-    return jsonify([item.to_dict() for item in antenna_sticks])
-
-
-@app.route('/api/antenna-sticks', methods=['POST'])
-@jwt_required
-@json_required_params(['model'])
-def add_antenna_stick():
-    antenna_stick = AntennaStick()
-    antenna_stick.apply_dict(request.json)
-    database.add_antenna_stick(antenna_stick)
-    database.commit()
-    return jsonify(antenna_stick.to_dict())
-
-
-@app.route('/api/antenna-sticks/<antenna_stick_id>', methods=['DELETE'])
-@jwt_required
-@commit_after
-def delete_antenna_stick(antenna_stick_id):
-    database.delete_antenna_stick(antenna_stick_id)
-    return '', 200
 
 
 if __name__ == '__main__':
