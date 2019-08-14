@@ -19,3 +19,10 @@ class BodyDao(BaseDao):
     def delete(self, body_id: int):
         session = self.Session()
         session.query(Body).filter(Body.id == body_id).delete()
+
+    def get_default(self) -> Body:
+        """
+        :return: the default body (Octane)
+        """
+        session = self.Session()
+        return session.query(Body).filter(Body.name == 'Octane').first()

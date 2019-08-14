@@ -35,13 +35,6 @@ def teardown_request(exception):
     database.Session.remove()
 
 
-@app.route('/api/status', methods=['GET'])
-def status():
-    return jsonify({
-        'version': __version__
-    })
-
-
 @app.route('/auth', methods=['POST'])
 @json_required_params(['username', 'password'])
 def auth():
@@ -58,38 +51,6 @@ def auth():
 
     access_token = create_access_token(identity=username)
     return jsonify(access_token=access_token), 200
-
-
-@app.route('/api/all', methods=['GET'])
-def get_all():
-    result = {
-        'bodies': [item.to_dict() for item in database.get_bodies()],
-        'wheels': [item.to_dict() for item in database.get_wheels()],
-        'toppers': [item.to_dict() for item in database.get_toppers()],
-        'antennas': [item.to_dict() for item in database.get_antennas()]
-    }
-
-    body_id = request.args.get('body', default=None)
-
-    if body_id is not None:
-        result['decals'] = [item.to_dict() for item in database.get_decals(body_id)]
-
-    return jsonify(result)
-
-
-@app.route('/api/defaults', methods=['GET'])
-def get_defaults():
-    result = {}
-
-    body = database.get_default_body()
-    if body is not None:
-        result['body'] = body.to_dict()
-
-    wheel = database.get_default_wheel()
-    if wheel is not None:
-        result['wheel'] = wheel.to_dict()
-
-    return jsonify(result)
 
 
 if __name__ == '__main__':

@@ -15,3 +15,10 @@ class WheelDao(BaseDao):
 
     def add(self, wheel: Wheel):
         self.Session().add(wheel)
+
+    def get_default(self) -> Wheel:
+        """
+        :return: the default OEM wheel
+        """
+        session = self.Session()
+        return session.query(Wheel).filter(Wheel.name == 'OEM').first()

@@ -1,5 +1,4 @@
 import logging
-from typing import List
 from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker, scoped_session
@@ -50,20 +49,6 @@ class Db(object):
         session = self.Session()
         username = username.lower()
         return session.query(User).filter(User.name == username).first()
-
-    def get_default_wheel(self) -> Wheel:
-        """
-        :return: the default OEM wheel
-        """
-        session = self.Session()
-        return session.query(Wheel).filter(Wheel.name == 'OEM').first()
-
-    def get_default_body(self) -> Body:
-        """
-        :return: the default body (Octane)
-        """
-        session = self.Session()
-        return session.query(Body).filter(Body.name == 'Octane').first()
 
 
 database = Db()
