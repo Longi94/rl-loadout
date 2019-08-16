@@ -5,7 +5,7 @@ from sqlalchemy import Column, Integer, String, Boolean
 class BaseItem:
     __tablename__ = ''
     id = Column(Integer, primary_key=True)
-    replay_id = Column(Integer, nullable=True)
+    replay_id = Column(Integer, nullable=True, unique=True)
     name = Column(String(255), nullable=False)
     quality = Column(Integer, nullable=False)
     icon = Column(String(255), nullable=False)
