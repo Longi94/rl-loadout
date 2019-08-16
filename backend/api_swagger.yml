@@ -1,12 +1,39 @@
 openapi: 3.0.0
 info:
   version: 0.3.0
-  title: "Rocket Loadout Public API"
+  title: 'Rocket Loadout Public API'
   contact:
-    name: "Rocket Loadout Discord"
-    url: "https://discord.gg/c8cArY9"
+    name: 'Rocket Loadout Discord'
+    url: https://discord.gg/c8cArY9
 servers:
-  - url: http://rocket-loadout/api
+  - url: https://rocket-loadout.com/api
+security:
+  - ApiKeyAuth: []
+tags:
+  - name: bodies
+paths:
+  /bodies:
+    get:
+      summary: 'Get a list of bodies'
+      operationId: controllers.bodies.get
+      parameters:
+        - name: replay_id
+          in: query
+          required: false
+          description: 'ID of the item used in replay files.'
+          schema:
+            type: integer
+      tags:
+        - bodies
+      responses:
+        200:
+          description: 'List of bodies'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Body'
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -14,24 +41,35 @@ components:
       in: query
       name: key
       x-apikeyInfoFunc: api.verify_api_key
-security:
-  - ApiKeyAuth: []
-tags:
-  - name: assets
-paths:
-  /assets/bodies:
-    get:
-      summary: "Redirect to the URI of the body model"
-      operationId: controllers.assets.bodies.get
-      parameters:
-        - name: replay_id
-          in: query
-          schema:
-            type: integer
-      tags:
-        - assets
-      responses:
-        301:
-          description: "Redirect to the URI of the body model"
-        404:
-          description: "Model not found"
+  schemas:
+    Body:
+      type: object
+      required:
+        - model
+        - name
+        - paintable
+      properties:
+        replay_id:
+          type: integer
+          description: 'ID of the item used in replay files.'
+          example: 0
+        model:
+          type: string
+          description: 'URL to the GLTF model of the body'
+          example: https://storage.googleapis.com/rl-loadout/models/Body_Octane_SF.glb
+        name:
+          type: string
+          description: 'Name of the body'
+          example: Octane
+        paintable:
+          type: boolean
+          description: 'Indicates whether the body has painted variants in the game or not.'
+          example: true
+        body_texture:
+          type: string
+          description: 'Path to the default (blue) body texture'
+          example: '/api/textures/body?key=123&replay_id=0'
+        chassis_texture:
+          type: string
+          description: 'Path to the default chassis texture. This is null if the chassis of the body is not paintable, in the case the chassis in the model is already textured.'
+          example: '/api/textures/chassis?key=123&replay_id=0'

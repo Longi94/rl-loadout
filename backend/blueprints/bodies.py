@@ -9,12 +9,6 @@ bodies_blueprint = Blueprint('bodies', __name__, url_prefix='/api/bodies')
 body_dao = BodyDao()
 
 
-@bodies_blueprint.route('', methods=['GET'])
-def get_bodies():
-    bodies = body_dao.get_all()
-    return jsonify([body.to_dict() for body in bodies])
-
-
 @bodies_blueprint.route('', methods=['POST'])
 @jwt_required
 @json_required_params(['name', 'icon', 'quality', 'paintable', 'model', 'blank_skin'])
