@@ -11,6 +11,7 @@ import { DecalsComponent } from "./admin/components/decals/decals.component";
 import { DecalDetailsComponent } from "./admin/components/decal-details/decal-details.component";
 import { ToppersComponent } from "./admin/components/toppers/toppers.component";
 import { WheelsComponent } from "./admin/components/wheels/wheels.component";
+import { ApiKeysComponent } from "./admin/components/api-keys/api-keys.component";
 
 
 const routes: Routes = [
@@ -62,6 +63,11 @@ const routes: Routes = [
         path: 'wheels',
         pathMatch: 'full',
         component: WheelsComponent
+      },
+      {
+        path: 'api-keys',
+        pathMatch: 'full',
+        component: ApiKeysComponent
       },
     ]
   }

@@ -1,0 +1,153 @@
+openapi: 3.0.0
+info:
+  version: 0.3.0
+  title: 'Rocket Loadout Public API'
+  contact:
+    name: 'Rocket Loadout Discord'
+    url: https://discord.gg/c8cArY9
+servers:
+  - url: "{{ server_host }}/api"
+security:
+  - ApiKeyAuth: []
+tags:
+  - name: bodies
+  - name: texture
+paths:
+  /bodies:
+    get:
+      summary: 'Get a list of bodies'
+      operationId: controllers.bodies.get
+      tags:
+        - bodies
+      parameters:
+        - name: replay_id
+          in: query
+          required: false
+          description: 'ID of the item used in replay files.'
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'List of bodies'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Body'
+  /textures/body:
+    get:
+      summary: 'Generate a body texture'
+      description: 'Generate a body texture based on the body and provided colors'
+      operationId: controllers.textures.body.get
+      tags:
+        - texture
+      parameters:
+        - name: body_id
+          in: query
+          required: true
+          example: 23
+          description: 'The ID of the body used in replay files'
+          schema:
+            type: integer
+        - name: primary_color
+          in: query
+          required: false
+          description: 'The primary color of the body in 0xFFFFFF integer format. If not provided, the default blue is applied.'
+          example: 16777215
+          schema:
+            type: integer
+            maximum: 16777215
+            minimum: 0
+        - name: body_paint
+          in: query
+          required: false
+          description: 'The color of the paint applied to the body'
+          example: 16777215
+          schema:
+            type: integer
+            maximum: 16777215
+            minimum: 0
+      responses:
+        200:
+          description: 'Returns the texture in the chosen format'
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        404:
+          description: 'If the texture was not found'
+  /textures/chassis:
+    get:
+      summary: 'Generate a chassis texture'
+      description: 'Generate a chassis texture based on the body and provided colors. Only a few bodies need this as most of the chassis is not paintable.'
+      operationId: controllers.textures.chassis.get
+      tags:
+        - texture
+      parameters:
+        - name: body_id
+          in: query
+          required: true
+          example: 23
+          description: 'The ID of the body used in replay files'
+          schema:
+            type: integer
+        - name: body_paint
+          in: query
+          required: false
+          description: 'The color of the paint applied to the body'
+          example: 16777215
+          schema:
+            type: integer
+            maximum: 16777215
+            minimum: 0
+      responses:
+        200:
+          description: 'Returns the texture in the chosen format'
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        404:
+          description: 'If the texture was not found'
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: query
+      name: key
+      x-apikeyInfoFunc: api.verify_api_key
+  schemas:
+    Body:
+      type: object
+      required:
+        - model
+        - name
+        - paintable
+      properties:
+        replay_id:
+          type: integer
+          description: 'ID of the item used in replay files.'
+          example: 23
+        model:
+          type: string
+          description: 'URL to the GLTF model of the body'
+          example: https://storage.googleapis.com/rl-loadout/models/Body_Octane_SF.glb
+        name:
+          type: string
+          description: 'Name of the body'
+          example: Octane
+        paintable:
+          type: boolean
+          description: 'Indicates whether the body has painted variants in the game or not.'
+          example: true
+        body_texture:
+          type: string
+          description: 'Path to the default (blue) body texture'
+          example: '/api/textures/body?key=123&replay_id=0'
+        chassis_texture:
+          type: string
+          description: 'Path to the default chassis texture. This is null if the chassis of the body is not paintable, in the case the chassis in the model is already textured.'
+          example: '/api/textures/chassis?key=123&replay_id=0'

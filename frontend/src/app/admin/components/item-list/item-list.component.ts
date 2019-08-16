@@ -66,7 +66,7 @@ export class ItemListComponent implements OnInit {
   }
 
   removeItem(item: Item) {
-    this.items.splice(this.items.indexOf(item), 1)
+    this.items.splice(this.items.indexOf(item), 1);
   }
 
   openCreateDialog() {

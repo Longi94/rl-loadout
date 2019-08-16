@@ -1,5 +1,6 @@
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { Mesh, MeshStandardMaterial, Object3D, Scene, Texture } from "three";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
 export abstract class AbstractObject {
 
@@ -9,6 +10,7 @@ export abstract class AbstractObject {
 
   protected constructor(modelUrl: string) {
     this.url = modelUrl;
+    this.loader.setDRACOLoader(new DRACOLoader());
   }
 
   load(): Promise<any> {

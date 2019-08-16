@@ -1,0 +1,27 @@
+<div class="container">
+  <mat-card>
+    <mat-card-content>
+      <mat-list role="list">
+        <mat-list-item *ngFor="let key of keys">
+          <span matLine>{{key.name}}</span>
+          <span matLine>{{key.description}}</span>
+          <span matLine>{{key.key}}</span>
+          <span class="flex-spacer"></span>
+          <button mat-button [matTooltip]="key.active ? 'Deactivate' : 'Activate'" (click)="toggleKey(key)"
+                  [ngClass]="{'inactive': !key.active}">
+            {{key.active ? 'Active' : 'Inactive'}}
+          </button>
+          <button mat-icon-button matTooltip="Copy" (click)="copy(key.key)">
+            <mat-icon>file_copy</mat-icon>
+          </button>
+          <button mat-icon-button matTooltip="Delete" (click)="deleteKey(key)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-list-item>
+      </mat-list>
+    </mat-card-content>
+  </mat-card>
+</div>
+<button class="floating-action-button" mat-fab color="accent" (click)="openCreateDialog()">
+  <mat-icon>add</mat-icon>
+</button>

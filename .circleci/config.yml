@@ -1,6 +1,18 @@
 version: 2.1
 
 jobs:
+  version-check:
+    working_directory: ~/rl-loadout
+    docker:
+      - image: circleci/python:3.7.4
+    steps:
+      - checkout
+      - run:
+          name: Install PyYaml
+          command: sudo pip install PyYaml
+      - run:
+          name: Run version check
+          command: python version_check.py
   frontend-build:
     working_directory: ~/rl-loadout
     docker:
@@ -84,6 +96,7 @@ workflows:
   version: 2
   build-and-deploy:
     jobs:
+      - version-check
       - frontend-build
       - frontend-deploy:
           requires:

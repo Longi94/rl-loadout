@@ -1,0 +1,21 @@
+.container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+mat-card {
+  max-width: 100%;
+  width: 1140px;
+  margin: 16px 0;
+}
+
+.floating-action-button {
+  position: fixed;
+  right: 64px;
+  bottom: 64px;
+}
+
+.inactive {
+  color: red;
+}

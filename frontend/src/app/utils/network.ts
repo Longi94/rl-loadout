@@ -12,8 +12,8 @@ export function handleErrorSnackbar(error, snackBar: MatSnackBar, msg?: string) 
   let message = undefined;
   if (msg) {
     message = msg;
-  } else if ('msg' in error.error) {
-    message = error.error.msg;
+  } else if ('detail' in error.error) {
+    message = error.error.detail;
   } else {
     message = error.statusText;
   }
