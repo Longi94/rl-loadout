@@ -1,5 +1,4 @@
 import json
-import os
 import re
 import yaml
 
@@ -16,7 +15,7 @@ def get_frontend_version():
 
     with open('frontend/package-lock.json') as f:
         package_lock = json.load(f)
-    package_lock_version = package['version']
+    package_lock_version = package_lock['version']
 
     return package_version, package_lock_version
 
