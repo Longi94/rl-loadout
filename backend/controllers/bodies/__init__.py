@@ -35,9 +35,9 @@ def _to_body_response(body: Body, api_key: str) -> Dict[str, Any]:
     }
 
     if body.replay_id is not None:
-        response['body_texture'] = f'/api/textures/body?key={api_key}&replay_id={body.replay_id}'
+        response['body_texture'] = f'/api/textures/body?key={api_key}&body_id={body.replay_id}'
 
         if body.chassis_base is not None:
-            response['chassis_texture'] = f'/api/textures/chassis?key={api_key}&replay_id={body.replay_id}'
+            response['chassis_texture'] = f'/api/textures/chassis?key={api_key}&body_id={body.replay_id}'
 
     return response
