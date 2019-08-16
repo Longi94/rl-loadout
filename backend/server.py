@@ -39,7 +39,7 @@ def teardown_request(exception):
 def handle_http_exception(e: HttpException):
     return jsonify({
         'status': e.code,
-        'message': e.message
+        'detail': e.message
     }), e.code
 
 
@@ -50,7 +50,7 @@ def handle_error(e):
         code = e.code
     return jsonify({
         'status': code,
-        'message': str(e)
+        'detail': str(e)
     }), code
 
 
