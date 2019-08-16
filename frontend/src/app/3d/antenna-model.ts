@@ -4,10 +4,11 @@ import { getAssetUrl } from "../utils/network";
 import { Object3D, Scene } from "three";
 import { PromiseLoader } from "../utils/loader";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
 export class AntennaModel extends AbstractObject {
 
-  private antennaLoader = new PromiseLoader(new GLTFLoader());
+  private antennaLoader: PromiseLoader;
 
   antennaUrl: string;
 
@@ -16,6 +17,10 @@ export class AntennaModel extends AbstractObject {
   constructor(antenna: Antenna, paints: { [key: string]: string }) {
     super(getAssetUrl(antenna.stick));
     this.antennaUrl = getAssetUrl(antenna.model);
+
+    const gltfLoader = new GLTFLoader();
+    gltfLoader.setDRACOLoader(new DRACOLoader());
+    this.antennaLoader = new PromiseLoader(gltfLoader);
   }
 
   load(): Promise<any> {
