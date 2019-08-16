@@ -6,5 +6,6 @@ flask_cors==3.0.8
 flask-jwt-extended==3.21.0
 bcrypt==3.1.7
 connexion==2.3.0
+connexion[swagger-ui]
 Pillow==6.1.0
 numpy==1.17.0

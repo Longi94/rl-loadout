@@ -6,7 +6,7 @@ info:
     name: 'Rocket Loadout Discord'
     url: https://discord.gg/c8cArY9
 servers:
-  - url: https://rocket-loadout.com/api
+  - url: {{ server_host }}/api
 security:
   - ApiKeyAuth: []
 tags:
