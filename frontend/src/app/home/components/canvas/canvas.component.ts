@@ -31,6 +31,7 @@ import { Topper } from "../../../model/topper";
 import { TopperModel } from "../../../3d/topper-model";
 import { AntennaModel } from "../../../3d/antenna-model";
 import { Antenna } from "../../../model/antenna";
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 
 @Component({
   selector: 'app-canvas',
@@ -89,6 +90,9 @@ export class CanvasComponent implements OnInit {
   }
 
   ngOnInit() {
+    DRACOLoader.setDecoderPath('/assets/draco/');
+    DRACOLoader.getDecoderModule().then();
+
     const width = this.canvasContainer.nativeElement.offsetWidth;
     const height = this.canvasContainer.nativeElement.offsetHeight;
     this.camera = new PerspectiveCamera(70, width / height, 0.01, 400);
