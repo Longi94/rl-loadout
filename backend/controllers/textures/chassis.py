@@ -1,16 +1,15 @@
 from PIL import Image
 from dao import BodyDao
-from textures.body_texture import BodyTexture
+from textures.chassis_texture import ChassisTexture
 from utils.network import get_asset_url, serve_pil_image
 from utils.network.exc import NotFoundException
 
 body_dao = BodyDao()
 
 
-def get(body_id: int, primary_color: int = None, body_paint: int = None):
+def get(body_id: int, body_paint: int = None):
     """
     :param body_id: The ID of the body used in replay files
-    :param primary_color: The primary color of the body in 0xFFFFFF integer format. If not provided, the default blue is applied.
     :param body_paint: The color of the paint applied to the body
     """
     body = body_dao.get_by_replay_id(body_id)
@@ -18,16 +17,19 @@ def get(body_id: int, primary_color: int = None, body_paint: int = None):
     if body is None:
         raise NotFoundException('Body not found')
 
-    static_skin = BodyTexture(
-        get_asset_url(body.base_skin),
-        get_asset_url(body.blank_skin),
-        primary_color,
+    if body.chassis_base is None:
+        raise NotFoundException(
+            'Body has no chassis textures. This is most likely because the chassis is not paintable.')
+
+    texture = ChassisTexture(
+        get_asset_url(body.chassis_base),
+        get_asset_url(body.chassis_n),
         body_paint
     )
 
-    static_skin.load()
-    static_skin.update()
+    texture.load()
+    texture.update()
 
-    image = Image.fromarray(static_skin.data)
+    image = Image.fromarray(texture.data)
 
     return serve_pil_image(image)

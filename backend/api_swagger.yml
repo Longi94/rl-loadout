@@ -37,7 +37,8 @@ paths:
                   $ref: '#/components/schemas/Body'
   /textures/body:
     get:
-      summary: ''
+      summary: 'Generate a body texture'
+      description: 'Generate a body texture based on the body and provided colors'
       operationId: controllers.textures.body.get
       tags:
         - texture
@@ -58,6 +59,40 @@ paths:
             type: integer
             maximum: 16777215
             minimum: 0
+        - name: body_paint
+          in: query
+          required: false
+          description: 'The color of the paint applied to the body'
+          example: 16777215
+          schema:
+            type: integer
+            maximum: 16777215
+            minimum: 0
+      responses:
+        200:
+          description: 'Returns the texture in the chosen format'
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        404:
+          description: 'If the texture was not found'
+  /textures/chassis:
+    get:
+      summary: 'Generate a chassis texture'
+      description: 'Generate a chassis texture based on the body and provided colors. Only a few bodies need this as most of the chassis is not paintable.'
+      operationId: controllers.textures.chassis.get
+      tags:
+        - texture
+      parameters:
+        - name: body_id
+          in: query
+          required: true
+          example: 23
+          description: 'The ID of the body used in replay files'
+          schema:
+            type: integer
         - name: body_paint
           in: query
           required: false
