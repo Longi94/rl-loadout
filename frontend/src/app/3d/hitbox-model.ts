@@ -11,25 +11,16 @@ import {
 import { Hitbox } from "../model/hitbox";
 
 export class HitboxModel {
-  private readonly width: number;
-  private readonly height: number;
-  private readonly depth: number;
 
-  private mesh: Mesh;
-  private geometry: BoxGeometry;
-  private meshMaterial: MeshPhongMaterial;
-  private lineMaterial: LineBasicMaterial;
-  private lineSegments: LineSegments;
-  private edges: EdgesGeometry;
+  private readonly mesh: Mesh;
+  private readonly geometry: BoxGeometry;
+  private readonly meshMaterial: MeshPhongMaterial;
+  private readonly lineMaterial: LineBasicMaterial;
+  private readonly lineSegments: LineSegments;
+  private readonly edges: EdgesGeometry;
 
-  constructor(width: number, height: number, depth: number) {
-    this.width = width;
-    this.height = height;
-    this.depth = depth;
-  }
-
-  addToScene(scene: Scene) {
-    this.geometry = new BoxGeometry(this.width, this.height, this.depth);
+  constructor() {
+    this.geometry = new BoxGeometry(1, 1, 1);
     this.lineMaterial = new LineBasicMaterial({color: '#00ff00'});
     this.meshMaterial = new MeshPhongMaterial({
       color: '#00a200',
@@ -39,6 +30,14 @@ export class HitboxModel {
     this.mesh = new Mesh(this.geometry, this.meshMaterial);
     this.edges = new EdgesGeometry(this.geometry);
     this.lineSegments = new LineSegments(this.edges, this.lineMaterial);
+  }
+
+  setScale(scale: number[]) {
+    this.geometry.scale(scale[0], scale[1], scale[2]);
+    this.lineSegments.scale.set(scale[0], scale[1], scale[2]);
+  }
+
+  addToScene(scene: Scene) {
     scene.add(this.mesh);
     scene.add(this.lineSegments);
   }
@@ -46,7 +45,6 @@ export class HitboxModel {
   removeFromScene(scene: Scene) {
     scene.remove(this.mesh);
     scene.remove(this.lineSegments);
-    this.dispose();
   }
 
   dispose() {
@@ -100,14 +98,14 @@ export class HitboxModel {
 }
 
 
-export const HIT_BOX_OCTANE = new HitboxModel(118.0074, 36.15907, 84.19941);
-export const HIT_BOX_DOMINUS = new HitboxModel(127.9268, 31.3, 83.27995);
-export const HIT_BOX_PLANK = new HitboxModel(128.8198, 29.3944, 84.67036);
-export const HIT_BOX_BREAKOUT = new HitboxModel(131.4924, 30.3, 80.521);
-export const HIT_BOX_HYBRID = new HitboxModel(127.0192, 34.15907, 82.18787);
-export const HIT_BOX_BATMOBILE = new HitboxModel(128.8198, 29.3944, 84.67036);
+export const HIT_BOX_OCTANE = [118.0074, 36.15907, 84.19941];
+export const HIT_BOX_DOMINUS = [127.9268, 31.3, 83.27995];
+export const HIT_BOX_PLANK = [128.8198, 29.3944, 84.67036];
+export const HIT_BOX_BREAKOUT = [131.4924, 30.3, 80.521];
+export const HIT_BOX_HYBRID = [127.0192, 34.15907, 82.18787];
+export const HIT_BOX_BATMOBILE = [128.8198, 29.3944, 84.67036];
 
-export function getHitboxModel(hitbox: Hitbox): HitboxModel {
+export function getHitboxModel(hitbox: Hitbox): number[] {
   switch (hitbox) {
     case Hitbox.OCTANE:
       return HIT_BOX_OCTANE;

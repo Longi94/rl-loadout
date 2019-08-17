@@ -33,6 +33,9 @@ import { AntennaModel } from "../../../3d/antenna-model";
 import { Antenna } from "../../../model/antenna";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { getHitboxModel, HitboxModel } from "../../../3d/hitbox-model";
+import { GUI } from "dat-gui";
+
+const dat = require('dat.gui');
 
 @Component({
   selector: 'app-canvas',
@@ -46,6 +49,9 @@ export class CanvasComponent implements OnInit {
 
   @ViewChild('canvasContainer', {static: true})
   canvasContainer: ElementRef;
+
+  @ViewChild('dgContainer', {static: true})
+  dgContainer: ElementRef;
 
   private camera: PerspectiveCamera;
   private scene: Scene;
@@ -76,8 +82,8 @@ export class CanvasComponent implements OnInit {
   };
 
   // hitbox
-  private hitboxEnabled: boolean = true;
-  private hitbox: HitboxModel;
+  private config = {hitbox: false};
+  private hitbox: HitboxModel = new HitboxModel();
 
   constructor(private loadoutService: LoadoutService,
               private loadoutStore: LoadoutStoreService,
@@ -118,6 +124,7 @@ export class CanvasComponent implements OnInit {
     this.controls.update();
 
     this.addLights();
+    this.addControls();
 
     this.animate();
 
@@ -150,7 +157,21 @@ export class CanvasComponent implements OnInit {
     }).catch(console.error);
   }
 
-  addLights() {
+  private addControls() {
+    let gui: GUI = new dat.GUI({ autoPlace: false, closed: true });
+
+    gui.add(this.config, 'hitbox').onChange(value => {
+      if (value) {
+        this.hitbox.addToScene(this.scene);
+      } else {
+        this.hitbox.removeFromScene(this.scene);
+      }
+    });
+
+    this.dgContainer.nativeElement.appendChild(gui.domElement);
+  }
+
+  private addLights() {
     const INTENSITY = 0.6;
     const ANGLE = Math.PI / 4;
 
@@ -364,6 +385,7 @@ export class CanvasComponent implements OnInit {
         textureService.set(key, undefined);
       }
     }
+
     addTexture(this.textureService, 'body', this.body.bodyMaterial);
     addTexture(this.textureService, 'chassis', this.body.chassisMaterial);
     addTexture(this.textureService, 'rim', this.wheels.rimMaterial);
@@ -429,17 +451,7 @@ export class CanvasComponent implements OnInit {
 
   private applyHitbox() {
     const nextHitbox = getHitboxModel(this.loadoutService.body.hitbox);
-    if (nextHitbox !== this.hitbox) {
-      if (this.hitboxEnabled) {
-        if (this.hitbox) {
-          this.hitbox.removeFromScene(this.scene);
-        }
-
-        nextHitbox.addToScene(this.scene);
-      }
-
-      this.hitbox = nextHitbox;
-    }
+    this.hitbox.setScale(nextHitbox);
     this.hitbox.applyAnchor(this.body.hitboxAnchor);
   }
 }
