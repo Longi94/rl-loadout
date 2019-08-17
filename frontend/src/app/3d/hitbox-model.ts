@@ -33,8 +33,10 @@ export class HitboxModel {
   }
 
   setScale(scale: number[]) {
-    this.mesh.scale.set(scale[0], scale[1], scale[2]);
-    this.lineSegments.scale.set(scale[0], scale[1], scale[2]);
+    if (scale != undefined) {
+      this.mesh.scale.set(scale[0], scale[1], scale[2]);
+      this.lineSegments.scale.set(scale[0], scale[1], scale[2]);
+    }
   }
 
   addToScene(scene: Scene) {
