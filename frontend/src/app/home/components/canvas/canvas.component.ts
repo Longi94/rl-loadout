@@ -168,6 +168,7 @@ export class CanvasComponent implements OnInit {
       }
     });
 
+    gui.close();
     this.dgContainer.nativeElement.appendChild(gui.domElement);
   }
 
