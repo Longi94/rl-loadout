@@ -1,4 +1,13 @@
-import { BoxGeometry, Mesh, MeshPhongMaterial, Object3D, Scene } from "three";
+import {
+  BoxGeometry,
+  EdgesGeometry,
+  LineBasicMaterial,
+  LineSegments,
+  Mesh,
+  MeshPhongMaterial,
+  Object3D,
+  Scene
+} from "three";
 import { Hitbox } from "../model/hitbox";
 
 export class HitboxModel {
@@ -9,6 +18,9 @@ export class HitboxModel {
   private mesh: Mesh;
   private geometry: BoxGeometry;
   private meshMaterial: MeshPhongMaterial;
+  private lineMaterial: LineBasicMaterial;
+  private lineSegments: LineSegments;
+  private edges: EdgesGeometry;
 
   constructor(width: number, height: number, depth: number) {
     this.width = width;
@@ -18,23 +30,30 @@ export class HitboxModel {
 
   addToScene(scene: Scene) {
     this.geometry = new BoxGeometry(this.width, this.height, this.depth);
+    this.lineMaterial = new LineBasicMaterial({color: '#00ff00'});
     this.meshMaterial = new MeshPhongMaterial({
       color: '#00a200',
       transparent: true,
       opacity: 0.5
     });
     this.mesh = new Mesh(this.geometry, this.meshMaterial);
+    this.edges = new EdgesGeometry(this.geometry);
+    this.lineSegments = new LineSegments(this.edges, this.lineMaterial);
     scene.add(this.mesh);
+    scene.add(this.lineSegments);
   }
 
   removeFromScene(scene: Scene) {
     scene.remove(this.mesh);
+    scene.remove(this.lineSegments);
     this.dispose();
   }
 
   dispose() {
     this.geometry.dispose();
     this.meshMaterial.dispose();
+    this.lineMaterial.dispose();
+    this.edges.dispose();
   }
 
   /**
@@ -59,6 +78,19 @@ export class HitboxModel {
     );
 
     this.mesh.rotation.set(
+      anchor.rotation.x,
+      anchor.rotation.y,
+      anchor.rotation.z,
+      anchor.rotation.order,
+    );
+
+    this.lineSegments.position.set(
+      anchor.position.x,
+      anchor.position.y,
+      anchor.position.z,
+    );
+
+    this.lineSegments.rotation.set(
       anchor.rotation.x,
       anchor.rotation.y,
       anchor.rotation.z,
