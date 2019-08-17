@@ -32,6 +32,7 @@ import { TopperModel } from "../../../3d/topper-model";
 import { AntennaModel } from "../../../3d/antenna-model";
 import { Antenna } from "../../../model/antenna";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
+import { getHitboxModel, HitboxModel } from "../../../3d/hitbox-model";
 
 @Component({
   selector: 'app-canvas',
@@ -73,6 +74,10 @@ export class CanvasComponent implements OnInit {
     topper: false,
     antenna: false
   };
+
+  // hitbox
+  private hitboxEnabled: boolean = true;
+  private hitbox: HitboxModel;
 
   constructor(private loadoutService: LoadoutService,
               private loadoutStore: LoadoutStoreService,
@@ -138,6 +143,7 @@ export class CanvasComponent implements OnInit {
         this.applySkin();
         this.applyBodyModel();
         this.applyWheelModel();
+        this.applyHitbox();
         this.updateTextureService();
         this.initializing = false;
       }).catch(console.error);
@@ -256,6 +262,7 @@ export class CanvasComponent implements OnInit {
       }
 
       this.applyBodyModel();
+      this.applyHitbox();
       this.updateTextureService();
       this.loading.body = false;
     });
@@ -418,5 +425,21 @@ export class CanvasComponent implements OnInit {
     this.antenna.setEnvMap(this.envMap);
     this.antenna.applyAnchor(this.body.antennaAnchor);
     this.antenna.addToScene(this.scene);
+  }
+
+  private applyHitbox() {
+    const nextHitbox = getHitboxModel(this.loadoutService.body.hitbox);
+    if (nextHitbox !== this.hitbox) {
+      if (this.hitboxEnabled) {
+        if (this.hitbox) {
+          this.hitbox.removeFromScene(this.scene);
+        }
+
+        nextHitbox.addToScene(this.scene);
+      }
+
+      this.hitbox = nextHitbox;
+    }
+    this.hitbox.applyAnchor(this.body.hitboxAnchor);
   }
 }

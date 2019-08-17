@@ -29,6 +29,7 @@ export class BodyModel extends AbstractObject {
 
   topperAnchor: Object3D;
   antennaAnchor: Object3D;
+  hitboxAnchor: Object3D;
 
   constructor(body: Body, paints: { [key: string]: string }) {
     super(getAssetUrl(body.model));
@@ -91,6 +92,8 @@ export class BodyModel extends AbstractObject {
         this.topperAnchor = object;
       } else if (object.name === 'antenna_anchor') {
         this.antennaAnchor = object;
+      } else if (object.name === 'hitbox_anchor') {
+        this.hitboxAnchor = object;
       } else if (object instanceof Bone && this.skeleton == undefined) {
         this.skeleton = object;
       } else if (object instanceof Mesh) {
