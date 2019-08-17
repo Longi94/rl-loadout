@@ -5,7 +5,6 @@ import {
   LineSegments,
   Mesh,
   MeshPhongMaterial,
-  Object3D,
   Scene
 } from "three";
 import { Hitbox } from "../model/hitbox";
@@ -32,10 +31,14 @@ export class HitboxModel {
     this.lineSegments = new LineSegments(this.edges, this.lineMaterial);
   }
 
-  setScale(scale: number[]) {
-    if (scale != undefined) {
-      this.mesh.scale.set(scale[0], scale[1], scale[2]);
-      this.lineSegments.scale.set(scale[0], scale[1], scale[2]);
+  applyConfig(config: HitboxConfig) {
+    if (config != undefined) {
+      this.mesh.scale.set(config.width, config.height, config.depth);
+      this.mesh.position.set(config.posX, config.posY, 0);
+      this.mesh.rotation.set(0, 0, -degToRad(config.rotZ));
+      this.lineSegments.scale.set(config.width, config.height, config.depth);
+      this.lineSegments.position.set(config.posX, config.posY, 0);
+      this.lineSegments.rotation.set(0, 0, -degToRad(config.rotZ));
     }
   }
 
@@ -55,59 +58,60 @@ export class HitboxModel {
     this.lineMaterial.dispose();
     this.edges.dispose();
   }
-
-  /**
-   * Set the position and rotation of the anchor to this object.
-   *
-   * @param anchor
-   */
-  applyAnchor(anchor: Object3D) {
-    if (this.mesh == undefined) {
-      return;
-    }
-
-    if (anchor == undefined) {
-      console.warn('got undefined anchor');
-      return;
-    }
-
-    this.mesh.position.set(
-      anchor.position.x,
-      anchor.position.y,
-      anchor.position.z,
-    );
-
-    this.mesh.rotation.set(
-      anchor.rotation.x,
-      anchor.rotation.y,
-      anchor.rotation.z,
-      anchor.rotation.order,
-    );
-
-    this.lineSegments.position.set(
-      anchor.position.x,
-      anchor.position.y,
-      anchor.position.z,
-    );
-
-    this.lineSegments.rotation.set(
-      anchor.rotation.x,
-      anchor.rotation.y,
-      anchor.rotation.z,
-      anchor.rotation.order,
-    );
-  }
 }
 
+class HitboxConfig {
+  width: number;
+  height: number;
+  depth: number;
+  posX: number;
+  posY: number;
+  rotZ: number;
+}
 
-export const HIT_BOX_OCTANE = [118.0074, 36.15907, 84.19941];
-export const HIT_BOX_DOMINUS = [127.9268, 31.3, 83.27995];
-export const HIT_BOX_PLANK = [128.8198, 29.3944, 84.67036];
-export const HIT_BOX_BREAKOUT = [131.4924, 30.3, 80.521];
-export const HIT_BOX_HYBRID = [127.0192, 34.15907, 82.18787];
-export const HIT_BOX_BATMOBILE = [128.8198, 29.3944, 84.67036];
+export const HIT_BOX_OCTANE: HitboxConfig = {
+  width: 118.0074,
+  height: 36.15907,
+  depth: 84.19941,
+  posX: 13.87566,
+  posY: 20.75499,
+  rotZ: 0.552
+};
+export const HIT_BOX_DOMINUS: HitboxConfig = {
+  width: 127.9268,
+  height: 31.3,
+  depth: 83.27995,
+  posX: 9,
+  posY: 15.75,
+  rotZ: 0.963
+};
+export const HIT_BOX_PLANK: HitboxConfig = {
+  width: 128.8198,
+  height: 29.3944,
+  depth: 84.67036,
+  posX: 9.008572,
+  posY: 12.0942,
+  rotZ: 0.345
+};
+export const HIT_BOX_BREAKOUT: HitboxConfig = {
+  width: 131.4924,
+  height: 30.3,
+  depth: 80.521,
+  posX: 12.5,
+  posY: 11.75,
+  rotZ: 0.98
+};
+export const HIT_BOX_HYBRID: HitboxConfig = {
+  width: 127.0192,
+  height: 34.15907,
+  depth: 82.18787,
+  posX: 13.87566,
+  posY: 20.75499,
+  rotZ: 0.55
+};
+export const HIT_BOX_BATMOBILE: HitboxConfig = HIT_BOX_PLANK;
 
-export function getHitboxModel(hitbox: Hitbox): number[] {
+export function getHitboxModel(hitbox: Hitbox): HitboxConfig {
   switch (hitbox) {
     case Hitbox.OCTANE:
       return HIT_BOX_OCTANE;
@@ -122,4 +126,8 @@ export function getHitboxModel(hitbox: Hitbox): number[] {
     case Hitbox.BATMOBILE:
       return HIT_BOX_BATMOBILE;
   }
+}
+
+function degToRad(deg: number): number {
+  return deg * (Math.PI / 180);
 }

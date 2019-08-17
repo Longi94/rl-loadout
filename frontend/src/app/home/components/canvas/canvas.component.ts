@@ -451,7 +451,6 @@ export class CanvasComponent implements OnInit {
 
   private applyHitbox() {
     const nextHitbox = getHitboxModel(this.loadoutService.body.hitbox);
-    this.hitbox.setScale(nextHitbox);
-    this.hitbox.applyAnchor(this.body.hitboxAnchor);
+    this.hitbox.applyConfig(nextHitbox);
   }
 }
