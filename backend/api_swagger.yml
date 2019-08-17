@@ -68,6 +68,14 @@ paths:
             type: integer
             maximum: 16777215
             minimum: 0
+        - name: team
+          in: query
+          required: false
+          description: 'If this is set, the default blue (0) or the default orange (1) color will be used. This is ignored if primary_color is set.'
+          example: 0
+          schema:
+            type: integer
+            enum: [0, 1]
       responses:
         200:
           description: 'Returns the texture in the chosen format'
