@@ -5,7 +5,7 @@ from database import database
 from entity import Wheel
 from dao import WheelDao
 
-wheels_blueprint = Blueprint('wheels', __name__, url_prefix='/api/wheels')
+wheels_blueprint = Blueprint('wheels', __name__, url_prefix='/internal/wheels')
 wheel_dao = WheelDao()
 
 

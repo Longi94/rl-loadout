@@ -6,7 +6,7 @@ from entity import Antenna
 from dao import AntennaDao
 from utils.network.exc import NotFoundException
 
-antennas_blueprint = Blueprint('antennas', __name__, url_prefix='/api/antennas')
+antennas_blueprint = Blueprint('antennas', __name__, url_prefix='/internal/antennas')
 antenna_dao = AntennaDao()
 
 

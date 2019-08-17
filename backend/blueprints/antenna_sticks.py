@@ -5,7 +5,7 @@ from database import database
 from entity import AntennaStick
 from dao import AntennaDao
 
-antenna_sticks_blueprint = Blueprint('antenna_sticks', __name__, url_prefix='/api/antenna-sticks')
+antenna_sticks_blueprint = Blueprint('antenna_sticks', __name__, url_prefix='/internal/antenna-sticks')
 antenna_dao = AntennaDao()
 
 

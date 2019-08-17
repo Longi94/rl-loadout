@@ -5,7 +5,7 @@ from database import database
 from entity import Topper
 from dao import TopperDao
 
-toppers_blueprint = Blueprint('toppers', __name__, url_prefix='/api/toppers')
+toppers_blueprint = Blueprint('toppers', __name__, url_prefix='/internal/toppers')
 topper_dao = TopperDao()
 
 

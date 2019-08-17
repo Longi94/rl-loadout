@@ -10,7 +10,7 @@ import { DEFAULT_ACCENT, DEFAULT_BLUE_TEAM } from "../utils/color";
 import { Topper } from "../model/topper";
 import { Antenna } from "../model/antenna";
 
-const HOST = `${environment.backend}/api`;
+const HOST = `${environment.backend}/internal`;
 
 @Injectable({
   providedIn: 'root'

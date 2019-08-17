@@ -5,7 +5,7 @@ from database import database
 from entity import DecalDetail
 from dao import DecalDao
 
-decal_details_blueprint = Blueprint('decal_details', __name__, url_prefix='/api/decal-details')
+decal_details_blueprint = Blueprint('decal_details', __name__, url_prefix='/internal/decal-details')
 decal_dao = DecalDao()
 
 
