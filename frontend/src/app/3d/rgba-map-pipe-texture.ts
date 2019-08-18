@@ -11,8 +11,8 @@ export abstract class RgbaMapPipeTexture {
   rgbaMap: Uint8ClampedArray;
   data: Uint8Array;
 
-  width: number = 2048;
-  height: number = 2048;
+  width = 2048;
+  height = 2048;
   texture: DataTexture;
 
   protected constructor(baseUrl, rgbaMapUrl) {

@@ -8,7 +8,7 @@ import { map } from 'rxjs/operators';
   providedIn: 'root'
 })
 export class CloudStorageService {
-  url: string = `https://www.googleapis.com/storage/v1/b/rl-loadout${environment.production ? '' : '-dev'}/o`;
+  url = `https://www.googleapis.com/storage/v1/b/rl-loadout${environment.production ? '' : '-dev'}/o`;
 
   constructor(private httpClient: HttpClient) {
   }

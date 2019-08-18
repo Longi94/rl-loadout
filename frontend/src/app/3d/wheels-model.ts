@@ -78,7 +78,7 @@ export class WheelsModel extends AbstractObject {
     }
 
     return new Promise((resolve, reject) => Promise.all(promises).then(() => {
-      if (this.rimSkin){
+      if (this.rimSkin) {
         this.rimMaterial.map = this.rimSkin.texture;
       }
       this.applyRimSkin();

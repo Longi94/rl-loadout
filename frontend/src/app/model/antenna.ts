@@ -18,7 +18,7 @@ export class Antenna extends Item {
   }
 
   static NONE = new Antenna(
-    -1, '','None', Quality.COMMON, false, undefined, undefined, undefined, undefined
+    -1, '', 'None', Quality.COMMON, false, undefined, undefined, undefined, undefined
   );
 }
 

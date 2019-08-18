@@ -3,5 +3,5 @@ export class ApiKey {
   key: string;
   name: string;
   description: string;
-  active: boolean = false;
+  active = false;
 }

@@ -20,10 +20,10 @@ export class ItemListComponent implements OnInit {
   type: string;
 
   @Input()
-  showImg: boolean = true;
+  showImg = true;
 
   @Input()
-  line1: string = 'name';
+  line1 = 'name';
 
   @Input()
   line2: string;
