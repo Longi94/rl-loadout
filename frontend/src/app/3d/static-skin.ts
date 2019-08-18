@@ -43,7 +43,7 @@ export class StaticSkin extends RgbaMapPipeTexture {
     }
 
     if (this.blankSkinMap !== undefined) {
-      if (this.blankSkinMap[i + 2] == 255) {
+      if (this.blankSkinMap[i + 2] === 255) {
         return BLACK;
       }
 
@@ -60,7 +60,7 @@ export class StaticSkin extends RgbaMapPipeTexture {
       return this.colorHolder;
     }
 
-    if (this.rgbaMap[i] == 255 && this.rgbaMap[i + 2] == 0) {
+    if (this.rgbaMap[i] === 255 && this.rgbaMap[i + 2] === 0) {
       if (this.rgbaMap[i + 3] > 0) {
         overBlendColors(this.accent, this.primary, this.rgbaMap[i + 3], this.colorHolder);
       }
