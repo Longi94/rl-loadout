@@ -158,7 +158,7 @@ export class CanvasComponent implements OnInit {
   }
 
   private addControls() {
-    let gui: GUI = new dat.GUI({ autoPlace: false, closed: true });
+    let gui: GUI = new dat.GUI({autoPlace: false, closed: true});
 
     gui.add(this.config, 'hitbox').onChange(value => {
       if (value) {
@@ -332,6 +332,7 @@ export class CanvasComponent implements OnInit {
   }
 
   private applyBodyModel() {
+    this.validateBody();
     this.body.setEnvMap(this.envMap);
     this.body.addToScene(this.scene);
   }
@@ -453,5 +454,21 @@ export class CanvasComponent implements OnInit {
   private applyHitbox() {
     const nextHitbox = getHitboxModel(this.loadoutService.body.hitbox);
     this.hitbox.applyConfig(nextHitbox);
+  }
+
+  private validateBody() {
+    const body = this.loadoutService.body;
+
+    if (this.body.antennaAnchor == undefined) {
+      console.warn(`Body ${body.name} has no antenna anchor.`);
+    }
+
+    if (this.body.topperAnchor == undefined) {
+      console.warn(`Body ${body.name} has no topper anchor.`);
+    }
+
+    if (getHitboxModel(body.hitbox) == undefined) {
+      console.warn(`The hitbox of body ${body.name} is unknown (${body.hitbox}).`);
+    }
   }
 }

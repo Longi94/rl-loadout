@@ -16,11 +16,18 @@ export abstract class AbstractObject {
   load(): Promise<any> {
     return new Promise((resolve, reject) => {
       this.loader.load(this.url, gltf => {
+        this.validate(gltf);
         this.scene = gltf.scene;
         this.handleModel(gltf.scene);
         resolve();
       }, undefined, reject);
     });
+  }
+
+  private validate(gltf) {
+    if (!('KHR_draco_mesh_compression' in gltf.parser.extensions)) {
+      console.warn(`${this.url} is not DRACO compressed.`);
+    }
   }
 
   abstract handleModel(scene: Scene);
@@ -56,7 +63,6 @@ export abstract class AbstractObject {
    */
   applyAnchor(anchor: Object3D) {
     if (anchor == undefined) {
-      console.warn('got undefined anchor');
       return;
     }
 
