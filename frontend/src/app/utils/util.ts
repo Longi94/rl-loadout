@@ -1,7 +1,6 @@
 /**
  * Convenience function to call dispose() on an object if it's not undefined or null.
- *
- * @param object
+ * @param object nullable object that must have a dispose method
  */
 export function disposeIfExists(object: any) {
   if (object != undefined) {
@@ -11,7 +10,7 @@ export function disposeIfExists(object: any) {
 
 /**
  * Copies a text to the clip board
- * @param val
+ * @param val rhe text that will be copied to the clipboard
  */
 export function copyMessage(val: string) {
   const selBox = document.createElement('textarea');

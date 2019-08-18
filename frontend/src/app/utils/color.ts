@@ -289,7 +289,7 @@ export function overBlendColors(foreground: Color, background: Color, foreground
  * Get the text color for the background to make it readable.
  * https://www.w3.org/TR/AERT/#color-contrast
  *
- * @param backgroundColor
+ * @param backgroundColor color of background in #FFFFFF format
  */
 export function getTextColor(backgroundColor: string) {
   if (backgroundColor ==  undefined) {

@@ -61,7 +61,7 @@ export class LoadoutStoreService {
 
   /**
    * Load decals for a body.
-   * @param bodyId
+   * @param bodyId id of body
    */
   loadDecals(bodyId: number) {
     return new Promise((resolve) => {

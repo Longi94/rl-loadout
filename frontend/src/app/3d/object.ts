@@ -43,7 +43,7 @@ export abstract class AbstractObject {
   /**
    * Set the environment map to all objects in this scene
    *
-   * @param envMap
+   * @param envMap environment map
    */
   setEnvMap(envMap: Texture) {
     this.scene.traverse(object => {
@@ -59,7 +59,7 @@ export abstract class AbstractObject {
   /**
    * Set the position and rotation of the anchor to this object.
    *
-   * @param anchor
+   * @param anchor the anchor object
    */
   applyAnchor(anchor: Object3D) {
     if (anchor == undefined) {

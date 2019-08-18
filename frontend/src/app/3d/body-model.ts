@@ -183,7 +183,7 @@ export class BodyModel extends AbstractObject {
   /**
    * Set the paint color of this body. This only applies to the chassis, the paint of the body is set by the skin.
    *
-   * @param color
+   * @param color paint color
    */
   setPaint(color: Color) {
     if (this.chassisSkin != undefined) {
