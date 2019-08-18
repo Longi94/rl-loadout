@@ -57,8 +57,8 @@ export class BodyModel extends AbstractObject {
 
   wheelScale: number[] = [1, 1];
 
-  topperAnchor: Object3D;
-  antennaAnchor: Object3D;
+  hatSocket: Object3D;
+  antennaSocket: Object3D;
 
   constructor(body: Body, paints: { [key: string]: string }) {
     super(getAssetUrl(body.model));
@@ -116,12 +116,11 @@ export class BodyModel extends AbstractObject {
       console.warn('wheel_scale not found in body user data');
     }
 
+    this.hatSocket = scene.getObjectByName('HatSocket');
+    this.antennaSocket = scene.getObjectByName('AntennaSocket');
+
     scene.traverse(object => {
-      if (object.name === 'topper_anchor') {
-        this.topperAnchor = object;
-      } else if (object.name === 'antenna_anchor') {
-        this.antennaAnchor = object;
-      } else if (object instanceof Bone && this.skeleton == undefined) {
+      if (object instanceof Bone && this.skeleton == undefined) {
         this.skeleton = object;
       } else if (object instanceof Mesh) {
         const mat = object.material as MeshStandardMaterial;
