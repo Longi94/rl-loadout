@@ -1,3 +1,5 @@
+/* tslint:disable:variable-name */
+
 import { Item } from './item';
 
 export class Wheel extends Item {

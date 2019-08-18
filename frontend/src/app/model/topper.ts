@@ -1,3 +1,5 @@
+/* tslint:disable:variable-name */
+
 import { Item } from './item';
 import { Quality } from './quality';
 
