@@ -15,7 +15,10 @@ from _version import __version__
 
 log = logging.getLogger(__name__)
 
-connexion_app = connexion.App(__name__, arguments={'server_host': config.get('server', 'host')})
+connexion_app = connexion.App(__name__, arguments={
+    'server_host': config.get('server', 'host'),
+    'version': __version__
+})
 connexion_app.add_api('api_swagger.yml')
 app = connexion_app.app
 

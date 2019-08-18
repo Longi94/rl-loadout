@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 0.3.0
+  version: "{{ version }}"
   title: 'Rocket Loadout Public API'
   contact:
     name: 'Rocket Loadout Discord'
