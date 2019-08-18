@@ -95,7 +95,7 @@ export class LoadoutToolbarComponent implements OnInit {
     }
     component.instance.items = this.loadoutStore.bodies;
     component.instance.selectedItem = this.loadoutService.body;
-    component.instance.onSelect = item => this.loadoutService.selectBody(<Body>item);
+    component.instance.onSelect = item => this.loadoutService.selectBody(item as Body);
   }
 
   openDecalsComponent() {
@@ -106,7 +106,7 @@ export class LoadoutToolbarComponent implements OnInit {
     component.instance.items = this.loadoutStore.decals.slice();
     component.instance.items.unshift(Decal.NONE);
     component.instance.selectedItem = this.loadoutService.decal;
-    component.instance.onSelect = item => this.loadoutService.selectDecal(<Decal>item);
+    component.instance.onSelect = item => this.loadoutService.selectDecal(item as Decal);
   }
 
   openWheelComponent() {
@@ -116,7 +116,7 @@ export class LoadoutToolbarComponent implements OnInit {
     }
     component.instance.items = this.loadoutStore.wheels;
     component.instance.selectedItem = this.loadoutService.wheel;
-    component.instance.onSelect = item => this.loadoutService.selectWheel(<Wheel>item);
+    component.instance.onSelect = item => this.loadoutService.selectWheel(item as Wheel);
   }
 
   openTopperComponent() {
@@ -127,7 +127,7 @@ export class LoadoutToolbarComponent implements OnInit {
     component.instance.items = this.loadoutStore.toppers.slice();
     component.instance.items.unshift(Topper.NONE);
     component.instance.selectedItem = this.loadoutService.topper;
-    component.instance.onSelect = item => this.loadoutService.selectTopper(<Topper>item);
+    component.instance.onSelect = item => this.loadoutService.selectTopper(item as Topper);
   }
 
   openAntennaComponent() {
@@ -138,7 +138,7 @@ export class LoadoutToolbarComponent implements OnInit {
     component.instance.items = this.loadoutStore.antennas.slice();
     component.instance.items.unshift(Antenna.NONE);
     component.instance.selectedItem = this.loadoutService.antenna;
-    component.instance.onSelect = item => this.loadoutService.selectAntenna(<Antenna>item);
+    component.instance.onSelect = item => this.loadoutService.selectAntenna(item as Antenna);
   }
 
   openPaintsComponent() {

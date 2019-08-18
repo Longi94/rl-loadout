@@ -48,7 +48,7 @@ export abstract class AbstractObject {
   setEnvMap(envMap: Texture) {
     this.scene.traverse(object => {
       if (object instanceof Mesh) {
-        const mat = <MeshStandardMaterial>object.material;
+        const mat = object.material as MeshStandardMaterial;
         mat.envMap = envMap;
         mat.envMapIntensity = 1.0;
         mat.needsUpdate = true;

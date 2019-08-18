@@ -88,8 +88,8 @@ export class LoadoutService {
   loadDefaults(): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       this.httpClient.get<{ [type: string]: Item }>(`${HOST}/defaults`).subscribe(defaults => {
-        this.body = <Body>defaults['body'];
-        this.wheel = <Wheel>defaults['wheel'];
+        this.body = defaults['body'] as Body;
+        this.wheel = defaults['wheel'] as Wheel;
         resolve();
       }, reject);
     });

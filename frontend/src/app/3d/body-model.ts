@@ -94,7 +94,7 @@ export class BodyModel extends AbstractObject {
       } else if (object instanceof Bone && this.skeleton == undefined) {
         this.skeleton = object;
       } else if (object instanceof Mesh) {
-        const mat = <MeshStandardMaterial>object.material;
+        const mat = object.material as MeshStandardMaterial;
         const matName = mat.name.toLowerCase();
         if (matName.includes('body')) {
           this.bodyMaterial = mat;
@@ -135,7 +135,7 @@ export class BodyModel extends AbstractObject {
           wheelPos.add(pivotJoint.position).add(discJoint.position);
           scale = this.wheelScale[0];
         } else {
-          const discJoint = <Bone>bone.children.find(value => value.name.endsWith('Disc_jnt'));
+          const discJoint = bone.children.find(value => value.name.endsWith('Disc_jnt')) as Bone;
           wheelPos.add(discJoint.position);
           scale = this.wheelScale[1];
         }

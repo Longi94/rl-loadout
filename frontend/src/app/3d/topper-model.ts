@@ -32,7 +32,7 @@ export class TopperModel extends AbstractObject {
   handleModel(scene: Scene) {
     scene.traverse(object => {
       if (object instanceof Mesh) {
-        this.material = <MeshStandardMaterial>object.material;
+        this.material = object.material as MeshStandardMaterial;
       }
     });
   }

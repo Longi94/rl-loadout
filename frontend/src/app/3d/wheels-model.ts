@@ -59,7 +59,7 @@ export class WheelsModel extends AbstractObject {
   handleModel(scene: Scene) {
     scene.traverse(object => {
       if (object instanceof Mesh) {
-        const mat = <MeshStandardMaterial>object.material;
+        const mat = object.material as MeshStandardMaterial;
         if (mat.name.includes('rim')) {
           this.rimMaterial = mat;
         }
