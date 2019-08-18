@@ -1,12 +1,12 @@
-import { Bone, Color, Mesh, MeshStandardMaterial, Object3D, Scene, Texture } from "three";
-import { AbstractObject } from "./object";
-import { Body } from "../model/body";
-import { PromiseLoader } from "../utils/loader";
-import { TgaRgbaLoader } from "../utils/tga-rgba-loader";
-import { getAssetUrl } from "../utils/network";
-import { RgbaMapPipeTexture } from "./rgba-map-pipe-texture";
-import { overBlendColors } from "../utils/color";
-import { disposeIfExists } from "../utils/util";
+import { Bone, Color, Mesh, MeshStandardMaterial, Object3D, Scene, Texture } from 'three';
+import { AbstractObject } from './object';
+import { Body } from '../model/body';
+import { PromiseLoader } from '../utils/loader';
+import { TgaRgbaLoader } from '../utils/tga-rgba-loader';
+import { getAssetUrl } from '../utils/network';
+import { RgbaMapPipeTexture } from './rgba-map-pipe-texture';
+import { overBlendColors } from '../utils/color';
+import { disposeIfExists } from '../utils/util';
 
 export class BodyModel extends AbstractObject {
 

@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SharedMaterialModule } from "../shared-material/shared-material.module";
+import { SharedMaterialModule } from '../shared-material/shared-material.module';
 import { LoginComponent } from './components/login/login.component';
 import { MainComponent } from './components/main/main.component';
-import { RouterModule } from "@angular/router";
+import { RouterModule } from '@angular/router';
 import { BodiesComponent } from './components/bodies/bodies.component';
 import { ItemListComponent } from './components/item-list/item-list.component';
 import { CreateBodyComponent } from './components/dialog/create-body/create-body.component';
-import { SharedModule } from "../shared/shared.module";
+import { SharedModule } from '../shared/shared.module';
 import { DecalDetailsComponent } from './components/decal-details/decal-details.component';
 import { DecalsComponent } from './components/decals/decals.component';
 import { WheelsComponent } from './components/wheels/wheels.component';

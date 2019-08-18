@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import {
   PerspectiveCamera,
   Scene,
@@ -11,29 +11,29 @@ import {
   Texture,
   WebGLRenderTarget,
   AmbientLight
-} from "three";
-import { StaticSkin } from "../../../3d/static-skin";
-import { LoadoutService } from "../../../service/loadout.service";
-import { Decal } from "../../../model/decal";
-import { BodyModel } from "../../../3d/body-model";
-import { WheelsModel } from "../../../3d/wheels-model";
-import { Wheel } from "../../../model/wheel";
-import { promiseProgress } from "../../../utils/promise";
-import { LoadoutStoreService } from "../../../service/loadout-store.service";
-import { Body } from "../../../model/body";
-import { getAssetUrl } from "../../../utils/network";
-import { EquirectangularToCubeGenerator } from "three/examples/jsm/loaders/EquirectangularToCubeGenerator";
-import { PromiseLoader } from "../../../utils/loader";
-import { PMREMGenerator } from "three/examples/jsm/pmrem/PMREMGenerator";
-import { PMREMCubeUVPacker } from "three/examples/jsm/pmrem/PMREMCubeUVPacker";
-import { TextureService } from "../../../service/texture.service";
-import { Topper } from "../../../model/topper";
-import { TopperModel } from "../../../3d/topper-model";
-import { AntennaModel } from "../../../3d/antenna-model";
-import { Antenna } from "../../../model/antenna";
-import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
-import { getHitboxModel, HitboxModel } from "../../../3d/hitbox-model";
-import { GUI } from "dat-gui";
+} from 'three';
+import { StaticSkin } from '../../../3d/static-skin';
+import { LoadoutService } from '../../../service/loadout.service';
+import { Decal } from '../../../model/decal';
+import { BodyModel } from '../../../3d/body-model';
+import { WheelsModel } from '../../../3d/wheels-model';
+import { Wheel } from '../../../model/wheel';
+import { promiseProgress } from '../../../utils/promise';
+import { LoadoutStoreService } from '../../../service/loadout-store.service';
+import { Body } from '../../../model/body';
+import { getAssetUrl } from '../../../utils/network';
+import { EquirectangularToCubeGenerator } from 'three/examples/jsm/loaders/EquirectangularToCubeGenerator';
+import { PromiseLoader } from '../../../utils/loader';
+import { PMREMGenerator } from 'three/examples/jsm/pmrem/PMREMGenerator';
+import { PMREMCubeUVPacker } from 'three/examples/jsm/pmrem/PMREMCubeUVPacker';
+import { TextureService } from '../../../service/texture.service';
+import { Topper } from '../../../model/topper';
+import { TopperModel } from '../../../3d/topper-model';
+import { AntennaModel } from '../../../3d/antenna-model';
+import { Antenna } from '../../../model/antenna';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+import { getHitboxModel, HitboxModel } from '../../../3d/hitbox-model';
+import { GUI } from 'dat-gui';
 
 const dat = require('dat.gui');
 

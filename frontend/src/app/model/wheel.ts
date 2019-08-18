@@ -1,5 +1,4 @@
-import { Item } from "./item";
-import { Quality } from "./quality";
+import { Item } from './item';
 
 export class Wheel extends Item {
   model: string;

@@ -1,6 +1,6 @@
-import { TgaRgbaLoader } from "../utils/tga-rgba-loader";
-import { Color, DataTexture, RepeatWrapping, RGBAFormat } from "three";
-import { disposeIfExists } from "../utils/util";
+import { TgaRgbaLoader } from '../utils/tga-rgba-loader';
+import { Color, DataTexture, RepeatWrapping, RGBAFormat } from 'three';
+import { disposeIfExists } from '../utils/util';
 
 export abstract class RgbaMapPipeTexture {
   baseUrl: string;

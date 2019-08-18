@@ -1,11 +1,11 @@
-import { AbstractObject } from "./object";
-import { Color, Mesh, MeshStandardMaterial, Scene } from "three";
-import { RgbaMapPipeTexture } from "./rgba-map-pipe-texture";
-import { Wheel } from "../model/wheel";
-import { getAssetUrl } from "../utils/network";
-import { SkeletonUtils } from "three/examples/jsm/utils/SkeletonUtils";
-import { overBlendColors } from "../utils/color";
-import { disposeIfExists } from "../utils/util";
+import { AbstractObject } from './object';
+import { Color, Mesh, MeshStandardMaterial, Scene } from 'three';
+import { RgbaMapPipeTexture } from './rgba-map-pipe-texture';
+import { Wheel } from '../model/wheel';
+import { getAssetUrl } from '../utils/network';
+import { SkeletonUtils } from 'three/examples/jsm/utils/SkeletonUtils';
+import { overBlendColors } from '../utils/color';
+import { disposeIfExists } from '../utils/util';
 
 export class WheelsModel extends AbstractObject {
 

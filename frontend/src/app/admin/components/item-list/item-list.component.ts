@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Item } from "../../../model/item";
-import { environment } from "../../../../environments/environment";
-import { ItemService } from "../../../service/item.service";
-import { confirmMaterial } from "../../../shared/confirm-dialog/confirm-dialog.component";
-import { MatDialog } from "@angular/material";
+import { Item } from '../../../model/item';
+import { environment } from '../../../../environments/environment';
+import { ItemService } from '../../../service/item.service';
+import { confirmMaterial } from '../../../shared/confirm-dialog/confirm-dialog.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-item-list',

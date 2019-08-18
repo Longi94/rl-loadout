@@ -1,5 +1,5 @@
-import { Item } from "./item";
-import { Hitbox } from "./hitbox";
+import { Item } from './item';
+import { Hitbox } from './hitbox';
 
 export class Body extends Item {
   blank_skin: string;

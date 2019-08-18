@@ -1,4 +1,4 @@
-import { Color } from "three";
+import { Color } from 'three';
 
 // https://www.reddit.com/r/RLFashionAdvice/comments/9l1swx/rocket_league_color_palette_with_hex_and_rgb/
 export const BLUE_PRIMARY_COLORS = [

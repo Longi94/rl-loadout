@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable } from "rxjs";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { environment } from "../../environments/environment";
-import { Body } from "../model/body";
-import { Decal, DecalDetail } from "../model/decal";
-import { Antenna, AntennaStick } from "../model/antenna";
-import { Wheel } from "../model/wheel";
-import { Topper } from "../model/topper";
+import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../environments/environment';
+import { Body } from '../model/body';
+import { Decal, DecalDetail } from '../model/decal';
+import { Antenna, AntennaStick } from '../model/antenna';
+import { Wheel } from '../model/wheel';
+import { Topper } from '../model/topper';
 
 const HOST = `${environment.backend}/internal`;
 const HEADERS = new HttpHeaders({'Content-Type': 'application/json'});

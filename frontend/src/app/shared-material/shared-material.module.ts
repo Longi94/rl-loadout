@@ -18,9 +18,9 @@ import {
   MatCardModule,
   MatListModule,
   MatCheckboxModule
-} from "@angular/material";
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { FormsModule } from "@angular/forms";
+} from '@angular/material';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms';
 
 
 

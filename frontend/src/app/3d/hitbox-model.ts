@@ -6,8 +6,8 @@ import {
   Mesh,
   MeshPhongMaterial,
   Scene
-} from "three";
-import { Hitbox } from "../model/hitbox";
+} from 'three';
+import { Hitbox } from '../model/hitbox';
 
 export class HitboxModel {
 

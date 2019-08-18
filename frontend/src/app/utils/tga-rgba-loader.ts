@@ -1,4 +1,4 @@
-import { FileLoader } from "three";
+import { FileLoader } from 'three';
 
 export class TgaRgbaLoader {
   path: string;

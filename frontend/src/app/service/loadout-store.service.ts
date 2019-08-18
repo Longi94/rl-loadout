@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { environment } from "../../environments/environment";
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { Body } from "../model/body";
-import { Wheel } from "../model/wheel";
-import { Decal } from "../model/decal";
-import { Item } from "../model/item";
-import { Topper } from "../model/topper";
-import { Antenna } from "../model/antenna";
+import { environment } from '../../environments/environment';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Body } from '../model/body';
+import { Wheel } from '../model/wheel';
+import { Decal } from '../model/decal';
+import { Item } from '../model/item';
+import { Topper } from '../model/topper';
+import { Antenna } from '../model/antenna';
 
 const HOST = `${environment.backend}/internal`;
 

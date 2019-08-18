@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
-import { Decal, DecalDetail } from "../../../../model/decal";
-import { Quality } from "../../../../model/quality";
-import { MatDialogRef, MatSnackBar } from "@angular/material";
-import { CloudStorageService } from "../../../../service/cloud-storage.service";
-import { ItemService } from "../../../../service/item.service";
-import { handleErrorSnackbar } from "../../../../utils/network";
-import { CreateDialog } from "../create-dialog";
-import { getWorkspaceDetails } from "@angular/cli/utilities/project";
-import { Body } from "../../../../model/body";
+import { Decal, DecalDetail } from '../../../../model/decal';
+import { Quality } from '../../../../model/quality';
+import { MatDialogRef, MatSnackBar } from '@angular/material';
+import { CloudStorageService } from '../../../../service/cloud-storage.service';
+import { ItemService } from '../../../../service/item.service';
+import { handleErrorSnackbar } from '../../../../utils/network';
+import { CreateDialog } from '../create-dialog';
+import { Body } from '../../../../model/body';
 
 @Component({
   selector: 'app-create-decal',

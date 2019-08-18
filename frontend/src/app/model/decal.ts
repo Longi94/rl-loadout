@@ -1,5 +1,5 @@
-import { Item } from "./item";
-import { Quality } from "./quality";
+import { Item } from './item';
+import { Quality } from './quality';
 
 export class Decal extends Item {
   base_texture?: string;

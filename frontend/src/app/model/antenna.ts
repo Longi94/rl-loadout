@@ -1,5 +1,5 @@
-import { Item } from "./item";
-import { Quality } from "./quality";
+import { Item } from './item';
+import { Quality } from './quality';
 
 export class Antenna extends Item {
   model: string;

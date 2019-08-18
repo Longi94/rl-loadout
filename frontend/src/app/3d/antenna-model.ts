@@ -1,10 +1,10 @@
-import { Antenna } from "../model/antenna";
-import { AbstractObject } from "./object";
-import { getAssetUrl } from "../utils/network";
-import { Object3D, Scene } from "three";
-import { PromiseLoader } from "../utils/loader";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
+import { Antenna } from '../model/antenna';
+import { AbstractObject } from './object';
+import { getAssetUrl } from '../utils/network';
+import { Object3D, Scene } from 'three';
+import { PromiseLoader } from '../utils/loader';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 
 export class AntennaModel extends AbstractObject {
 

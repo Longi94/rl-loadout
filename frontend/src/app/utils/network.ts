@@ -1,5 +1,5 @@
-import { environment } from "../../environments/environment";
-import { MatSnackBar } from "@angular/material";
+import { environment } from '../../environments/environment';
+import { MatSnackBar } from '@angular/material';
 
 export function getAssetUrl(asset: string) {
   if (asset == undefined || asset.length == 0) {
