@@ -7,7 +7,7 @@ from dao import ApiKeyDao
 from api.api import generate_api_key
 from utils.network.exc import NotFoundException
 
-api_keys_blueprint = Blueprint('api_keys', __name__, url_prefix='/api/api-keys')
+api_keys_blueprint = Blueprint('api_keys', __name__, url_prefix='/internal/api-keys')
 key_dao = ApiKeyDao()
 
 

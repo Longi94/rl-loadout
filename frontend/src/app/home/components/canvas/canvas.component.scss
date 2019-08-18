@@ -49,3 +49,9 @@ canvas {
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
 }
+
+.canvas-container > .dg-container {
+  z-index: 100;
+  position: absolute;
+  right: 1em;
+}

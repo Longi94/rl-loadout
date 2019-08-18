@@ -4,7 +4,7 @@ import { ApiKey } from "../model/api-key";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 
-const HOST = `${environment.backend}/api`;
+const HOST = `${environment.backend}/internal`;
 const HEADERS = new HttpHeaders({'Content-Type': 'application/json'});
 
 @Injectable({

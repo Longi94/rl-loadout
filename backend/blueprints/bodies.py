@@ -5,8 +5,14 @@ from database import database
 from entity import Body
 from dao import BodyDao
 
-bodies_blueprint = Blueprint('bodies', __name__, url_prefix='/api/bodies')
+bodies_blueprint = Blueprint('bodies', __name__, url_prefix='/internal/bodies')
 body_dao = BodyDao()
+
+
+@bodies_blueprint.route('', methods=['GET'])
+def get_bodies():
+    bodies = body_dao.get_all()
+    return jsonify([body.to_dict() for body in bodies])
 
 
 @bodies_blueprint.route('', methods=['POST'])

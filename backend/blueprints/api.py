@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from dao import BodyDao, WheelDao, TopperDao, AntennaDao, DecalDao
 from _version import __version__
 
-api_blueprint = Blueprint('main_api', __name__, url_prefix='/api')
+api_blueprint = Blueprint('main_api', __name__, url_prefix='/internal')
 body_dao = BodyDao()
 wheel_dao = WheelDao()
 topper_dao = TopperDao()

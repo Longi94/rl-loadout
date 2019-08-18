@@ -6,7 +6,7 @@ from entity import Decal
 from dao import DecalDao, BodyDao
 from utils.network.exc import NotFoundException
 
-decals_blueprint = Blueprint('decals', __name__, url_prefix='/api/decals')
+decals_blueprint = Blueprint('decals', __name__, url_prefix='/internal/decals')
 decal_dao = DecalDao()
 body_dao = BodyDao()
 

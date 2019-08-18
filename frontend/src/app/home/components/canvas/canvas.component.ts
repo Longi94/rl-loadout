@@ -32,6 +32,10 @@ import { TopperModel } from "../../../3d/topper-model";
 import { AntennaModel } from "../../../3d/antenna-model";
 import { Antenna } from "../../../model/antenna";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
+import { getHitboxModel, HitboxModel } from "../../../3d/hitbox-model";
+import { GUI } from "dat-gui";
+
+const dat = require('dat.gui');
 
 @Component({
   selector: 'app-canvas',
@@ -45,6 +49,9 @@ export class CanvasComponent implements OnInit {
 
   @ViewChild('canvasContainer', {static: true})
   canvasContainer: ElementRef;
+
+  @ViewChild('dgContainer', {static: true})
+  dgContainer: ElementRef;
 
   private camera: PerspectiveCamera;
   private scene: Scene;
@@ -73,6 +80,10 @@ export class CanvasComponent implements OnInit {
     topper: false,
     antenna: false
   };
+
+  // hitbox
+  private config = {hitbox: false};
+  private hitbox: HitboxModel = new HitboxModel();
 
   constructor(private loadoutService: LoadoutService,
               private loadoutStore: LoadoutStoreService,
@@ -113,6 +124,7 @@ export class CanvasComponent implements OnInit {
     this.controls.update();
 
     this.addLights();
+    this.addControls();
 
     this.animate();
 
@@ -138,13 +150,29 @@ export class CanvasComponent implements OnInit {
         this.applySkin();
         this.applyBodyModel();
         this.applyWheelModel();
+        this.applyHitbox();
         this.updateTextureService();
         this.initializing = false;
       }).catch(console.error);
     }).catch(console.error);
   }
 
-  addLights() {
+  private addControls() {
+    let gui: GUI = new dat.GUI({autoPlace: false, closed: true});
+
+    gui.add(this.config, 'hitbox').onChange(value => {
+      if (value) {
+        this.hitbox.addToScene(this.scene);
+      } else {
+        this.hitbox.removeFromScene(this.scene);
+      }
+    });
+
+    gui.close();
+    this.dgContainer.nativeElement.appendChild(gui.domElement);
+  }
+
+  private addLights() {
     const INTENSITY = 0.6;
     const ANGLE = Math.PI / 4;
 
@@ -256,6 +284,7 @@ export class CanvasComponent implements OnInit {
       }
 
       this.applyBodyModel();
+      this.applyHitbox();
       this.updateTextureService();
       this.loading.body = false;
     });
@@ -303,6 +332,7 @@ export class CanvasComponent implements OnInit {
   }
 
   private applyBodyModel() {
+    this.validateBody();
     this.body.setEnvMap(this.envMap);
     this.body.addToScene(this.scene);
   }
@@ -357,6 +387,7 @@ export class CanvasComponent implements OnInit {
         textureService.set(key, undefined);
       }
     }
+
     addTexture(this.textureService, 'body', this.body.bodyMaterial);
     addTexture(this.textureService, 'chassis', this.body.chassisMaterial);
     addTexture(this.textureService, 'rim', this.wheels.rimMaterial);
@@ -418,5 +449,26 @@ export class CanvasComponent implements OnInit {
     this.antenna.setEnvMap(this.envMap);
     this.antenna.applyAnchor(this.body.antennaAnchor);
     this.antenna.addToScene(this.scene);
+  }
+
+  private applyHitbox() {
+    const nextHitbox = getHitboxModel(this.loadoutService.body.hitbox);
+    this.hitbox.applyConfig(nextHitbox);
+  }
+
+  private validateBody() {
+    const body = this.loadoutService.body;
+
+    if (this.body.antennaAnchor == undefined) {
+      console.warn(`Body ${body.name} has no antenna anchor.`);
+    }
+
+    if (this.body.topperAnchor == undefined) {
+      console.warn(`Body ${body.name} has no topper anchor.`);
+    }
+
+    if (getHitboxModel(body.hitbox) == undefined) {
+      console.warn(`The hitbox of body ${body.name} is unknown (${body.hitbox}).`);
+    }
   }
 }
