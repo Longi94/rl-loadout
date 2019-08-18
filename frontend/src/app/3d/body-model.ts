@@ -41,7 +41,7 @@ export class BodyModel extends AbstractObject {
         getAssetUrl(body.chassis_base),
         getAssetUrl(body.chassis_n),
         paints.body
-      )
+      );
     }
   }
 

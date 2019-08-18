@@ -45,7 +45,7 @@ export class AntennaModel extends AbstractObject {
           this.anchor.rotation.y,
           this.anchor.rotation.z,
           this.anchor.rotation.order
-        )
+        );
       } else {
         console.warn('antenna stick has no anchor');
       }

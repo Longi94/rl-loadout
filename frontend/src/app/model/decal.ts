@@ -22,7 +22,7 @@ export class Decal extends Item {
     false,
     undefined,
     undefined
-  )
+  );
 }
 
 export class DecalDetail extends Item {

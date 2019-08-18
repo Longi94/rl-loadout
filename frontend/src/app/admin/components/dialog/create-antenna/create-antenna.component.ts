@@ -24,7 +24,7 @@ export class CreateAntennaComponent extends CreateDialog {
               cloudService: CloudStorageService,
               private itemService: ItemService,
               private snackBar: MatSnackBar) {
-    super(dialogRef, cloudService)
+    super(dialogRef, cloudService);
   }
 
   ngOnInit() {

@@ -144,7 +144,7 @@ export class CanvasComponent implements OnInit {
       ];
 
       promiseProgress(promises, progress => {
-        this.initProgress = 100 * (progress + 1) / (promises.length + 1)
+        this.initProgress = 100 * (progress + 1) / (promises.length + 1);
       }).then(values => {
         this.processBackground(values[0]);
         this.applySkin();

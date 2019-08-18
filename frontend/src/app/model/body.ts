@@ -7,5 +7,5 @@ export class Body extends Item {
   model: string;
   chassis_base: string;
   chassis_n: string;
-  hitbox: Hitbox
+  hitbox: Hitbox;
 }

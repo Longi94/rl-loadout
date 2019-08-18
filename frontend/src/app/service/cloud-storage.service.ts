@@ -30,7 +30,7 @@ export class CloudStorageService {
           icons: icons,
           textures: textures,
           models: models
-        }
+        };
       })
     );
   }

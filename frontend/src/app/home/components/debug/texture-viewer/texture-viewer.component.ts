@@ -53,7 +53,7 @@ export class TextureViewerComponent implements OnInit {
       let imageData = new ImageData(new Uint8ClampedArray(texture.image.data), width, height);
       this.context.putImageData(imageData, 0, 0);
     } else {
-      this.context.drawImage(texture.image, 0, 0)
+      this.context.drawImage(texture.image, 0, 0);
     }
   }
 }

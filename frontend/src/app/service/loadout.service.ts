@@ -61,7 +61,7 @@ export class LoadoutService {
     this.paintSubject.next({
       type: type,
       color: color
-    })
+    });
   }
 
   selectWheel(wheel: Wheel) {

@@ -37,7 +37,7 @@ export class StaticSkin extends RgbaMapPipeTexture {
         this.baseSkinMap[i] / 255,
         this.baseSkinMap[i + 1] / 255,
         this.baseSkinMap[i + 2] / 255
-      )
+      );
     } else {
       this.colorHolder.set(BLACK);
     }
