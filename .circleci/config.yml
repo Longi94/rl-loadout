@@ -10,6 +10,33 @@ jobs:
       - run:
           name: Run version check
           command: python version_check.py
+  frontend-lint:
+    working_directory: ~/rl-loadout
+    docker:
+      - image: circleci/node:10.16-browsers
+    steps:
+      - checkout
+      - run:
+          name: Setup custom environment variables
+          command: |
+            echo 'export NG_CLI_ANALYTICS=ci' >> $BASH_ENV
+      - restore_cache:
+          key: dependency-cache-{{ checksum "frontend/package-lock.json" }}
+      - run:
+          name: install angular cli
+          command: sudo npm install -g @angular/cli > /dev/null
+      - run:
+          name: install-dependencies
+          command: npm install
+          working_directory: frontend
+      - save_cache:
+          key: dependency-cache-{{ checksum "frontend/package-lock.json" }}
+          paths:
+            - ./node_modules
+      - run:
+          name: angular-lint
+          command: ng lint
+          working_directory: frontend
   frontend-build:
     working_directory: ~/rl-loadout
     docker:
@@ -95,6 +122,7 @@ workflows:
     jobs:
       - version-check
       - frontend-build
+      - frontend-lint
       - frontend-deploy:
           requires:
             - frontend-build
