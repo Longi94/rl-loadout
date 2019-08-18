@@ -275,11 +275,11 @@ export class CanvasComponent implements OnInit {
       this.wheels.applyWheelPositions(this.body.getWheelPositions());
 
       if (this.topper) {
-        this.topper.applyAnchor(this.body.topperAnchor);
+        this.topper.applyAnchor(this.body.hatSocket);
       }
 
       if (this.antenna) {
-        this.antenna.applyAnchor(this.body.antennaAnchor);
+        this.antenna.applyAnchor(this.body.antennaSocket);
       }
 
       this.applyBodyModel();
@@ -420,7 +420,7 @@ export class CanvasComponent implements OnInit {
 
   private applyTopperModel() {
     this.topper.setEnvMap(this.envMap);
-    this.topper.applyAnchor(this.body.topperAnchor);
+    this.topper.applyAnchor(this.body.hatSocket);
     this.topper.addToScene(this.scene);
   }
 
@@ -446,7 +446,7 @@ export class CanvasComponent implements OnInit {
 
   private applyAntennaModel() {
     this.antenna.setEnvMap(this.envMap);
-    this.antenna.applyAnchor(this.body.antennaAnchor);
+    this.antenna.applyAnchor(this.body.antennaSocket);
     this.antenna.addToScene(this.scene);
   }
 
@@ -458,11 +458,11 @@ export class CanvasComponent implements OnInit {
   private validateBody() {
     const body = this.loadoutService.body;
 
-    if (this.body.antennaAnchor == undefined) {
+    if (this.body.antennaSocket == undefined) {
       console.warn(`Body ${body.name} has no antenna anchor.`);
     }
 
-    if (this.body.topperAnchor == undefined) {
+    if (this.body.hatSocket == undefined) {
       console.warn(`Body ${body.name} has no topper anchor.`);
     }
 
