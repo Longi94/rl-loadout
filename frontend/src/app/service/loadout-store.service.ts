@@ -65,7 +65,7 @@ export class LoadoutStoreService {
    */
   loadDecals(bodyId: number) {
     return new Promise((resolve) => {
-      let params = new HttpParams().set('body', bodyId.toString());
+      const params = new HttpParams().set('body', bodyId.toString());
       this.httpClient.get<Decal[]>(`${HOST}/decals`, {params: params}).subscribe(
         decals => {
           this.decals = decals;

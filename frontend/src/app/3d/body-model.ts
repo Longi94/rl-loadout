@@ -94,8 +94,8 @@ export class BodyModel extends AbstractObject {
       } else if (object instanceof Bone && this.skeleton == undefined) {
         this.skeleton = object;
       } else if (object instanceof Mesh) {
-        let mat = <MeshStandardMaterial>object.material;
-        let matName = mat.name.toLowerCase();
+        const mat = <MeshStandardMaterial>object.material;
+        const matName = mat.name.toLowerCase();
         if (matName.includes('body')) {
           this.bodyMaterial = mat;
         } else if (matName.includes('chassis')) {
@@ -118,14 +118,14 @@ export class BodyModel extends AbstractObject {
   }
 
   getWheelPositions() {
-    let config = {};
+    const config = {};
 
     const skeletonPos = this.skeleton.position.clone();
 
-    for (let bone of this.skeleton.children) {
+    for (const bone of this.skeleton.children) {
       if (bone.name.endsWith('WheelTranslation_jnt')) {
         const wheelType = bone.name.substr(0, 2).toLowerCase();
-        let wheelPos = skeletonPos.clone();
+        const wheelPos = skeletonPos.clone();
         wheelPos.add(bone.position);
         let scale = 1;
 

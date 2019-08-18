@@ -59,7 +59,7 @@ export class WheelsModel extends AbstractObject {
   handleModel(scene: Scene) {
     scene.traverse(object => {
       if (object instanceof Mesh) {
-        let mat = <MeshStandardMaterial>object.material;
+        const mat = <MeshStandardMaterial>object.material;
         if (mat.name.includes('rim')) {
           this.rimMaterial = mat;
         }
@@ -73,7 +73,7 @@ export class WheelsModel extends AbstractObject {
   }
 
   applyWheelPositions(config) {
-    for (let key of Object.keys(config)) {
+    for (const key of Object.keys(config)) {
       this.wheels[key].position.set(
         config[key].pos.x,
         config[key].pos.z,

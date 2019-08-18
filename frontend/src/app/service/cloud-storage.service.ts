@@ -18,9 +18,9 @@ export class CloudStorageService {
       map(value => {
         const items = value.items;
 
-        let icons = items.filter(item => item.name.startsWith('icons/') && item.name.length > 6);
-        let textures = items.filter(item => item.name.startsWith('textures/') && item.name.length > 9);
-        let models = items.filter(item => item.name.startsWith('models/') && item.name.length > 7);
+        const icons = items.filter(item => item.name.startsWith('icons/') && item.name.length > 6);
+        const textures = items.filter(item => item.name.startsWith('textures/') && item.name.length > 9);
+        const models = items.filter(item => item.name.startsWith('models/') && item.name.length > 7);
 
         icons.sort(sortByDate);
         textures.sort(sortByDate);

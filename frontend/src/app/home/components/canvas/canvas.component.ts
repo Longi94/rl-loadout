@@ -135,7 +135,7 @@ export class CanvasComponent implements OnInit {
       this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints);
       this.skin = new StaticSkin(this.loadoutService.decal, this.loadoutService.paints);
 
-      let promises = [
+      const promises = [
         textureLoader.load('assets/mannfield_equirectangular.jpg'),
         this.body.load(),
         this.skin.load(),
@@ -158,7 +158,7 @@ export class CanvasComponent implements OnInit {
   }
 
   private addControls() {
-    let gui: GUI = new dat.GUI({autoPlace: false, closed: true});
+    const gui: GUI = new dat.GUI({autoPlace: false, closed: true});
 
     gui.add(this.config, 'hitbox').onChange(value => {
       if (value) {
