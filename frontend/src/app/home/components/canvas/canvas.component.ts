@@ -34,8 +34,7 @@ import { Antenna } from '../../../model/antenna';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { getHitboxModel, HitboxModel } from '../../../3d/hitbox-model';
 import { GUI } from 'dat-gui';
-
-const dat = require('dat.gui');
+import * as dat from 'dat.gui';
 
 @Component({
   selector: 'app-canvas',
