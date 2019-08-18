@@ -10,6 +10,10 @@ import { Body } from '../../../model/body';
 import { Topper } from '../../../model/topper';
 import { Antenna } from '../../../model/antenna';
 
+enum Toolbar {
+  BODY, DECAL, PAINT, WHEEL, BOOST, TOPPER, ANTENNA, TRAIL
+}
+
 @Component({
   selector: 'app-loadout-toolbar',
   templateUrl: './loadout-toolbar.component.html',
@@ -155,8 +159,4 @@ export class LoadoutToolbarComponent implements OnInit {
   closeDropDown() {
     this.loadoutDropdown.clear();
   }
-}
-
-enum Toolbar {
-  BODY, DECAL, PAINT, WHEEL, BOOST, TOPPER, ANTENNA, TRAIL
 }

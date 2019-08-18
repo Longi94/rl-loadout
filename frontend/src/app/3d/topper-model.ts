@@ -6,6 +6,36 @@ import { overBlendColors } from '../utils/color';
 import { getAssetUrl } from '../utils/network';
 import { disposeIfExists } from '../utils/util';
 
+class TopperSkin extends RgbaMapPipeTexture {
+
+  paint: Color;
+  colorHolder = new Color();
+  baseHolder = new Color();
+
+  constructor(baseUrl, rgbaMapUrl, paint) {
+    super(baseUrl, rgbaMapUrl);
+
+    if (paint != undefined) {
+      this.paint = new Color(paint);
+    }
+  }
+
+  getColor(i: number): Color {
+    this.baseHolder.setRGB(
+      this.base[i] / 255,
+      this.base[i + 1] / 255,
+      this.base[i + 2] / 255
+    );
+
+    if (this.paint != undefined && this.rgbaMap[i + 3] > 0) {
+      overBlendColors(this.paint, this.baseHolder, this.rgbaMap[i + 3], this.colorHolder);
+      return this.colorHolder;
+    } else {
+      return this.baseHolder;
+    }
+  }
+}
+
 export class TopperModel extends AbstractObject {
 
   material: MeshStandardMaterial;
@@ -68,35 +98,5 @@ export class TopperModel extends AbstractObject {
 
   refresh() {
     this.applyTexture();
-  }
-}
-
-class TopperSkin extends RgbaMapPipeTexture {
-
-  paint: Color;
-  colorHolder = new Color();
-  baseHolder = new Color();
-
-  constructor(baseUrl, rgbaMapUrl, paint) {
-    super(baseUrl, rgbaMapUrl);
-
-    if (paint != undefined) {
-      this.paint = new Color(paint);
-    }
-  }
-
-  getColor(i: number): Color {
-    this.baseHolder.setRGB(
-      this.base[i] / 255,
-      this.base[i + 1] / 255,
-      this.base[i + 2] / 255
-    );
-
-    if (this.paint != undefined && this.rgbaMap[i + 3] > 0) {
-      overBlendColors(this.paint, this.baseHolder, this.rgbaMap[i + 3], this.colorHolder);
-      return this.colorHolder;
-    } else {
-      return this.baseHolder;
-    }
   }
 }

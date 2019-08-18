@@ -8,6 +8,36 @@ import { RgbaMapPipeTexture } from './rgba-map-pipe-texture';
 import { overBlendColors } from '../utils/color';
 import { disposeIfExists } from '../utils/util';
 
+class ChassisSkin extends RgbaMapPipeTexture {
+
+  paint: Color;
+  colorHolder = new Color();
+  baseHolder = new Color();
+
+  constructor(baseUrl, rgbaMapUrl, paint) {
+    super(baseUrl, rgbaMapUrl);
+
+    if (paint != undefined) {
+      this.paint = new Color(paint);
+    }
+  }
+
+  getColor(i: number): Color {
+    this.baseHolder.setRGB(
+      this.base[i] / 255,
+      this.base[i + 1] / 255,
+      this.base[i + 2] / 255
+    );
+
+    if (this.paint != undefined && this.rgbaMap[i] > 230) {
+      overBlendColors(this.paint, this.baseHolder, 255, this.colorHolder);
+      return this.colorHolder;
+    } else {
+      return this.baseHolder;
+    }
+  }
+}
+
 export class BodyModel extends AbstractObject {
 
   textureLoader = new PromiseLoader(new TgaRgbaLoader());
@@ -159,36 +189,6 @@ export class BodyModel extends AbstractObject {
     if (this.chassisSkin != undefined) {
       this.chassisSkin.paint = color;
       this.chassisSkin.update();
-    }
-  }
-}
-
-class ChassisSkin extends RgbaMapPipeTexture {
-
-  paint: Color;
-  colorHolder = new Color();
-  baseHolder = new Color();
-
-  constructor(baseUrl, rgbaMapUrl, paint) {
-    super(baseUrl, rgbaMapUrl);
-
-    if (paint != undefined) {
-      this.paint = new Color(paint);
-    }
-  }
-
-  getColor(i: number): Color {
-    this.baseHolder.setRGB(
-      this.base[i] / 255,
-      this.base[i + 1] / 255,
-      this.base[i + 2] / 255
-    );
-
-    if (this.paint != undefined && this.rgbaMap[i] > 230) {
-      overBlendColors(this.paint, this.baseHolder, 255, this.colorHolder);
-      return this.colorHolder;
-    } else {
-      return this.baseHolder;
     }
   }
 }
