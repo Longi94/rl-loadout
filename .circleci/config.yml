@@ -8,9 +8,6 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install PyYaml
-          command: sudo pip install PyYaml
-      - run:
           name: Run version check
           command: python version_check.py
   frontend-build:
