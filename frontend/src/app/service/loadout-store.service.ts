@@ -32,20 +32,20 @@ export class LoadoutStoreService {
     return new Promise((resolve) => {
       this.httpClient.get<any>(`${HOST}/all`, {params}).subscribe(
         response => {
-          this.bodies = response['bodies'];
+          this.bodies = response.bodies;
           this.bodies.sort(itemCompare);
 
-          this.wheels = response['wheels'];
+          this.wheels = response.wheels;
           this.wheels.sort(itemCompare);
 
-          this.toppers = response['toppers'];
+          this.toppers = response.toppers;
           this.toppers.sort(itemCompare);
 
-          this.antennas = response['antennas'];
+          this.antennas = response.antennas;
           this.antennas.sort(itemCompare);
 
           if ('decals' in response) {
-            this.decals = response['decals'];
+            this.decals = response.decals;
             this.decals.sort(itemCompare);
           }
 
