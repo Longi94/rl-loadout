@@ -58,10 +58,7 @@ export class LoadoutService {
 
   setPaint(type: string, color: string) {
     this.paints[type] = color;
-    this.paintSubject.next({
-      type: type,
-      color: color
-    });
+    this.paintSubject.next({type, color});
   }
 
   selectWheel(wheel: Wheel) {

@@ -16,14 +16,11 @@ export class AuthService {
   }
 
   login(username: string, password: string): Observable<any> {
-    const json = JSON.stringify({
-      username: username,
-      password: password
-    });
+    const json = JSON.stringify({username, password});
 
     const headers = new HttpHeaders({'Content-Type': 'application/json'});
 
-    return this.httpClient.post(`${environment.backend}/auth`, json, {headers: headers}).pipe(
+    return this.httpClient.post(`${environment.backend}/auth`, json, {headers}).pipe(
       tap(
         response => {
           localStorage.setItem('username', username);

@@ -30,7 +30,7 @@ export class LoadoutStoreService {
       params = params.set('body', bodyId.toString());
     }
     return new Promise((resolve) => {
-      this.httpClient.get<any>(`${HOST}/all`, {params: params}).subscribe(
+      this.httpClient.get<any>(`${HOST}/all`, {params}).subscribe(
         response => {
           this.bodies = response['bodies'];
           this.bodies.sort(itemCompare);
@@ -66,7 +66,7 @@ export class LoadoutStoreService {
   loadDecals(bodyId: number) {
     return new Promise((resolve) => {
       const params = new HttpParams().set('body', bodyId.toString());
-      this.httpClient.get<Decal[]>(`${HOST}/decals`, {params: params}).subscribe(
+      this.httpClient.get<Decal[]>(`${HOST}/decals`, {params}).subscribe(
         decals => {
           this.decals = decals;
           this.decals.sort(itemCompare);

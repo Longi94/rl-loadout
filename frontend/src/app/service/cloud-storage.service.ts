@@ -26,11 +26,7 @@ export class CloudStorageService {
         textures.sort(sortByDate);
         models.sort(sortByDate);
 
-        return {
-          icons: icons,
-          textures: textures,
-          models: models
-        };
+        return {icons, textures, models};
       })
     );
   }

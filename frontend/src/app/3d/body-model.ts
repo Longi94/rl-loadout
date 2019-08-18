@@ -172,7 +172,7 @@ export class BodyModel extends AbstractObject {
 
         config[wheelType] = {
           pos: wheelPos,
-          scale: scale
+          scale
         };
       }
     }
