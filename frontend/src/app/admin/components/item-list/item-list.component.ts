@@ -16,16 +16,16 @@ export class ItemListComponent implements OnInit {
   items: any[] = [];
   createDialog;
 
-  @Input('type')
+  @Input()
   type: string;
 
-  @Input('show-img')
+  @Input()
   showImg: boolean = true;
 
-  @Input('line1')
+  @Input()
   line1: string = 'name';
 
-  @Input('line2')
+  @Input()
   line2: string;
 
   constructor(private itemService: ItemService,

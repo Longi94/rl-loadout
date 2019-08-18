@@ -12,10 +12,8 @@ export class LoadoutGridSelectorComponent implements OnInit {
 
   assetHost = environment.assetHost;
 
-  @Input('items')
   items: Item[];
 
-  @Input('onSelect')
   onSelect: (item: Item) => void;
 
   qCommon = Quality.COMMON;
@@ -28,7 +26,6 @@ export class LoadoutGridSelectorComponent implements OnInit {
   qLimited = Quality.LIMITED;
   qPremium = Quality.PREMIUM;
 
-  @Input('selectedItem')
   selectedItem: Item = new Item(0, '', '', 0, false);
 
   constructor() { }
