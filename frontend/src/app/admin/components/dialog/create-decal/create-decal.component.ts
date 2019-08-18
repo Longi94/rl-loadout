@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Decal, DecalDetail } from '../../../../model/decal';
 import { Quality } from '../../../../model/quality';
 import { MatDialogRef, MatSnackBar } from '@angular/material';
@@ -13,7 +13,7 @@ import { Body } from '../../../../model/body';
   templateUrl: './create-decal.component.html',
   styleUrls: ['./create-decal.component.scss']
 })
-export class CreateDecalComponent extends CreateDialog {
+export class CreateDecalComponent extends CreateDialog implements OnInit {
 
   decal: Decal = new Decal(
     undefined, undefined, '', Quality.COMMON, false, undefined, undefined

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Quality } from '../../../../model/quality';
 import { MatDialogRef, MatSnackBar } from '@angular/material';
 import { CloudStorageService } from '../../../../service/cloud-storage.service';
@@ -12,7 +12,7 @@ import { CreateDialog } from '../create-dialog';
   templateUrl: './create-antenna.component.html',
   styleUrls: ['./create-antenna.component.scss']
 })
-export class CreateAntennaComponent extends CreateDialog {
+export class CreateAntennaComponent extends CreateDialog implements OnInit {
 
   antenna: Antenna = new Antenna(
     undefined, undefined, '', Quality.COMMON, false, undefined, undefined, undefined, undefined

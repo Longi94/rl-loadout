@@ -68,7 +68,7 @@ export class LoadoutToolbarComponent implements OnInit {
     img: 'assets/icons/Trail_garage_icon.png'
   }];
 
-  constructor(private _snackBar: MatSnackBar,
+  constructor(private snackBar: MatSnackBar,
               private componentFactoryResolver: ComponentFactoryResolver,
               private loadoutService: LoadoutService,
               private loadoutStore: LoadoutStoreService) {
@@ -78,7 +78,7 @@ export class LoadoutToolbarComponent implements OnInit {
   }
 
   showUnsupported(type: string) {
-    this._snackBar.open(`${type} are not currently supported.`, undefined, {duration: 2000});
+    this.snackBar.open(`${type} are not currently supported.`, undefined, {duration: 2000});
   }
 
   createNewGRidSelector(toolbar: Toolbar): ComponentRef<LoadoutGridSelectorComponent> {
