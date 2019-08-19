@@ -42,6 +42,9 @@ paths:
       operationId: controllers.textures.body.get
       tags:
         - texture
+      externalDocs:
+        description: 'Documentation on the GLTF files.'
+        url: https://github.com/Longi94/rl-loadout/wiki/GLTF-files
       parameters:
         - name: body_id
           in: query
