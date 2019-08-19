@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import {
   PerspectiveCamera,
   Scene,
@@ -11,31 +11,30 @@ import {
   Texture,
   WebGLRenderTarget,
   AmbientLight
-} from "three";
-import { StaticSkin } from "../../../3d/static-skin";
-import { LoadoutService } from "../../../service/loadout.service";
-import { Decal } from "../../../model/decal";
-import { BodyModel } from "../../../3d/body-model";
-import { WheelsModel } from "../../../3d/wheels-model";
-import { Wheel } from "../../../model/wheel";
-import { promiseProgress } from "../../../utils/promise";
-import { LoadoutStoreService } from "../../../service/loadout-store.service";
-import { Body } from "../../../model/body";
-import { getAssetUrl } from "../../../utils/network";
-import { EquirectangularToCubeGenerator } from "three/examples/jsm/loaders/EquirectangularToCubeGenerator";
-import { PromiseLoader } from "../../../utils/loader";
-import { PMREMGenerator } from "three/examples/jsm/pmrem/PMREMGenerator";
-import { PMREMCubeUVPacker } from "three/examples/jsm/pmrem/PMREMCubeUVPacker";
-import { TextureService } from "../../../service/texture.service";
-import { Topper } from "../../../model/topper";
-import { TopperModel } from "../../../3d/topper-model";
-import { AntennaModel } from "../../../3d/antenna-model";
-import { Antenna } from "../../../model/antenna";
-import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
-import { getHitboxModel, HitboxModel } from "../../../3d/hitbox-model";
-import { GUI } from "dat-gui";
-
-const dat = require('dat.gui');
+} from 'three';
+import { StaticSkin } from '../../../3d/static-skin';
+import { LoadoutService } from '../../../service/loadout.service';
+import { Decal } from '../../../model/decal';
+import { BodyModel } from '../../../3d/body-model';
+import { WheelsModel } from '../../../3d/wheels-model';
+import { Wheel } from '../../../model/wheel';
+import { promiseProgress } from '../../../utils/promise';
+import { LoadoutStoreService } from '../../../service/loadout-store.service';
+import { Body } from '../../../model/body';
+import { getAssetUrl } from '../../../utils/network';
+import { EquirectangularToCubeGenerator } from 'three/examples/jsm/loaders/EquirectangularToCubeGenerator';
+import { PromiseLoader } from '../../../utils/loader';
+import { PMREMGenerator } from 'three/examples/jsm/pmrem/PMREMGenerator';
+import { PMREMCubeUVPacker } from 'three/examples/jsm/pmrem/PMREMCubeUVPacker';
+import { TextureService } from '../../../service/texture.service';
+import { Topper } from '../../../model/topper';
+import { TopperModel } from '../../../3d/topper-model';
+import { AntennaModel } from '../../../3d/antenna-model';
+import { Antenna } from '../../../model/antenna';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+import { getHitboxModel, HitboxModel } from '../../../3d/hitbox-model';
+import { GUI } from 'dat-gui';
+import * as dat from 'dat.gui';
 
 @Component({
   selector: 'app-canvas',
@@ -135,7 +134,7 @@ export class CanvasComponent implements OnInit {
       this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints);
       this.skin = new StaticSkin(this.loadoutService.decal, this.loadoutService.paints);
 
-      let promises = [
+      const promises = [
         textureLoader.load('assets/mannfield_equirectangular.jpg'),
         this.body.load(),
         this.skin.load(),
@@ -144,7 +143,7 @@ export class CanvasComponent implements OnInit {
       ];
 
       promiseProgress(promises, progress => {
-        this.initProgress = 100 * (progress + 1) / (promises.length + 1)
+        this.initProgress = 100 * (progress + 1) / (promises.length + 1);
       }).then(values => {
         this.processBackground(values[0]);
         this.applySkin();
@@ -158,7 +157,7 @@ export class CanvasComponent implements OnInit {
   }
 
   private addControls() {
-    let gui: GUI = new dat.GUI({autoPlace: false, closed: true});
+    const gui: GUI = new dat.GUI({autoPlace: false, closed: true});
 
     gui.add(this.config, 'hitbox').onChange(value => {
       if (value) {
@@ -276,11 +275,11 @@ export class CanvasComponent implements OnInit {
       this.wheels.applyWheelPositions(this.body.getWheelPositions());
 
       if (this.topper) {
-        this.topper.applyAnchor(this.body.topperAnchor);
+        this.topper.applyAnchor(this.body.hatSocket);
       }
 
       if (this.antenna) {
-        this.antenna.applyAnchor(this.body.antennaAnchor);
+        this.antenna.applyAnchor(this.body.antennaSocket);
       }
 
       this.applyBodyModel();
@@ -376,7 +375,7 @@ export class CanvasComponent implements OnInit {
 
   private refreshSkin() {
     this.skin.update();
-    (<MeshStandardMaterial>this.body.bodyMaterial).needsUpdate = true;
+    this.body.bodyMaterial.needsUpdate = true;
   }
 
   private updateTextureService() {
@@ -421,7 +420,7 @@ export class CanvasComponent implements OnInit {
 
   private applyTopperModel() {
     this.topper.setEnvMap(this.envMap);
-    this.topper.applyAnchor(this.body.topperAnchor);
+    this.topper.applyAnchor(this.body.hatSocket);
     this.topper.addToScene(this.scene);
   }
 
@@ -447,7 +446,7 @@ export class CanvasComponent implements OnInit {
 
   private applyAntennaModel() {
     this.antenna.setEnvMap(this.envMap);
-    this.antenna.applyAnchor(this.body.antennaAnchor);
+    this.antenna.applyAnchor(this.body.antennaSocket);
     this.antenna.addToScene(this.scene);
   }
 
@@ -459,11 +458,11 @@ export class CanvasComponent implements OnInit {
   private validateBody() {
     const body = this.loadoutService.body;
 
-    if (this.body.antennaAnchor == undefined) {
+    if (this.body.antennaSocket == undefined) {
       console.warn(`Body ${body.name} has no antenna anchor.`);
     }
 
-    if (this.body.topperAnchor == undefined) {
+    if (this.body.hatSocket == undefined) {
       console.warn(`Body ${body.name} has no topper anchor.`);
     }
 

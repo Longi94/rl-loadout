@@ -1,4 +1,4 @@
-import { Quality } from "./quality";
+import { Quality } from './quality';
 
 export class Item {
   id: number;

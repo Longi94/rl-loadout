@@ -1,10 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ItemListComponent } from "../item-list/item-list.component";
-import { LoadoutStoreService } from "../../../service/loadout-store.service";
-import { MatDialog } from "@angular/material";
-import { ItemService } from "../../../service/item.service";
-import { CreateBodyComponent } from "../dialog/create-body/create-body.component";
-import { CreateAntennaStickComponent } from "../dialog/create-antenna-stick/create-antenna-stick.component";
+import { ItemListComponent } from '../item-list/item-list.component';
+import { MatDialog } from '@angular/material';
+import { ItemService } from '../../../service/item.service';
+import { CreateAntennaStickComponent } from '../dialog/create-antenna-stick/create-antenna-stick.component';
 
 @Component({
   selector: 'app-antenna-sticks',

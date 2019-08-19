@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiKeysService } from "../../../service/api-keys.service";
-import { ApiKey } from "../../../model/api-key";
-import { MatDialog } from "@angular/material";
-import { CreateApiKeyComponent } from "./create-api-key/create-api-key.component";
-import { confirmMaterial } from "../../../shared/confirm-dialog/confirm-dialog.component";
-import { copyMessage } from "../../../utils/util";
+import { ApiKeysService } from '../../../service/api-keys.service';
+import { ApiKey } from '../../../model/api-key';
+import { MatDialog } from '@angular/material';
+import { CreateApiKeyComponent } from './create-api-key/create-api-key.component';
+import { confirmMaterial } from '../../../shared/confirm-dialog/confirm-dialog.component';
+import { copyMessage } from '../../../utils/util';
 
 @Component({
   selector: 'app-api-keys',

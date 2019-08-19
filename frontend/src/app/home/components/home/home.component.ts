@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from "@angular/material";
-import { AboutDialogComponent } from "../about-dialog/about-dialog.component";
-import { environment } from "../../../../environments/environment";
-import { TextureViewerComponent } from "../debug/texture-viewer/texture-viewer.component";
+import { MatDialog } from '@angular/material';
+import { AboutDialogComponent } from '../about-dialog/about-dialog.component';
+import { environment } from '../../../../environments/environment';
+import { TextureViewerComponent } from '../debug/texture-viewer/texture-viewer.component';
 
 @Component({
   selector: 'app-home',

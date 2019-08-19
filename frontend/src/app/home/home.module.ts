@@ -7,9 +7,8 @@ import { LoadoutGridSelectorComponent } from './components/loadout-grid-selector
 import { ColorSelectorComponent } from './components/color-selector/color-selector.component';
 import { AboutDialogComponent } from './components/about-dialog/about-dialog.component';
 import { TextureViewerComponent } from './components/debug/texture-viewer/texture-viewer.component';
-import { SharedMaterialModule } from "../shared-material/shared-material.module";
-import { ColorPickerModule } from "ngx-color-picker";
-import { FormsModule } from "@angular/forms";
+import { SharedMaterialModule } from '../shared-material/shared-material.module';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 @NgModule({
   declarations: [

@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
-import { Decal } from "../model/decal";
-import { Observable, Subject } from "rxjs";
-import { Wheel } from "../model/wheel";
-import { Body } from "../model/body";
-import { HttpClient } from "@angular/common/http";
-import { environment } from "../../environments/environment";
-import { Item } from "../model/item";
-import { DEFAULT_ACCENT, DEFAULT_BLUE_TEAM } from "../utils/color";
-import { Topper } from "../model/topper";
-import { Antenna } from "../model/antenna";
+import { Decal } from '../model/decal';
+import { Observable, Subject } from 'rxjs';
+import { Wheel } from '../model/wheel';
+import { Body } from '../model/body';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
+import { Item } from '../model/item';
+import { DEFAULT_ACCENT, DEFAULT_BLUE_TEAM } from '../utils/color';
+import { Topper } from '../model/topper';
+import { Antenna } from '../model/antenna';
 
 const HOST = `${environment.backend}/internal`;
 
@@ -58,10 +58,7 @@ export class LoadoutService {
 
   setPaint(type: string, color: string) {
     this.paints[type] = color;
-    this.paintSubject.next({
-      type: type,
-      color: color
-    })
+    this.paintSubject.next({type, color});
   }
 
   selectWheel(wheel: Wheel) {
@@ -88,8 +85,8 @@ export class LoadoutService {
   loadDefaults(): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       this.httpClient.get<{ [type: string]: Item }>(`${HOST}/defaults`).subscribe(defaults => {
-        this.body = <Body>defaults['body'];
-        this.wheel = <Wheel>defaults['wheel'];
+        this.body = defaults.body as Body;
+        this.wheel = defaults.wheel as Wheel;
         resolve();
       }, reject);
     });

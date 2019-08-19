@@ -1,11 +1,41 @@
-import { AbstractObject } from "./object";
-import { Color, Mesh, MeshStandardMaterial, Scene } from "three";
-import { RgbaMapPipeTexture } from "./rgba-map-pipe-texture";
-import { Wheel } from "../model/wheel";
-import { getAssetUrl } from "../utils/network";
-import { SkeletonUtils } from "three/examples/jsm/utils/SkeletonUtils";
-import { overBlendColors } from "../utils/color";
-import { disposeIfExists } from "../utils/util";
+import { AbstractObject } from './object';
+import { Color, Mesh, MeshStandardMaterial, Scene } from 'three';
+import { RgbaMapPipeTexture } from './rgba-map-pipe-texture';
+import { Wheel } from '../model/wheel';
+import { getAssetUrl } from '../utils/network';
+import { SkeletonUtils } from 'three/examples/jsm/utils/SkeletonUtils';
+import { overBlendColors } from '../utils/color';
+import { disposeIfExists } from '../utils/util';
+
+class RimSkin extends RgbaMapPipeTexture {
+
+  paint: Color;
+  colorHolder = new Color();
+  baseHolder = new Color();
+
+  constructor(baseUrl, rgbaMapUrl, paint) {
+    super(baseUrl, rgbaMapUrl);
+
+    if (paint != undefined) {
+      this.paint = new Color(paint);
+    }
+  }
+
+  getColor(i: number): Color {
+    this.baseHolder.setRGB(
+      this.base[i] / 255,
+      this.base[i + 1] / 255,
+      this.base[i + 2] / 255
+    );
+
+    if (this.paint != undefined) {
+      overBlendColors(this.paint, this.baseHolder, 255 - this.rgbaMap[i], this.colorHolder);
+      return this.colorHolder;
+    } else {
+      return this.baseHolder;
+    }
+  }
+}
 
 export class WheelsModel extends AbstractObject {
 
@@ -48,7 +78,7 @@ export class WheelsModel extends AbstractObject {
     }
 
     return new Promise((resolve, reject) => Promise.all(promises).then(() => {
-      if (this.rimSkin){
+      if (this.rimSkin) {
         this.rimMaterial.map = this.rimSkin.texture;
       }
       this.applyRimSkin();
@@ -59,7 +89,7 @@ export class WheelsModel extends AbstractObject {
   handleModel(scene: Scene) {
     scene.traverse(object => {
       if (object instanceof Mesh) {
-        let mat = <MeshStandardMaterial>object.material;
+        const mat = object.material as MeshStandardMaterial;
         if (mat.name.includes('rim')) {
           this.rimMaterial = mat;
         }
@@ -73,7 +103,7 @@ export class WheelsModel extends AbstractObject {
   }
 
   applyWheelPositions(config) {
-    for (let key of Object.keys(config)) {
+    for (const key of Object.keys(config)) {
       this.wheels[key].position.set(
         config[key].pos.x,
         config[key].pos.z,
@@ -117,35 +147,5 @@ export class WheelsModel extends AbstractObject {
 
   refresh() {
     this.applyRimSkin();
-  }
-}
-
-class RimSkin extends RgbaMapPipeTexture {
-
-  paint: Color;
-  colorHolder = new Color();
-  baseHolder = new Color();
-
-  constructor(baseUrl, rgbaMapUrl, paint) {
-    super(baseUrl, rgbaMapUrl);
-
-    if (paint != undefined) {
-      this.paint = new Color(paint);
-    }
-  }
-
-  getColor(i: number): Color {
-    this.baseHolder.setRGB(
-      this.base[i] / 255,
-      this.base[i + 1] / 255,
-      this.base[i + 2] / 255
-    );
-
-    if (this.paint != undefined) {
-      overBlendColors(this.paint, this.baseHolder, 255 - this.rgbaMap[i], this.colorHolder);
-      return this.colorHolder;
-    } else {
-      return this.baseHolder;
-    }
   }
 }

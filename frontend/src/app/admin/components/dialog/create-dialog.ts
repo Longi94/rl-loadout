@@ -1,8 +1,8 @@
-import { OnInit } from "@angular/core";
-import { Quality } from "../../../model/quality";
-import { CloudObject, CloudStorageService } from "../../../service/cloud-storage.service";
-import { MatDialogRef } from "@angular/material";
-import { Hitbox } from "../../../model/hitbox";
+import { OnInit } from '@angular/core';
+import { Quality } from '../../../model/quality';
+import { CloudObject, CloudStorageService } from '../../../service/cloud-storage.service';
+import { MatDialogRef } from '@angular/material';
+import { Hitbox } from '../../../model/hitbox';
 
 export abstract class CreateDialog implements OnInit {
 

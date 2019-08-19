@@ -1,12 +1,42 @@
-import { Bone, Color, Mesh, MeshStandardMaterial, Object3D, Scene, Texture } from "three";
-import { AbstractObject } from "./object";
-import { Body } from "../model/body";
-import { PromiseLoader } from "../utils/loader";
-import { TgaRgbaLoader } from "../utils/tga-rgba-loader";
-import { getAssetUrl } from "../utils/network";
-import { RgbaMapPipeTexture } from "./rgba-map-pipe-texture";
-import { overBlendColors } from "../utils/color";
-import { disposeIfExists } from "../utils/util";
+import { Bone, Color, Mesh, MeshStandardMaterial, Object3D, Scene, Texture } from 'three';
+import { AbstractObject } from './object';
+import { Body } from '../model/body';
+import { PromiseLoader } from '../utils/loader';
+import { TgaRgbaLoader } from '../utils/tga-rgba-loader';
+import { getAssetUrl } from '../utils/network';
+import { RgbaMapPipeTexture } from './rgba-map-pipe-texture';
+import { overBlendColors } from '../utils/color';
+import { disposeIfExists } from '../utils/util';
+
+class ChassisSkin extends RgbaMapPipeTexture {
+
+  paint: Color;
+  colorHolder = new Color();
+  baseHolder = new Color();
+
+  constructor(baseUrl, rgbaMapUrl, paint) {
+    super(baseUrl, rgbaMapUrl);
+
+    if (paint != undefined) {
+      this.paint = new Color(paint);
+    }
+  }
+
+  getColor(i: number): Color {
+    this.baseHolder.setRGB(
+      this.base[i] / 255,
+      this.base[i + 1] / 255,
+      this.base[i + 2] / 255
+    );
+
+    if (this.paint != undefined && this.rgbaMap[i] > 230) {
+      overBlendColors(this.paint, this.baseHolder, 255, this.colorHolder);
+      return this.colorHolder;
+    } else {
+      return this.baseHolder;
+    }
+  }
+}
 
 export class BodyModel extends AbstractObject {
 
@@ -27,8 +57,8 @@ export class BodyModel extends AbstractObject {
 
   wheelScale: number[] = [1, 1];
 
-  topperAnchor: Object3D;
-  antennaAnchor: Object3D;
+  hatSocket: Object3D;
+  antennaSocket: Object3D;
 
   constructor(body: Body, paints: { [key: string]: string }) {
     super(getAssetUrl(body.model));
@@ -41,7 +71,7 @@ export class BodyModel extends AbstractObject {
         getAssetUrl(body.chassis_base),
         getAssetUrl(body.chassis_n),
         paints.body
-      )
+      );
     }
   }
 
@@ -80,22 +110,21 @@ export class BodyModel extends AbstractObject {
   }
 
   handleModel(scene: Scene) {
-    if ('wheel_scale' in scene.userData) {
-      this.wheelScale = scene.userData.wheel_scale;
+    if ('wheelScale' in scene.userData) {
+      this.wheelScale = scene.userData.wheelScale;
     } else {
-      console.warn('wheel_scale not found in body user data');
+      console.warn(`${this.url} has no wheelScale attribute`);
     }
 
+    this.hatSocket = scene.getObjectByName('HatSocket');
+    this.antennaSocket = scene.getObjectByName('AntennaSocket');
+
     scene.traverse(object => {
-      if (object.name === 'topper_anchor') {
-        this.topperAnchor = object;
-      } else if (object.name === 'antenna_anchor') {
-        this.antennaAnchor = object;
-      } else if (object instanceof Bone && this.skeleton == undefined) {
+      if (object instanceof Bone && this.skeleton == undefined) {
         this.skeleton = object;
       } else if (object instanceof Mesh) {
-        let mat = <MeshStandardMaterial>object.material;
-        let matName = mat.name.toLowerCase();
+        const mat = object.material as MeshStandardMaterial;
+        const matName = mat.name.toLowerCase();
         if (matName.includes('body')) {
           this.bodyMaterial = mat;
         } else if (matName.includes('chassis')) {
@@ -118,14 +147,14 @@ export class BodyModel extends AbstractObject {
   }
 
   getWheelPositions() {
-    let config = {};
+    const config = {};
 
     const skeletonPos = this.skeleton.position.clone();
 
-    for (let bone of this.skeleton.children) {
+    for (const bone of this.skeleton.children) {
       if (bone.name.endsWith('WheelTranslation_jnt')) {
         const wheelType = bone.name.substr(0, 2).toLowerCase();
-        let wheelPos = skeletonPos.clone();
+        const wheelPos = skeletonPos.clone();
         wheelPos.add(bone.position);
         let scale = 1;
 
@@ -135,14 +164,14 @@ export class BodyModel extends AbstractObject {
           wheelPos.add(pivotJoint.position).add(discJoint.position);
           scale = this.wheelScale[0];
         } else {
-          const discJoint = <Bone>bone.children.find(value => value.name.endsWith('Disc_jnt'));
+          const discJoint = bone.children.find(value => value.name.endsWith('Disc_jnt')) as Bone;
           wheelPos.add(discJoint.position);
           scale = this.wheelScale[1];
         }
 
         config[wheelType] = {
           pos: wheelPos,
-          scale: scale
+          scale
         };
       }
     }
@@ -153,42 +182,12 @@ export class BodyModel extends AbstractObject {
   /**
    * Set the paint color of this body. This only applies to the chassis, the paint of the body is set by the skin.
    *
-   * @param color
+   * @param color paint color
    */
   setPaint(color: Color) {
     if (this.chassisSkin != undefined) {
       this.chassisSkin.paint = color;
       this.chassisSkin.update();
-    }
-  }
-}
-
-class ChassisSkin extends RgbaMapPipeTexture {
-
-  paint: Color;
-  colorHolder = new Color();
-  baseHolder = new Color();
-
-  constructor(baseUrl, rgbaMapUrl, paint) {
-    super(baseUrl, rgbaMapUrl);
-
-    if (paint != undefined) {
-      this.paint = new Color(paint);
-    }
-  }
-
-  getColor(i: number): Color {
-    this.baseHolder.setRGB(
-      this.base[i] / 255,
-      this.base[i + 1] / 255,
-      this.base[i + 2] / 255
-    );
-
-    if (this.paint != undefined && this.rgbaMap[i] > 230) {
-      overBlendColors(this.paint, this.baseHolder, 255, this.colorHolder);
-      return this.colorHolder;
-    } else {
-      return this.baseHolder;
     }
   }
 }

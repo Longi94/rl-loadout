@@ -1,6 +1,6 @@
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { Mesh, MeshStandardMaterial, Object3D, Scene, Texture } from "three";
-import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { Mesh, MeshStandardMaterial, Object3D, Scene, Texture } from 'three';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 
 export abstract class AbstractObject {
 
@@ -43,12 +43,12 @@ export abstract class AbstractObject {
   /**
    * Set the environment map to all objects in this scene
    *
-   * @param envMap
+   * @param envMap environment map
    */
   setEnvMap(envMap: Texture) {
     this.scene.traverse(object => {
       if (object instanceof Mesh) {
-        let mat = <MeshStandardMaterial>object.material;
+        const mat = object.material as MeshStandardMaterial;
         mat.envMap = envMap;
         mat.envMapIntensity = 1.0;
         mat.needsUpdate = true;
@@ -59,7 +59,7 @@ export abstract class AbstractObject {
   /**
    * Set the position and rotation of the anchor to this object.
    *
-   * @param anchor
+   * @param anchor the anchor object
    */
   applyAnchor(anchor: Object3D) {
     if (anchor == undefined) {

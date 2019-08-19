@@ -1,7 +1,14 @@
-import { Item } from "./item";
-import { Quality } from "./quality";
+/* tslint:disable:variable-name */
+
+import { Item } from './item';
+import { Quality } from './quality';
 
 export class Antenna extends Item {
+
+  static NONE = new Antenna(
+    -1, '', 'None', Quality.COMMON, false, undefined, undefined, undefined, undefined
+  );
+
   model: string;
   base_texture: string;
   rgba_map: string;
@@ -16,10 +23,6 @@ export class Antenna extends Item {
     this.rgba_map = rgba_map;
     this.stick = stick;
   }
-
-  static NONE = new Antenna(
-    -1, '','None', Quality.COMMON, false, undefined, undefined, undefined, undefined
-  );
 }
 
 export class AntennaStick {

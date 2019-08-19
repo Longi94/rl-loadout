@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiKeysService } from "../../../../service/api-keys.service";
-import { MatDialogRef, MatSnackBar } from "@angular/material";
-import { ApiKey } from "../../../../model/api-key";
-import { handleErrorSnackbar } from "../../../../utils/network";
+import { ApiKeysService } from '../../../../service/api-keys.service';
+import { MatDialogRef, MatSnackBar } from '@angular/material';
+import { ApiKey } from '../../../../model/api-key';
+import { handleErrorSnackbar } from '../../../../utils/network';
 
 @Component({
   selector: 'app-create-api-key',

@@ -1,8 +1,8 @@
-import { Color } from "three";
-import { BLACK, overBlendColors } from "../utils/color";
-import { RgbaMapPipeTexture } from "./rgba-map-pipe-texture";
-import { Decal } from "../model/decal";
-import { getAssetUrl } from "../utils/network";
+import { Color } from 'three';
+import { BLACK, overBlendColors } from '../utils/color';
+import { RgbaMapPipeTexture } from './rgba-map-pipe-texture';
+import { Decal } from '../model/decal';
+import { getAssetUrl } from '../utils/network';
 
 
 export class StaticSkin extends RgbaMapPipeTexture {
@@ -37,13 +37,13 @@ export class StaticSkin extends RgbaMapPipeTexture {
         this.baseSkinMap[i] / 255,
         this.baseSkinMap[i + 1] / 255,
         this.baseSkinMap[i + 2] / 255
-      )
+      );
     } else {
       this.colorHolder.set(BLACK);
     }
 
     if (this.blankSkinMap !== undefined) {
-      if (this.blankSkinMap[i + 2] == 255) {
+      if (this.blankSkinMap[i + 2] === 255) {
         return BLACK;
       }
 
@@ -60,7 +60,7 @@ export class StaticSkin extends RgbaMapPipeTexture {
       return this.colorHolder;
     }
 
-    if (this.rgbaMap[i] == 255 && this.rgbaMap[i + 2] == 0) {
+    if (this.rgbaMap[i] === 255 && this.rgbaMap[i + 2] === 0) {
       if (this.rgbaMap[i + 3] > 0) {
         overBlendColors(this.accent, this.primary, this.rgbaMap[i + 3], this.colorHolder);
       }

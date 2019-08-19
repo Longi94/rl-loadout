@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { TextureService } from "../../../../service/texture.service";
-import { DataTexture, Texture } from "three";
-import { MatSnackBar } from "@angular/material";
+import { TextureService } from '../../../../service/texture.service';
+import { DataTexture, Texture } from 'three';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-texture-viewer',
@@ -32,7 +32,7 @@ export class TextureViewerComponent implements OnInit {
   }
 
   selectTexture() {
-    let texture = this.textureService.get(this.selected);
+    const texture = this.textureService.get(this.selected);
 
     if (texture == undefined) {
       this.snackBar.open('texture is undefined', undefined, {duration: 2000});
@@ -40,8 +40,8 @@ export class TextureViewerComponent implements OnInit {
     }
     this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    let width = texture.image.width;
-    let height = texture.image.height;
+    const width = texture.image.width;
+    const height = texture.image.height;
 
     this.canvas.width = width;
     this.canvas.height = height;
@@ -50,10 +50,10 @@ export class TextureViewerComponent implements OnInit {
     this.canvasHeight = this.canvasWidth * (height / width);
 
     if (texture instanceof DataTexture) {
-      let imageData = new ImageData(new Uint8ClampedArray(texture.image.data), width, height);
+      const imageData = new ImageData(new Uint8ClampedArray(texture.image.data), width, height);
       this.context.putImageData(imageData, 0, 0);
     } else {
-      this.context.drawImage(texture.image, 0, 0)
+      this.context.drawImage(texture.image, 0, 0);
     }
   }
 }

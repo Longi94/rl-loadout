@@ -1,7 +1,20 @@
-import { Item } from "./item";
-import { Quality } from "./quality";
+/* tslint:disable:variable-name */
+
+import { Item } from './item';
+import { Quality } from './quality';
 
 export class Decal extends Item {
+
+  static NONE = new Decal(
+    -1,
+    '',
+    'None',
+    Quality.COMMON,
+    false,
+    undefined,
+    undefined
+  );
+
   base_texture?: string;
   rgba_map: string;
   body_id: string;
@@ -13,16 +26,6 @@ export class Decal extends Item {
     this.base_texture = base_texture;
     this.rgba_map = rgba_map;
   }
-
-  static NONE = new Decal(
-    -1,
-    '',
-    'None',
-    Quality.COMMON,
-    false,
-    undefined,
-    undefined
-  )
 }
 
 export class DecalDetail extends Item {

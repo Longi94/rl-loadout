@@ -1,10 +1,40 @@
-import { AbstractObject } from "./object";
-import { Color, Mesh, MeshStandardMaterial, Scene } from "three";
-import { Topper } from "../model/topper";
-import { RgbaMapPipeTexture } from "./rgba-map-pipe-texture";
-import { overBlendColors } from "../utils/color";
-import { getAssetUrl } from "../utils/network";
-import { disposeIfExists } from "../utils/util";
+import { AbstractObject } from './object';
+import { Color, Mesh, MeshStandardMaterial, Scene } from 'three';
+import { Topper } from '../model/topper';
+import { RgbaMapPipeTexture } from './rgba-map-pipe-texture';
+import { overBlendColors } from '../utils/color';
+import { getAssetUrl } from '../utils/network';
+import { disposeIfExists } from '../utils/util';
+
+class TopperSkin extends RgbaMapPipeTexture {
+
+  paint: Color;
+  colorHolder = new Color();
+  baseHolder = new Color();
+
+  constructor(baseUrl, rgbaMapUrl, paint) {
+    super(baseUrl, rgbaMapUrl);
+
+    if (paint != undefined) {
+      this.paint = new Color(paint);
+    }
+  }
+
+  getColor(i: number): Color {
+    this.baseHolder.setRGB(
+      this.base[i] / 255,
+      this.base[i + 1] / 255,
+      this.base[i + 2] / 255
+    );
+
+    if (this.paint != undefined && this.rgbaMap[i + 3] > 0) {
+      overBlendColors(this.paint, this.baseHolder, this.rgbaMap[i + 3], this.colorHolder);
+      return this.colorHolder;
+    } else {
+      return this.baseHolder;
+    }
+  }
+}
 
 export class TopperModel extends AbstractObject {
 
@@ -32,7 +62,7 @@ export class TopperModel extends AbstractObject {
   handleModel(scene: Scene) {
     scene.traverse(object => {
       if (object instanceof Mesh) {
-        this.material = <MeshStandardMaterial>object.material;
+        this.material = object.material as MeshStandardMaterial;
       }
     });
   }
@@ -68,35 +98,5 @@ export class TopperModel extends AbstractObject {
 
   refresh() {
     this.applyTexture();
-  }
-}
-
-class TopperSkin extends RgbaMapPipeTexture {
-
-  paint: Color;
-  colorHolder = new Color();
-  baseHolder = new Color();
-
-  constructor(baseUrl, rgbaMapUrl, paint) {
-    super(baseUrl, rgbaMapUrl);
-
-    if (paint != undefined) {
-      this.paint = new Color(paint);
-    }
-  }
-
-  getColor(i: number): Color {
-    this.baseHolder.setRGB(
-      this.base[i] / 255,
-      this.base[i + 1] / 255,
-      this.base[i + 2] / 255
-    );
-
-    if (this.paint != undefined && this.rgbaMap[i + 3] > 0) {
-      overBlendColors(this.paint, this.baseHolder, this.rgbaMap[i + 3], this.colorHolder);
-      return this.colorHolder;
-    } else {
-      return this.baseHolder;
-    }
   }
 }

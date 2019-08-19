@@ -1,5 +1,10 @@
 {
   "extends": "tslint:recommended",
+  "linterOptions": {
+    "exclude": [
+      "src/app/utils/tga-rgba-loader.ts"
+    ]
+  },
   "rules": {
     "array-type": false,
     "arrow-parens": false,
@@ -83,6 +88,10 @@
     "no-outputs-metadata-property": true,
     "template-banana-in-box": true,
     "template-no-negated-async": true,
+    "triple-equals": [
+      true,
+      "allow-undefined-check"
+    ],
     "use-lifecycle-interface": true,
     "use-pipe-transform-interface": true
   },

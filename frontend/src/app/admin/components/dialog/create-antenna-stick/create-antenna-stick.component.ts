@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { MatDialogRef, MatSnackBar } from "@angular/material";
-import { CloudStorageService } from "../../../../service/cloud-storage.service";
-import { ItemService } from "../../../../service/item.service";
-import { AntennaStick } from "../../../../model/antenna";
-import { handleErrorSnackbar } from "../../../../utils/network";
-import { CreateDialog } from "../create-dialog";
+import { MatDialogRef, MatSnackBar } from '@angular/material';
+import { CloudStorageService } from '../../../../service/cloud-storage.service';
+import { ItemService } from '../../../../service/item.service';
+import { AntennaStick } from '../../../../model/antenna';
+import { handleErrorSnackbar } from '../../../../utils/network';
+import { CreateDialog } from '../create-dialog';
 
 @Component({
   selector: 'app-create-antenna-stick',
@@ -19,7 +19,7 @@ export class CreateAntennaStickComponent extends CreateDialog {
               cloudService: CloudStorageService,
               private itemService: ItemService,
               private snackBar: MatSnackBar) {
-    super(dialogRef, cloudService)
+    super(dialogRef, cloudService);
   }
 
   save() {

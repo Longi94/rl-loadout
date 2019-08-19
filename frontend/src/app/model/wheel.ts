@@ -1,5 +1,6 @@
-import { Item } from "./item";
-import { Quality } from "./quality";
+/* tslint:disable:variable-name */
+
+import { Item } from './item';
 
 export class Wheel extends Item {
   model: string;

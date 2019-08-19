@@ -1,4 +1,4 @@
-import { Color } from "three";
+import { Color } from 'three';
 
 // https://www.reddit.com/r/RLFashionAdvice/comments/9l1swx/rocket_league_color_palette_with_hex_and_rgb/
 export const BLUE_PRIMARY_COLORS = [
@@ -279,9 +279,9 @@ export const BLACK = new Color(0, 0, 0);
 
 export function overBlendColors(foreground: Color, background: Color, foregroundAlpha: number, holder: Color) {
   foregroundAlpha = foregroundAlpha / 255;
-  let r = (foreground.r * foregroundAlpha) + (background.r * (1.0 - foregroundAlpha));
-  let g = (foreground.g * foregroundAlpha) + (background.g * (1.0 - foregroundAlpha));
-  let b = (foreground.b * foregroundAlpha) + (background.b * (1.0 - foregroundAlpha));
+  const r = (foreground.r * foregroundAlpha) + (background.r * (1.0 - foregroundAlpha));
+  const g = (foreground.g * foregroundAlpha) + (background.g * (1.0 - foregroundAlpha));
+  const b = (foreground.b * foregroundAlpha) + (background.b * (1.0 - foregroundAlpha));
   holder.setRGB(r, g, b);
 }
 
@@ -289,7 +289,7 @@ export function overBlendColors(foreground: Color, background: Color, foreground
  * Get the text color for the background to make it readable.
  * https://www.w3.org/TR/AERT/#color-contrast
  *
- * @param backgroundColor
+ * @param backgroundColor color of background in #FFFFFF format
  */
 export function getTextColor(backgroundColor: string) {
   if (backgroundColor ==  undefined) {
@@ -303,7 +303,7 @@ export function getTextColor(backgroundColor: string) {
 const HEX_REGEX = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i;
 
 function hexToRgb(hex) {
-  let result = HEX_REGEX.exec(hex);
+  const result = HEX_REGEX.exec(hex);
   return result ? {
     r: parseInt(result[1], 16),
     g: parseInt(result[2], 16),

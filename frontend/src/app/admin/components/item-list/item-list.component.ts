@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Item } from "../../../model/item";
-import { environment } from "../../../../environments/environment";
-import { ItemService } from "../../../service/item.service";
-import { confirmMaterial } from "../../../shared/confirm-dialog/confirm-dialog.component";
-import { MatDialog } from "@angular/material";
+import { Item } from '../../../model/item';
+import { environment } from '../../../../environments/environment';
+import { ItemService } from '../../../service/item.service';
+import { confirmMaterial } from '../../../shared/confirm-dialog/confirm-dialog.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-item-list',
@@ -16,16 +16,16 @@ export class ItemListComponent implements OnInit {
   items: any[] = [];
   createDialog;
 
-  @Input('type')
+  @Input()
   type: string;
 
-  @Input('show-img')
-  showImg: boolean = true;
+  @Input()
+  showImg = true;
 
-  @Input('line1')
-  line1: string = 'name';
+  @Input()
+  line1 = 'name';
 
-  @Input('line2')
+  @Input()
   line2: string;
 
   constructor(private itemService: ItemService,

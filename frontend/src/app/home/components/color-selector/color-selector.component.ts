@@ -60,7 +60,7 @@ export class ColorSelectorComponent implements OnInit {
   }
 
   ngOnInit() {
-    for (let key of Object.keys(this.loadoutService.paints)) {
+    for (const key of Object.keys(this.loadoutService.paints)) {
       this.colors[key].value = this.loadoutService.paints[key];
       this.colors[key].textColor = getTextColor(this.colors[key].value);
     }
