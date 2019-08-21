@@ -71,6 +71,12 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Hitbox X" type="number" [(ngModel)]="body.hitbox_translate_x">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Hitbox Z" type="number" [(ngModel)]="body.hitbox_translate_z">
+  </mat-form-field>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="cancel()">Cancel</button>
