@@ -50,11 +50,11 @@ export class HitboxModel {
     const translate = new Vector3();
 
     if (body.hitbox_translate_x != undefined) {
-      translate.setX(body.hitbox_translate_x);
+      translate.setX(-body.hitbox_translate_x);
     }
 
     if (body.hitbox_translate_z != undefined) {
-      translate.setY(body.hitbox_translate_z);
+      translate.setY(-body.hitbox_translate_z);
     }
 
     pos.add(translate);
