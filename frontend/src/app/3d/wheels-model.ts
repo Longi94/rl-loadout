@@ -104,7 +104,11 @@ export class WheelsModel extends AbstractObject {
 
   applyWheelPositions(config) {
     for (const key of Object.keys(config)) {
-      this.wheels[key].position.copy(config[key].pos);
+      this.wheels[key].position.set(
+        config[key].pos.x,
+        config[key].pos.z,
+        config[key].pos.y
+      );
 
       if (key.endsWith('r')) {
         this.wheels[key].rotation.set(0, Math.PI, 0);
