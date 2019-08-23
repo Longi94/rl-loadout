@@ -8,6 +8,7 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { HomeModule } from './home/home.module';
 import { AdminModule } from './admin/admin.module';
 import { AuthInterceptor } from './auth/auth.interceptor';
+import { NotifierModule } from 'angular-notifier';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,13 @@ import { AuthInterceptor } from './auth/auth.interceptor';
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    NotifierModule.withConfig({
+      position: {
+        horizontal: {
+          position: 'right'
+        }
+      }
+    }),
     HomeModule,
     AdminModule
   ],
