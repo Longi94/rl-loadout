@@ -3,8 +3,9 @@ from .dao import BaseDao
 
 
 class UserDao(BaseDao):
+    T = User
 
-    def add(self, username: str, password: str):
+    def add_user(self, username: str, password: str):
         """
         Add a user to the db
         :param username:
@@ -15,7 +16,7 @@ class UserDao(BaseDao):
         session.add(user)
         session.commit()
 
-    def get(self, username: str):
+    def get_by_username(self, username: str):
         """
         Find user by username
         :param username: username

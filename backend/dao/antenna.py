@@ -4,17 +4,7 @@ from entity import Antenna, AntennaStick
 
 
 class AntennaDao(BaseDao):
-
-    def get_all(self) -> List[Antenna]:
-        session = self.Session()
-        return session.query(Antenna)
-
-    def delete(self, antenna_id: int):
-        session = self.Session()
-        session.query(Antenna).filter(Antenna.id == antenna_id).delete()
-
-    def add(self, antenna: Antenna):
-        self.Session().add(antenna)
+    T = Antenna
 
     def get_sticks(self) -> List[AntennaStick]:
         session = self.Session()
