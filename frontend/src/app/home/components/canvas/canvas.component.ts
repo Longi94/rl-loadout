@@ -220,27 +220,6 @@ export class CanvasComponent implements OnInit {
     light3.position.set(-100, 60, -100);
     light3.lookAt(0, 0, 0);
     this.scene.add(light3);
-
-    const light4 = new SpotLight(0xFFFFFF, INTENSITY, 300, ANGLE); // soft white light
-    light4.position.set(0, -100, 0);
-    light4.lookAt(0, 0, 0);
-    this.scene.add(light4);
-
-    // const light5 = new SpotLight(0xFFFFFF, INTENSITY, 300, ANGLE); // soft white light
-    // light5.position.set(0, 160, 0);
-    // light5.lookAt(0, 0, 0);
-    // this.scene.add(light5);
-
-    // const helper0 = new SpotLightHelper(light0, new Color(1, 1, 1));
-    // this.scene.add(helper0);
-    // const helper1 = new SpotLightHelper(light1, new Color(0, 1, 1));
-    // this.scene.add(helper1);
-    // const helper2 = new SpotLightHelper(light2, new Color(1, 0, 1));
-    // this.scene.add(helper2);
-    // const helper3 = new SpotLightHelper(light3, new Color(1, 1, 0));
-    // this.scene.add(helper3);
-    // const helper4 = new SpotLightHelper(light4, new Color(0, 1, 0));
-    // this.scene.add(helper4);
   }
 
   private processBackground(backgroundTexture: Texture) {
