@@ -46,9 +46,5 @@ export class AntennaModel extends AbstractObject {
 
   handleModel(scene: Scene) {
     this.socket = scene.getObjectByName('TopperSocket');
-
-    if (this.socket == undefined) {
-      console.warn(`${this.antennaUrl} has no topper socket.`);
-    }
   }
 }

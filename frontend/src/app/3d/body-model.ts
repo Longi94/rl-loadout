@@ -112,8 +112,6 @@ export class BodyModel extends AbstractObject {
   handleModel(scene: Scene) {
     if ('wheelScale' in scene.userData) {
       this.wheelScale = scene.userData.wheelScale;
-    } else {
-      console.warn(`${this.url} has no wheelScale attribute`);
     }
 
     this.hatSocket = scene.getObjectByName('HatSocket');
