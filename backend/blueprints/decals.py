@@ -14,7 +14,7 @@ body_dao = BodyDao()
 @decals_blueprint.route('', methods=['GET'])
 def get_decals():
     body_id = request.args.get('body', default=None)
-    decals = decal_dao.get_all(body_id)
+    decals = decal_dao.get_all_for_body(body_id)
     return jsonify([item.to_dict() for item in decals])
 
 
@@ -45,4 +45,17 @@ def add_decal():
 @commit_after
 def delete_decal(decal_id):
     decal_dao.delete(decal_id)
+    return '', 200
+
+
+@decals_blueprint.route('/<decal_id>', methods=['PUT'])
+@jwt_required
+@commit_after
+def update(decal_id):
+    item = decal_dao.get(decal_id)
+
+    if item is None:
+        raise NotFoundException('Decal detail not found')
+
+    item.update(request.json)
     return '', 200

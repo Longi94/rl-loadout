@@ -37,3 +37,16 @@ def add_antenna():
 def delete_antenna(antenna_id):
     antenna_dao.delete(antenna_id)
     return '', 200
+
+
+@antennas_blueprint.route('/<antenna_id>', methods=['PUT'])
+@jwt_required
+@commit_after
+def update_antenna(antenna_id):
+    item = antenna_dao.get(antenna_id)
+
+    if item is None:
+        raise NotFoundException('Antenna stick not found')
+
+    item.update(request.json)
+    return '', 200

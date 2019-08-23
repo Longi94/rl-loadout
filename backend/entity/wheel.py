@@ -24,3 +24,12 @@ class Wheel(Base, BaseItem):
         d['rim_rgb_map'] = self.rim_rgb_map
 
         return d
+
+    def update(self, item_dict: Dict):
+        super(Wheel, self).update(item_dict)
+        if 'model' in item_dict:
+            self.model = item_dict['model']
+        if 'rim_base' in item_dict:
+            self.rim_base = item_dict['rim_base']
+        if 'rim_rgb_map' in item_dict:
+            self.rim_rgb_map = item_dict['rim_rgb_map']

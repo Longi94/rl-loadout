@@ -52,3 +52,15 @@ class Decal(Base):
             'body_id': self.body_id,
             'body_name': body_name
         }
+
+    def update(self, item_dict: Dict):
+        if 'base_texture' in item_dict:
+            self.base_texture = item_dict['base_texture']
+        if 'rgba_map' in item_dict:
+            self.rgba_map = item_dict['rgba_map']
+        if 'body_id' in item_dict:
+            self.body_id = item_dict['body_id']
+        if 'decal_detail_id' in item_dict:
+            self.decal_detail_id = item_dict['decal_detail_id']
+        if 'quality' in item_dict:
+            self.quality = item_dict['quality']

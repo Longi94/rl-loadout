@@ -24,3 +24,12 @@ class Topper(Base, BaseItem):
         d['rgba_map'] = self.rgba_map
 
         return d
+
+    def update(self, item_dict: Dict):
+        super(Topper, self).update(item_dict)
+        if 'model' in item_dict:
+            self.model = item_dict['model']
+        if 'base_texture' in item_dict:
+            self.base_texture = item_dict['base_texture']
+        if 'rgba_map' in item_dict:
+            self.rgba_map = item_dict['rgba_map']

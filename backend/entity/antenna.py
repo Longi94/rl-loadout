@@ -30,6 +30,17 @@ class Antenna(Base, BaseItem):
 
         return d
 
+    def update(self, item_dict: Dict):
+        super(Antenna, self).update(item_dict)
+        if 'model' in item_dict:
+            self.model = item_dict['model']
+        if 'base_texture' in item_dict:
+            self.base_texture = item_dict['base_texture']
+        if 'rgba_map' in item_dict:
+            self.rgba_map = item_dict['rgba_map']
+        if 'stick' in item_dict:
+            self.stick = item_dict['stick']
+
 
 class AntennaStick(Base):
     __tablename__ = 'antenna_stick'
@@ -45,3 +56,7 @@ class AntennaStick(Base):
             'id': self.id,
             'model': self.model
         }
+
+    def update(self, item_dict):
+        if 'model' in item_dict:
+            self.model = item_dict['model']

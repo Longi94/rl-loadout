@@ -39,9 +39,10 @@ def delete_body(body_id):
 @jwt_required
 @commit_after
 def update_body(body_id):
-    body = body_dao.get(body_id)
+    item = body_dao.get(body_id)
 
-    if body is None:
+    if item is None:
         raise NotFoundException('Body not found')
 
-    body.update(request.json)
+    item.update(request.json)
+    return '', 200
