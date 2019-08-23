@@ -154,8 +154,14 @@ export class CanvasComponent implements OnInit {
         this.applyHitbox();
         this.updateTextureService();
         this.initializing = false;
-      }).catch(console.error);
-    }).catch(console.error);
+      }).catch(error => {
+        console.error(error);
+        this.notifierService.notify('error', 'Failed to initialize.');
+      });
+    }).catch(error => {
+      console.error(error);
+      this.notifierService.notify('error', 'Failed to initialize.');
+    });
   }
 
   private addControls() {

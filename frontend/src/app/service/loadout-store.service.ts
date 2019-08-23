@@ -7,6 +7,7 @@ import { Decal } from '../model/decal';
 import { Item } from '../model/item';
 import { Topper } from '../model/topper';
 import { Antenna } from '../model/antenna';
+import { NotifierService } from 'angular-notifier';
 
 const HOST = `${environment.backend}/internal`;
 
@@ -21,7 +22,8 @@ export class LoadoutStoreService {
   toppers: Topper[] = [];
   antennas: Antenna[] = [];
 
-  constructor(private httpClient: HttpClient) {
+  constructor(private httpClient: HttpClient,
+              private notifierService: NotifierService) {
   }
 
   initAll(bodyId?: number): Promise<any> {
@@ -53,6 +55,7 @@ export class LoadoutStoreService {
         },
         error => {
           console.error(error);
+          this.notifierService.notify('error', 'Failed to initialize list of items.');
           resolve();
         }
       );
@@ -74,6 +77,7 @@ export class LoadoutStoreService {
         },
         error => {
           console.error(error);
+          this.notifierService.notify('error', `Failed to initialize decals for body ${bodyId}`);
           resolve();
         }
       );
