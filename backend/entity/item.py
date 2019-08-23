@@ -29,3 +29,15 @@ class BaseItem:
             'icon': self.icon,
             'paintable': self.paintable
         }
+
+    def update(self, item_dict: Dict):
+        if 'replay_id' in item_dict:
+            self.replay_id = item_dict['replay_id']
+        if 'name' in item_dict:
+            self.name = item_dict['name']
+        if 'quality' in item_dict:
+            self.quality = item_dict['quality']
+        if 'icon' in item_dict:
+            self.icon = item_dict['icon']
+        if 'paintable' in item_dict:
+            self.paintable = item_dict['paintable']

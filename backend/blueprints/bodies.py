@@ -4,6 +4,7 @@ from utils.network.decorators import json_required_params, commit_after
 from database import database
 from entity import Body
 from dao import BodyDao
+from utils.network.exc import NotFoundException
 
 bodies_blueprint = Blueprint('bodies', __name__, url_prefix='/internal/bodies')
 body_dao = BodyDao()
@@ -32,3 +33,15 @@ def add_body():
 def delete_body(body_id):
     body_dao.delete(body_id)
     return '', 200
+
+
+@bodies_blueprint.route('/<body_id>', methods=['PUT'])
+@jwt_required
+@commit_after
+def update_body(body_id):
+    body = body_dao.get(body_id)
+
+    if body is None:
+        raise NotFoundException('Body not found')
+
+    body.update(request.json)

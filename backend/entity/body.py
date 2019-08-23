@@ -41,3 +41,24 @@ class Body(Base, BaseItem):
         d['hitbox_translate_z'] = self.hitbox_translate_z
 
         return d
+
+    def update(self, item_dict: Dict):
+        super().update(item_dict)
+        if 'model' in item_dict:
+            self.model = item_dict['model']
+        if 'blank_skin' in item_dict:
+            self.blank_skin = item_dict['blank_skin']
+        if 'base_skin' in item_dict:
+            self.base_skin = item_dict['base_skin']
+        if 'chassis_base' in item_dict:
+            self.chassis_base = item_dict['chassis_base']
+        if 'chassis_n' in item_dict:
+            self.chassis_n = item_dict['chassis_n']
+        if 'model' in item_dict:
+            self.model = item_dict['model']
+        if 'hitbox' in item_dict:
+            self.hitbox = item_dict['hitbox']
+        if 'hitbox_translate_x' in item_dict:
+            self.hitbox_translate_x = item_dict['hitbox_translate_x']
+        if 'hitbox_translate_z' in item_dict:
+            self.hitbox_translate_z = item_dict['hitbox_translate_z']
