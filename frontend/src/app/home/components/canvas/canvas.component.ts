@@ -82,7 +82,7 @@ export class CanvasComponent implements OnInit {
   };
 
   // hitbox
-  private config = {hitbox: false};
+  private hitboxConfig = {enabled: false};
   private hitbox: HitboxModel = new HitboxModel();
 
   constructor(private loadoutService: LoadoutService,
@@ -167,7 +167,9 @@ export class CanvasComponent implements OnInit {
   private addControls() {
     const gui: GUI = new dat.GUI({autoPlace: false, closed: true});
 
-    gui.add(this.config, 'hitbox').onChange(value => {
+    // hitbox
+    const hitboxFolder = gui.addFolder('hitbox');
+    hitboxFolder.add(this.hitboxConfig, 'enabled').onChange(value => {
       if (value) {
         this.hitbox.addToScene(this.scene);
       } else {
