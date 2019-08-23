@@ -63,3 +63,7 @@ mat-grid-tile-footer.premium {
 .selected {
   box-shadow: 0 0 14px 0 map-get($app-primary, 700);
 }
+
+mat-form-field {
+  width: 100%;
+}

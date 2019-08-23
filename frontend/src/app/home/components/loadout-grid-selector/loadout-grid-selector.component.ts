@@ -28,6 +28,8 @@ export class LoadoutGridSelectorComponent implements OnInit {
 
   selectedItem: Item = new Item(0, '', '', 0, false);
 
+  filter: string;
+
   constructor() { }
 
   ngOnInit() {
