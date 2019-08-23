@@ -15,7 +15,7 @@ export class WheelsComponent implements OnInit {
 
   dialogComponent = CreateWheelComponent;
 
-  constructor(private itemService: WheelsService) {
+  constructor(public itemService: WheelsService) {
   }
 
   ngOnInit() {
