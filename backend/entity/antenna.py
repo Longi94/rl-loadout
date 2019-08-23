@@ -38,8 +38,8 @@ class Antenna(Base, BaseItem):
             self.base_texture = item_dict['base_texture']
         if 'rgba_map' in item_dict:
             self.rgba_map = item_dict['rgba_map']
-        if 'stick' in item_dict:
-            self.stick = item_dict['stick']
+        if 'stick_id' in item_dict:
+            self.stick_id = item_dict['stick_id']
 
 
 class AntennaStick(Base):
