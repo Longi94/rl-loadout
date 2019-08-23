@@ -1,6 +1,7 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { Mesh, MeshStandardMaterial, Object3D, Scene, Texture } from 'three';
+import { LinearEncoding, Mesh, MeshStandardMaterial, Object3D, Scene, Texture } from 'three';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+import { materialize } from 'rxjs/operators';
 
 export abstract class AbstractObject {
 
@@ -18,6 +19,11 @@ export abstract class AbstractObject {
       this.loader.load(this.url, gltf => {
         this.validate(gltf);
         this.scene = gltf.scene;
+        traverseMaterials(this.scene, material => {
+          if (material.map) material.map.encoding = LinearEncoding;
+          if (material.emissiveMap) material.emissiveMap.encoding = LinearEncoding;
+          if (material.map || material.emissiveMap) material.needsUpdate = true;
+        });
         this.handleModel(gltf.scene);
         resolve();
       }, undefined, reject);
@@ -76,4 +82,14 @@ export abstract class AbstractObject {
   dispose() {
     this.scene.dispose();
   }
+}
+
+function traverseMaterials(object, callback) {
+  object.traverse((node) => {
+    if (!node.isMesh) {
+      return;
+    }
+    const materials = Array.isArray(node.material) ? node.material : [node.material];
+    materials.forEach(callback);
+  });
 }
