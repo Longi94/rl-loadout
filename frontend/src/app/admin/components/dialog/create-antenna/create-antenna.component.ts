@@ -2,10 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Quality } from '../../../../model/quality';
 import { MatDialogRef, MatSnackBar } from '@angular/material';
 import { CloudStorageService } from '../../../../service/cloud-storage.service';
-import { ItemService } from '../../../../service/item.service';
 import { handleErrorSnackbar } from '../../../../utils/network';
 import { Antenna, AntennaStick } from '../../../../model/antenna';
 import { CreateDialog } from '../create-dialog';
+import { AntennasService } from '../../../../service/items/antennas.service';
+import { AntennaSticksService } from '../../../../service/items/antenna-sticks.service';
 
 @Component({
   selector: 'app-create-antenna',
@@ -22,18 +23,19 @@ export class CreateAntennaComponent extends CreateDialog implements OnInit {
 
   constructor(dialogRef: MatDialogRef<CreateAntennaComponent>,
               cloudService: CloudStorageService,
-              private itemService: ItemService,
+              private antennasService: AntennasService,
+              private antennaSticksService: AntennaSticksService,
               private snackBar: MatSnackBar) {
     super(dialogRef, cloudService);
   }
 
   ngOnInit() {
     super.ngOnInit();
-    this.itemService.getAntennaSticks().subscribe(sticks => this.sticks = sticks);
+    this.antennaSticksService.getAll().subscribe(sticks => this.sticks = sticks);
   }
 
   save() {
-    this.itemService.addAntenna(this.antenna).subscribe(newItem => {
+    this.antennasService.add(this.antenna).subscribe(newItem => {
       this.dialogRef.close(newItem);
     }, error => handleErrorSnackbar(error, this.snackBar));
   }

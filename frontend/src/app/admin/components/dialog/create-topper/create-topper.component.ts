@@ -3,9 +3,9 @@ import { Topper } from '../../../../model/topper';
 import { Quality } from '../../../../model/quality';
 import { MatDialogRef, MatSnackBar } from '@angular/material';
 import { CloudStorageService } from '../../../../service/cloud-storage.service';
-import { ItemService } from '../../../../service/item.service';
 import { handleErrorSnackbar } from '../../../../utils/network';
 import { CreateDialog } from '../create-dialog';
+import { ToppersService } from '../../../../service/items/toppers.service';
 
 @Component({
   selector: 'app-create-topper',
@@ -20,13 +20,13 @@ export class CreateTopperComponent extends CreateDialog {
 
   constructor(dialogRef: MatDialogRef<CreateTopperComponent>,
               cloudService: CloudStorageService,
-              private itemService: ItemService,
+              private toppersService: ToppersService,
               private snackBar: MatSnackBar) {
     super(dialogRef, cloudService);
   }
 
   save() {
-    this.itemService.addTopper(this.topper).subscribe(newItem => {
+    this.toppersService.add(this.topper).subscribe(newItem => {
       this.dialogRef.close(newItem);
     }, error => handleErrorSnackbar(error, this.snackBar));
   }
