@@ -36,6 +36,7 @@ import { getHitboxModel, HitboxModel } from '../../../3d/hitbox-model';
 import { GUI } from 'dat-gui';
 import * as dat from 'dat.gui';
 import { NotifierService } from 'angular-notifier';
+import * as Stats from 'stats.js';
 
 @Component({
   selector: 'app-canvas',
@@ -84,6 +85,9 @@ export class CanvasComponent implements OnInit {
   // hitbox
   private hitboxConfig = {enabled: false};
   private hitbox: HitboxModel = new HitboxModel();
+
+  // stats
+  private stats = new Stats();
 
   constructor(private loadoutService: LoadoutService,
               private loadoutStore: LoadoutStoreService,
@@ -177,6 +181,15 @@ export class CanvasComponent implements OnInit {
       }
     });
 
+    // performance
+    const perfFolder = gui.addFolder('performance');
+    const perfLi = document.createElement('li');
+    this.stats.dom.style.position = 'static';
+    perfLi.appendChild(this.stats.dom);
+    perfLi.classList.add('stats');
+    // @ts-ignore
+    perfFolder.__ul.appendChild(perfLi);
+
     gui.close();
     this.dgContainer.nativeElement.appendChild(gui.domElement);
   }
@@ -251,6 +264,8 @@ export class CanvasComponent implements OnInit {
 
   private animate() {
     requestAnimationFrame(() => this.animate());
+
+    this.stats.update();
 
     this.resizeCanvas();
     this.renderer.render(this.scene, this.camera);

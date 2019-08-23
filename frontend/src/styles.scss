@@ -16,3 +16,7 @@ body {
 .flex-spacer {
   flex-grow: 1;
 }
+
+.dg li:not(.folder).stats {
+  height: auto;
+}
