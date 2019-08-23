@@ -1,7 +1,6 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { LinearEncoding, Mesh, MeshStandardMaterial, Object3D, Scene, Texture } from 'three';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
-import { materialize } from 'rxjs/operators';
 
 export abstract class AbstractObject {
 
@@ -20,9 +19,15 @@ export abstract class AbstractObject {
         this.validate(gltf);
         this.scene = gltf.scene;
         traverseMaterials(this.scene, material => {
-          if (material.map) material.map.encoding = LinearEncoding;
-          if (material.emissiveMap) material.emissiveMap.encoding = LinearEncoding;
-          if (material.map || material.emissiveMap) material.needsUpdate = true;
+          if (material.map) {
+            material.map.encoding = LinearEncoding;
+          }
+          if (material.emissiveMap) {
+            material.emissiveMap.encoding = LinearEncoding;
+          }
+          if (material.map || material.emissiveMap) {
+            material.needsUpdate = true;
+          }
         });
         this.handleModel(gltf.scene);
         resolve();
