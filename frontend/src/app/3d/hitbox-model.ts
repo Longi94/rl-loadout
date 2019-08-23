@@ -1,13 +1,16 @@
 import {
   BoxGeometry,
   EdgesGeometry,
+  Euler,
   LineBasicMaterial,
   LineSegments,
   Mesh,
   MeshPhongMaterial,
-  Scene
+  Scene,
+  Vector3
 } from 'three';
 import { Hitbox } from '../model/hitbox';
+import { Body } from '../model/body';
 
 export class HitboxModel {
 
@@ -31,15 +34,37 @@ export class HitboxModel {
     this.lineSegments = new LineSegments(this.edges, this.lineMaterial);
   }
 
-  applyConfig(config: HitboxConfig) {
+  applyBody(body: Body) {
+    const config = getHitboxModel(body.hitbox);
+
+    const pos = new Vector3();
+    let scale = new Vector3(1, 1, 1);
+    let rot = new Euler();
+
     if (config != undefined) {
-      this.mesh.scale.set(config.width, config.height, config.depth);
-      this.mesh.position.set(config.posX, config.posY, 0);
-      this.mesh.rotation.set(0, 0, -degToRad(config.rotZ));
-      this.lineSegments.scale.set(config.width, config.height, config.depth);
-      this.lineSegments.position.set(config.posX, config.posY, 0);
-      this.lineSegments.rotation.set(0, 0, -degToRad(config.rotZ));
+      pos.add(config.position);
+      scale = config.scale;
+      rot = config.rotation;
     }
+
+    const translate = new Vector3();
+
+    if (body.hitbox_translate_x != undefined) {
+      translate.setX(-body.hitbox_translate_x);
+    }
+
+    if (body.hitbox_translate_z != undefined) {
+      translate.setY(-body.hitbox_translate_z);
+    }
+
+    pos.add(translate);
+
+    this.mesh.scale.copy(scale);
+    this.mesh.position.copy(pos);
+    this.mesh.rotation.copy(rot);
+    this.lineSegments.scale.copy(scale);
+    this.lineSegments.position.copy(pos);
+    this.lineSegments.rotation.copy(rot);
   }
 
   addToScene(scene: Scene) {
@@ -61,53 +86,35 @@ export class HitboxModel {
 }
 
 class HitboxConfig {
-  width: number;
-  height: number;
-  depth: number;
-  posX: number;
-  posY: number;
-  rotZ: number;
+  scale: Vector3;
+  position: Vector3;
+  rotation: Euler;
 }
 
 export const HIT_BOX_OCTANE: HitboxConfig = {
-  width: 118.0074,
-  height: 36.15907,
-  depth: 84.19941,
-  posX: 13.87566,
-  posY: 20.75499,
-  rotZ: 0.552
+  scale: new Vector3(118.0074, 36.15907, 84.19941),
+  position: new Vector3(13.87566, 20.75499),
+  rotation: new Euler(0, 0, -degToRad(0.552))
 };
 export const HIT_BOX_DOMINUS: HitboxConfig = {
-  width: 127.9268,
-  height: 31.3,
-  depth: 83.27995,
-  posX: 9,
-  posY: 15.75,
-  rotZ: 0.963
+  scale: new Vector3(127.9268, 31.3, 83.27995),
+  position: new Vector3(9, 15.75),
+  rotation: new Euler(0, 0, -degToRad(0.963))
 };
 export const HIT_BOX_PLANK: HitboxConfig = {
-  width: 128.8198,
-  height: 29.3944,
-  depth: 84.67036,
-  posX: 9.008572,
-  posY: 12.0942,
-  rotZ: 0.345
+  scale: new Vector3(128.8198, 29.3944, 84.67036),
+  position: new Vector3(9.008572, 12.0942),
+  rotation: new Euler(0, 0, -degToRad(0.345))
 };
 export const HIT_BOX_BREAKOUT: HitboxConfig = {
-  width: 131.4924,
-  height: 30.3,
-  depth: 80.521,
-  posX: 12.5,
-  posY: 11.75,
-  rotZ: 0.98
+  scale: new Vector3(131.4924, 30.3, 80.521),
+  position: new Vector3(12.5, 11.75),
+  rotation: new Euler(0, 0, -degToRad(0.98))
 };
 export const HIT_BOX_HYBRID: HitboxConfig = {
-  width: 127.0192,
-  height: 34.15907,
-  depth: 82.18787,
-  posX: 13.87566,
-  posY: 20.75499,
-  rotZ: 0.55
+  scale: new Vector3(127.0192, 34.15907, 82.18787),
+  position: new Vector3(13.87566, 20.75499),
+  rotation: new Euler(0, 0, -degToRad(0.55))
 };
 export const HIT_BOX_BATMOBILE: HitboxConfig = HIT_BOX_PLANK;
 

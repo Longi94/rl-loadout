@@ -10,4 +10,6 @@ export class Body extends Item {
   chassis_base: string;
   chassis_n: string;
   hitbox: Hitbox;
+  hitbox_translate_x: number;
+  hitbox_translate_z: number;
 }

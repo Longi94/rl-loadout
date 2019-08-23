@@ -66,18 +66,8 @@ export abstract class AbstractObject {
       return;
     }
 
-    this.scene.position.set(
-      anchor.position.x,
-      anchor.position.y,
-      anchor.position.z,
-    );
-
-    this.scene.rotation.set(
-      anchor.rotation.x,
-      anchor.rotation.y,
-      anchor.rotation.z,
-      anchor.rotation.order,
-    );
+    this.scene.position.copy(anchor.position);
+    this.scene.rotation.copy(anchor.rotation);
   }
 
   /**

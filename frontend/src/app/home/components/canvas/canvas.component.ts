@@ -451,8 +451,7 @@ export class CanvasComponent implements OnInit {
   }
 
   private applyHitbox() {
-    const nextHitbox = getHitboxModel(this.loadoutService.body.hitbox);
-    this.hitbox.applyConfig(nextHitbox);
+    this.hitbox.applyBody(this.loadoutService.body);
   }
 
   private validateBody() {
@@ -468,6 +467,10 @@ export class CanvasComponent implements OnInit {
 
     if (getHitboxModel(body.hitbox) == undefined) {
       console.warn(`The hitbox of body ${body.name} is unknown (${body.hitbox}).`);
+    }
+
+    if (body.hitbox_translate_x == undefined || body.hitbox_translate_z == undefined) {
+      console.warn(`Body ${body.name} missing hitbox translate values.`);
     }
   }
 }
