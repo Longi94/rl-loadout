@@ -119,7 +119,7 @@ export class CanvasComponent implements OnInit {
     this.scene = new Scene();
     this.scene.background = new Color('#AAAAAA');
 
-    this.renderer = new WebGLRenderer({canvas: this.canvas.nativeElement, antialias: true});
+    this.renderer = new WebGLRenderer({canvas: this.canvas.nativeElement, antialias: true, logarithmicDepthBuffer: true});
     this.renderer.setSize(width, height);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
