@@ -34,7 +34,6 @@ export class ItemListComponent implements OnInit {
   }
 
   ngOnInit() {
-    console.log('QWER');
     this.itemService.getAll().subscribe(items => this.items = items);
   }
 
