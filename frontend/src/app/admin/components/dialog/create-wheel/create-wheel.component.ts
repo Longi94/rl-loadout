@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { Wheel } from '../../../../model/wheel';
 import { Quality } from '../../../../model/quality';
-import { MatDialogRef, MatSnackBar } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { CloudStorageService } from '../../../../service/cloud-storage.service';
-import { handleErrorSnackbar } from '../../../../utils/network';
 import { CreateDialog } from '../create-dialog';
 import { WheelsService } from '../../../../service/items/wheels.service';
 
@@ -12,22 +11,16 @@ import { WheelsService } from '../../../../service/items/wheels.service';
   templateUrl: './create-wheel.component.html',
   styleUrls: ['./create-wheel.component.scss']
 })
-export class CreateWheelComponent extends CreateDialog {
-
-  wheel: Wheel = new Wheel(
-    undefined, undefined, '', Quality.COMMON, false
-  );
+export class CreateWheelComponent extends CreateDialog<Wheel> {
 
   constructor(dialogRef: MatDialogRef<CreateWheelComponent>,
               cloudService: CloudStorageService,
-              private wheelsService: WheelsService,
-              private snackBar: MatSnackBar) {
-    super(dialogRef, cloudService);
-  }
-
-  save() {
-    this.wheelsService.add(this.wheel).subscribe(newItem => {
-      this.dialogRef.close(newItem);
-    }, error => handleErrorSnackbar(error, this.snackBar));
+              wheelsService: WheelsService,
+              snackBar: MatSnackBar,
+              @Inject(MAT_DIALOG_DATA) data: Wheel) {
+    super(dialogRef, cloudService, snackBar, data, wheelsService);
+    this.item = new Wheel(
+      undefined, undefined, '', Quality.COMMON, false
+    );
   }
 }

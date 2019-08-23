@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { Topper } from '../../../../model/topper';
 import { Quality } from '../../../../model/quality';
-import { MatDialogRef, MatSnackBar } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { CloudStorageService } from '../../../../service/cloud-storage.service';
-import { handleErrorSnackbar } from '../../../../utils/network';
 import { CreateDialog } from '../create-dialog';
 import { ToppersService } from '../../../../service/items/toppers.service';
 
@@ -12,22 +11,17 @@ import { ToppersService } from '../../../../service/items/toppers.service';
   templateUrl: './create-topper.component.html',
   styleUrls: ['./create-topper.component.scss']
 })
-export class CreateTopperComponent extends CreateDialog {
-
-  topper: Topper = new Topper(
-    undefined, undefined, '', Quality.COMMON, false, undefined, undefined, undefined
-  );
+export class CreateTopperComponent extends CreateDialog<Topper> {
 
   constructor(dialogRef: MatDialogRef<CreateTopperComponent>,
               cloudService: CloudStorageService,
-              private toppersService: ToppersService,
-              private snackBar: MatSnackBar) {
-    super(dialogRef, cloudService);
+              toppersService: ToppersService,
+              snackBar: MatSnackBar,
+              @Inject(MAT_DIALOG_DATA) data: Topper) {
+    super(dialogRef, cloudService, snackBar, data, toppersService);
+    this.item = new Topper(
+      undefined, undefined, '', Quality.COMMON, false, undefined, undefined, undefined
+    );
   }
 
-  save() {
-    this.toppersService.add(this.topper).subscribe(newItem => {
-      this.dialogRef.close(newItem);
-    }, error => handleErrorSnackbar(error, this.snackBar));
-  }
 }

@@ -30,10 +30,11 @@ export class ItemListComponent implements OnInit {
   @Input()
   line2: string;
 
-  constructor(private dialog: MatDialog) { }
+  constructor(private dialog: MatDialog) {
+  }
 
   ngOnInit() {
-    console.log('QWER')
+    console.log('QWER');
     this.itemService.getAll().subscribe(items => this.items = items);
   }
 
@@ -53,9 +54,23 @@ export class ItemListComponent implements OnInit {
       disableClose: true
     });
 
-    dialogRef.afterClosed().subscribe(newBody => {
-      if (newBody != undefined) {
-        this.items.push(newBody);
+    dialogRef.afterClosed().subscribe(newItem => {
+      if (newItem != undefined) {
+        this.items.push(newItem);
+      }
+    });
+  }
+
+  openEditDialog(item: Item) {
+    const dialogRef = this.dialog.open(this.createDialog, {
+      width: '500px',
+      disableClose: true,
+      data: Object.assign({}, item)
+    });
+
+    dialogRef.afterClosed().subscribe(newItem => {
+      if (newItem != undefined) {
+        Object.assign(item, newItem);
       }
     });
   }

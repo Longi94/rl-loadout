@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
-import { MatDialogRef, MatSnackBar } from '@angular/material';
+import { Component, Inject } from '@angular/core';
+import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { CloudStorageService } from '../../../../service/cloud-storage.service';
 import { AntennaStick } from '../../../../model/antenna';
-import { handleErrorSnackbar } from '../../../../utils/network';
 import { CreateDialog } from '../create-dialog';
 import { AntennaSticksService } from '../../../../service/items/antenna-sticks.service';
 
@@ -11,20 +10,15 @@ import { AntennaSticksService } from '../../../../service/items/antenna-sticks.s
   templateUrl: './create-antenna-stick.component.html',
   styleUrls: ['./create-antenna-stick.component.scss']
 })
-export class CreateAntennaStickComponent extends CreateDialog {
-
-  antennaStick: AntennaStick = new AntennaStick();
+export class CreateAntennaStickComponent extends CreateDialog<AntennaStick> {
 
   constructor(dialogRef: MatDialogRef<CreateAntennaStickComponent>,
               cloudService: CloudStorageService,
-              private antennaSticksService: AntennaSticksService,
-              private snackBar: MatSnackBar) {
-    super(dialogRef, cloudService);
+              antennaSticksService: AntennaSticksService,
+              snackBar: MatSnackBar,
+              @Inject(MAT_DIALOG_DATA) data: AntennaStick) {
+    super(dialogRef, cloudService, snackBar, data, antennaSticksService);
+    this.item = new AntennaStick();
   }
 
-  save() {
-    this.antennaSticksService.add(this.antennaStick).subscribe(newItem => {
-      this.dialogRef.close(newItem);
-    }, error => handleErrorSnackbar(error, this.snackBar));
-  }
 }

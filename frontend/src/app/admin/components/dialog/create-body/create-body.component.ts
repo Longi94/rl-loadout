@@ -1,9 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { Body } from '../../../../model/body';
 import { Quality } from '../../../../model/quality';
-import { MatDialogRef, MatSnackBar } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { CloudStorageService } from '../../../../service/cloud-storage.service';
-import { handleErrorSnackbar } from '../../../../utils/network';
 import { CreateDialog } from '../create-dialog';
 import { BodiesService } from '../../../../service/items/bodies.service';
 
@@ -12,22 +11,17 @@ import { BodiesService } from '../../../../service/items/bodies.service';
   templateUrl: './create-body.component.html',
   styleUrls: ['./create-body.component.scss']
 })
-export class CreateBodyComponent extends CreateDialog {
-
-  body: Body = new Body(
-    undefined, undefined, '', Quality.COMMON, false
-  );
+export class CreateBodyComponent extends CreateDialog<Body> {
 
   constructor(dialogRef: MatDialogRef<CreateBodyComponent>,
               cloudService: CloudStorageService,
-              private bodiesService: BodiesService,
-              private snackBar: MatSnackBar) {
-    super(dialogRef, cloudService);
+              bodiesService: BodiesService,
+              snackBar: MatSnackBar,
+              @Inject(MAT_DIALOG_DATA) data: Body) {
+    super(dialogRef, cloudService, snackBar, data, bodiesService);
+    this.item = new Body(
+      undefined, undefined, '', Quality.COMMON, false
+    );
   }
 
-  save() {
-    this.bodiesService.add(this.body).subscribe(newBody => {
-      this.dialogRef.close(newBody);
-    }, error => handleErrorSnackbar(error, this.snackBar));
-  }
 }
