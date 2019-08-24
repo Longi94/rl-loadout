@@ -12,7 +12,3 @@ class BodyDao(BaseDao):
         """
         session = self.Session()
         return session.query(Body).filter(Body.name == 'Octane').first()
-
-    def get_by_replay_id(self, replay_id: int) -> Body:
-        session = self.Session()
-        return session.query(Body).filter(Body.replay_id == replay_id).first()

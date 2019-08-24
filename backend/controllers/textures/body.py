@@ -15,7 +15,7 @@ def get(body_id: int, primary_color: int = None, body_paint: int = None, team: i
     :param body_paint: The color of the paint applied to the body
     :param team: If this is set, the default blue (0) or the default orange(0) color will be used. This is ignored if primary_color is set.
     """
-    body = body_dao.get_by_replay_id(body_id)
+    body = body_dao.get(body_id)
 
     if body is None:
         raise NotFoundException('Body not found')

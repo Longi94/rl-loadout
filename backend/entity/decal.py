@@ -42,7 +42,6 @@ class Decal(Base):
 
         return {
             'id': self.id,
-            'replay_id': self.decal_detail.replay_id,
             'name': self.decal_detail.name,
             'quality': quality,
             'icon': self.decal_detail.icon,
