@@ -30,14 +30,11 @@ def _to_body_response(body: Body, api_key: str) -> Dict[str, Any]:
         'model': f'{asset_host}/{body.model}',
         'name': body.name,
         'paintable': body.paintable,
-        'body_texture': None,
+        'body_texture': f'/api/textures/body?key={api_key}&body_id={body.id}',
         'chassis_texture': None
     }
 
-    if body.id is not None:
-        response['body_texture'] = f'/api/textures/body?key={api_key}&body_id={body.id}'
-
-        if body.chassis_base is not None:
-            response['chassis_texture'] = f'/api/textures/chassis?key={api_key}&body_id={body.id}'
+    if body.chassis_base is not None:
+        response['chassis_texture'] = f'/api/textures/chassis?key={api_key}&body_id={body.id}'
 
     return response

@@ -1,4 +1,3 @@
-from typing import List
 from .dao import BaseDao
 from entity import Wheel
 
