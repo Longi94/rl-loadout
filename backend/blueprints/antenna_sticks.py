@@ -4,6 +4,7 @@ from utils.network.decorators import json_required_params, commit_after
 from database import database
 from entity import AntennaStick
 from dao import AntennaDao
+from utils.network.exc import NotFoundException
 
 antenna_sticks_blueprint = Blueprint('antenna_sticks', __name__, url_prefix='/internal/antenna-sticks')
 antenna_dao = AntennaDao()
@@ -31,4 +32,17 @@ def add_antenna_stick():
 @commit_after
 def delete_antenna_stick(antenna_stick_id):
     antenna_dao.delete_stick(antenna_stick_id)
+    return '', 200
+
+
+@antenna_sticks_blueprint.route('/<antenna_stick_id>', methods=['PUT'])
+@jwt_required
+@commit_after
+def update_antenna_stick(antenna_stick_id):
+    item = antenna_dao.get_stick(antenna_stick_id)
+
+    if item is None:
+        raise NotFoundException('Antenna stick not found')
+
+    item.update(request.json)
     return '', 200

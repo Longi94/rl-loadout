@@ -44,6 +44,6 @@ def get_all():
     body_id = request.args.get('body', default=None)
 
     if body_id is not None:
-        result['decals'] = [item.to_dict() for item in decal_dao.get_all(body_id)]
+        result['decals'] = [item.to_dict() for item in decal_dao.get_all_for_body(body_id)]
 
     return jsonify(result)

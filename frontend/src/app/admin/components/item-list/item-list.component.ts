@@ -1,9 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Item } from '../../../model/item';
 import { environment } from '../../../../environments/environment';
-import { ItemService } from '../../../service/item.service';
 import { confirmMaterial } from '../../../shared/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material';
+import { AbstractItemService } from '../../../service/abstract-item-service';
 
 @Component({
   selector: 'app-item-list',
@@ -14,10 +14,12 @@ export class ItemListComponent implements OnInit {
 
   assetHost = environment.assetHost;
   items: any[] = [];
+
+  @Input()
   createDialog;
 
   @Input()
-  type: string;
+  itemService: AbstractItemService<any>;
 
   @Input()
   showImg = true;
@@ -28,40 +30,16 @@ export class ItemListComponent implements OnInit {
   @Input()
   line2: string;
 
-  constructor(private itemService: ItemService,
-              private dialog: MatDialog) { }
+  constructor(private dialog: MatDialog) {
+  }
 
   ngOnInit() {
+    this.itemService.getAll().subscribe(items => this.items = items);
   }
 
   deleteItem(item: Item) {
     confirmMaterial(`Delete ${item[this.line1]}?`, this.dialog, () => {
-      switch (this.type) {
-        case 'body':
-          this.itemService.deleteBody(item.id).subscribe(() => this.removeItem(item));
-          break;
-        case 'antenna':
-          this.itemService.deleteAntenna(item.id).subscribe(() => this.removeItem(item));
-          break;
-        case 'antenna_stick':
-          this.itemService.deleteAntennaStick(item.id).subscribe(() => this.removeItem(item));
-          break;
-        case 'decal':
-          this.itemService.deleteDecal(item.id).subscribe(() => this.removeItem(item));
-          break;
-        case 'decal_detail':
-          this.itemService.deleteDecalDetail(item.id).subscribe(() => this.removeItem(item));
-          break;
-        case 'topper':
-          this.itemService.deleteTopper(item.id).subscribe(() => this.removeItem(item));
-          break;
-        case 'wheel':
-          this.itemService.deleteWheel(item.id).subscribe(() => this.removeItem(item));
-          break;
-        default:
-          console.warn(`Unknown item type: ${this.type}`);
-          break;
-      }
+      this.itemService.delete(item.id).subscribe(() => this.removeItem(item));
     });
   }
 
@@ -75,9 +53,23 @@ export class ItemListComponent implements OnInit {
       disableClose: true
     });
 
-    dialogRef.afterClosed().subscribe(newBody => {
-      if (newBody != undefined) {
-        this.items.push(newBody);
+    dialogRef.afterClosed().subscribe(newItem => {
+      if (newItem != undefined) {
+        this.items.push(newItem);
+      }
+    });
+  }
+
+  openEditDialog(item: Item) {
+    const dialogRef = this.dialog.open(this.createDialog, {
+      width: '500px',
+      disableClose: true,
+      data: Object.assign({}, item)
+    });
+
+    dialogRef.afterClosed().subscribe(newItem => {
+      if (newItem != undefined) {
+        Object.assign(item, newItem);
       }
     });
   }

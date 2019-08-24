@@ -4,8 +4,9 @@ from entity import Decal, DecalDetail, Body
 
 
 class DecalDao(BaseDao):
+    T = Decal
 
-    def get_all(self, body_id: int) -> List[Decal]:
+    def get_all_for_body(self, body_id: int) -> List[Decal]:
         """
         Find decals that are applicable to a body
 
@@ -19,13 +20,6 @@ class DecalDao(BaseDao):
                 return []
             return body.decals
         return session.query(Decal)
-
-    def delete(self, decal_id: int):
-        session = self.Session()
-        session.query(Decal).filter(Decal.id == decal_id).delete()
-
-    def add(self, decal: Decal):
-        self.Session().add(decal)
 
     def get_all_details(self) -> List[DecalDetail]:
         session = self.Session()

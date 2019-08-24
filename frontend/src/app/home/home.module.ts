@@ -9,6 +9,7 @@ import { AboutDialogComponent } from './components/about-dialog/about-dialog.com
 import { TextureViewerComponent } from './components/debug/texture-viewer/texture-viewer.component';
 import { SharedMaterialModule } from '../shared-material/shared-material.module';
 import { ColorPickerModule } from 'ngx-color-picker';
+import { ItemFilterPipe } from './pipes/item-filter.pipe';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { ColorPickerModule } from 'ngx-color-picker';
     LoadoutGridSelectorComponent,
     ColorSelectorComponent,
     AboutDialogComponent,
-    TextureViewerComponent
+    TextureViewerComponent,
+    ItemFilterPipe
   ],
   imports: [
     CommonModule,

@@ -18,7 +18,7 @@ def get_antennas():
 
 @antennas_blueprint.route('', methods=['POST'])
 @jwt_required
-@json_required_params(['name', 'icon', 'quality', 'paintable', 'model', 'stick_id'])
+@json_required_params(['id', 'name', 'icon', 'quality', 'paintable', 'model', 'stick_id'])
 def add_antenna():
     antenna = Antenna()
     antenna.apply_dict(request.json)
@@ -36,4 +36,17 @@ def add_antenna():
 @commit_after
 def delete_antenna(antenna_id):
     antenna_dao.delete(antenna_id)
+    return '', 200
+
+
+@antennas_blueprint.route('/<antenna_id>', methods=['PUT'])
+@jwt_required
+@commit_after
+def update_antenna(antenna_id):
+    item = antenna_dao.get(antenna_id)
+
+    if item is None:
+        raise NotFoundException('Antenna stick not found')
+
+    item.update(request.json)
     return '', 200

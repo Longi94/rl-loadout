@@ -35,6 +35,8 @@ import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { getHitboxModel, HitboxModel } from '../../../3d/hitbox-model';
 import { GUI } from 'dat-gui';
 import * as dat from 'dat.gui';
+import { NotifierService } from 'angular-notifier';
+import * as Stats from 'stats.js';
 
 @Component({
   selector: 'app-canvas',
@@ -81,12 +83,16 @@ export class CanvasComponent implements OnInit {
   };
 
   // hitbox
-  private config = {hitbox: false};
+  private hitboxConfig = {enabled: false};
   private hitbox: HitboxModel = new HitboxModel();
+
+  // stats
+  private stats = new Stats();
 
   constructor(private loadoutService: LoadoutService,
               private loadoutStore: LoadoutStoreService,
-              private textureService: TextureService) {
+              private textureService: TextureService,
+              private notifierService: NotifierService) {
     this.loadoutService.decalChanged$.subscribe(decal => this.changeDecal(decal));
     this.loadoutService.paintChanged$.subscribe(paint => this.changePaint(paint));
     this.loadoutService.wheelChanged$.subscribe(wheel => this.changeWheel(wheel));
@@ -113,7 +119,7 @@ export class CanvasComponent implements OnInit {
     this.scene = new Scene();
     this.scene.background = new Color('#AAAAAA');
 
-    this.renderer = new WebGLRenderer({canvas: this.canvas.nativeElement, antialias: true});
+    this.renderer = new WebGLRenderer({canvas: this.canvas.nativeElement, antialias: true, logarithmicDepthBuffer: true});
     this.renderer.setSize(width, height);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -152,20 +158,37 @@ export class CanvasComponent implements OnInit {
         this.applyHitbox();
         this.updateTextureService();
         this.initializing = false;
-      }).catch(console.error);
-    }).catch(console.error);
+      }).catch(error => {
+        console.error(error);
+        this.notifierService.notify('error', 'Failed to initialize.');
+      });
+    }).catch(error => {
+      console.error(error);
+      this.notifierService.notify('error', 'Failed to initialize.');
+    });
   }
 
   private addControls() {
     const gui: GUI = new dat.GUI({autoPlace: false, closed: true});
 
-    gui.add(this.config, 'hitbox').onChange(value => {
+    // hitbox
+    const hitboxFolder = gui.addFolder('hitbox');
+    hitboxFolder.add(this.hitboxConfig, 'enabled').onChange(value => {
       if (value) {
         this.hitbox.addToScene(this.scene);
       } else {
         this.hitbox.removeFromScene(this.scene);
       }
     });
+
+    // performance
+    const perfFolder = gui.addFolder('performance');
+    const perfLi = document.createElement('li');
+    this.stats.dom.style.position = 'static';
+    perfLi.appendChild(this.stats.dom);
+    perfLi.classList.add('stats');
+    // @ts-ignore
+    perfFolder.__ul.appendChild(perfLi);
 
     gui.close();
     this.dgContainer.nativeElement.appendChild(gui.domElement);
@@ -197,27 +220,6 @@ export class CanvasComponent implements OnInit {
     light3.position.set(-100, 60, -100);
     light3.lookAt(0, 0, 0);
     this.scene.add(light3);
-
-    const light4 = new SpotLight(0xFFFFFF, INTENSITY, 300, ANGLE); // soft white light
-    light4.position.set(0, -100, 0);
-    light4.lookAt(0, 0, 0);
-    this.scene.add(light4);
-
-    // const light5 = new SpotLight(0xFFFFFF, INTENSITY, 300, ANGLE); // soft white light
-    // light5.position.set(0, 160, 0);
-    // light5.lookAt(0, 0, 0);
-    // this.scene.add(light5);
-
-    // const helper0 = new SpotLightHelper(light0, new Color(1, 1, 1));
-    // this.scene.add(helper0);
-    // const helper1 = new SpotLightHelper(light1, new Color(0, 1, 1));
-    // this.scene.add(helper1);
-    // const helper2 = new SpotLightHelper(light2, new Color(1, 0, 1));
-    // this.scene.add(helper2);
-    // const helper3 = new SpotLightHelper(light3, new Color(1, 1, 0));
-    // this.scene.add(helper3);
-    // const helper4 = new SpotLightHelper(light4, new Color(0, 1, 0));
-    // this.scene.add(helper4);
   }
 
   private processBackground(backgroundTexture: Texture) {
@@ -241,6 +243,8 @@ export class CanvasComponent implements OnInit {
 
   private animate() {
     requestAnimationFrame(() => this.animate());
+
+    this.stats.update();
 
     this.resizeCanvas();
     this.renderer.render(this.scene, this.camera);
@@ -448,6 +452,7 @@ export class CanvasComponent implements OnInit {
     this.antenna.setEnvMap(this.envMap);
     this.antenna.applyAnchor(this.body.antennaSocket);
     this.antenna.addToScene(this.scene);
+    this.validateAntenna();
   }
 
   private applyHitbox() {
@@ -459,18 +464,34 @@ export class CanvasComponent implements OnInit {
 
     if (this.body.antennaSocket == undefined) {
       console.warn(`Body ${body.name} has no antenna anchor.`);
+      this.notifierService.notify('warning', `Antenna position of ${body.name} is unknown.`);
     }
 
     if (this.body.hatSocket == undefined) {
       console.warn(`Body ${body.name} has no topper anchor.`);
+      this.notifierService.notify('warning', `Topper position of ${body.name} is unknown.`);
     }
 
     if (getHitboxModel(body.hitbox) == undefined) {
       console.warn(`The hitbox of body ${body.name} is unknown (${body.hitbox}).`);
+      this.notifierService.notify('warning', `Hitbox of ${body.name} is unknown.`);
     }
 
     if (body.hitbox_translate_x == undefined || body.hitbox_translate_z == undefined) {
       console.warn(`Body ${body.name} missing hitbox translate values.`);
+      this.notifierService.notify('warning', `${body.name} has incomplete hitbox data. Hitbox won't be accurate.`);
+    }
+
+    if (this.body.wheelScale == undefined) {
+      console.warn(`${body.name} has no wheelScale attribute`);
+      this.notifierService.notify('warning', `Size of wheels are unknown for ${body.name}.`);
+    }
+  }
+
+  validateAntenna() {
+    if (this.antenna.socket == undefined) {
+      console.warn(`${this.antenna.antennaUrl} has no topper socket.`);
+      this.notifierService.notify('warning', `The antenna stick has no socket.`);
     }
   }
 }

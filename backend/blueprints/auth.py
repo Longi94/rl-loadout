@@ -15,7 +15,7 @@ def auth():
     username = request.json['username']
     password = request.json['password']
 
-    user = user_dao.get(username)
+    user = user_dao.get_by_username(username)
 
     if user is None:
         raise UnauthorizedException('Bad username or password')

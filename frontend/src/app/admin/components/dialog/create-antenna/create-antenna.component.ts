@@ -1,40 +1,35 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { Quality } from '../../../../model/quality';
-import { MatDialogRef, MatSnackBar } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { CloudStorageService } from '../../../../service/cloud-storage.service';
-import { ItemService } from '../../../../service/item.service';
-import { handleErrorSnackbar } from '../../../../utils/network';
 import { Antenna, AntennaStick } from '../../../../model/antenna';
 import { CreateDialog } from '../create-dialog';
+import { AntennasService } from '../../../../service/items/antennas.service';
+import { AntennaSticksService } from '../../../../service/items/antenna-sticks.service';
 
 @Component({
   selector: 'app-create-antenna',
   templateUrl: './create-antenna.component.html',
   styleUrls: ['./create-antenna.component.scss']
 })
-export class CreateAntennaComponent extends CreateDialog implements OnInit {
-
-  antenna: Antenna = new Antenna(
-    undefined, undefined, '', Quality.COMMON, false, undefined, undefined, undefined, undefined
-  );
+export class CreateAntennaComponent extends CreateDialog<Antenna> implements OnInit {
 
   sticks: AntennaStick[];
 
   constructor(dialogRef: MatDialogRef<CreateAntennaComponent>,
               cloudService: CloudStorageService,
-              private itemService: ItemService,
-              private snackBar: MatSnackBar) {
-    super(dialogRef, cloudService);
+              antennasService: AntennasService,
+              private antennaSticksService: AntennaSticksService,
+              snackBar: MatSnackBar,
+              @Inject(MAT_DIALOG_DATA) data: Antenna) {
+    super(dialogRef, cloudService, snackBar, data, antennasService);
+    this.item = new Antenna(
+      undefined, undefined, '', Quality.COMMON, false, undefined, undefined, undefined, undefined
+    );
   }
 
   ngOnInit() {
     super.ngOnInit();
-    this.itemService.getAntennaSticks().subscribe(sticks => this.sticks = sticks);
-  }
-
-  save() {
-    this.itemService.addAntenna(this.antenna).subscribe(newItem => {
-      this.dialogRef.close(newItem);
-    }, error => handleErrorSnackbar(error, this.snackBar));
+    this.antennaSticksService.getAll().subscribe(sticks => this.sticks = sticks);
   }
 }

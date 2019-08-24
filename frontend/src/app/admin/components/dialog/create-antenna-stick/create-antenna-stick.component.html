@@ -2,7 +2,7 @@
 <div mat-dialog-content>
   <mat-form-field>
     <mat-label>Model</mat-label>
-    <mat-select [(ngModel)]="antennaStick.model">
+    <mat-select [(ngModel)]="item.model">
       <mat-option *ngFor="let obj of objects.models" [value]="obj.name">
         {{obj.name}}
       </mat-option>

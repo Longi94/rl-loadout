@@ -1,11 +1,14 @@
-<h1 mat-dialog-title>Edit Topper</h1>
+<h1 mat-dialog-title>Edit item</h1>
 <div mat-dialog-content>
   <mat-form-field>
-    <input matInput placeholder="Name" [(ngModel)]="topper.name">
+    <input matInput placeholder="ID" type="number" [(ngModel)]="item.id">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Name" [(ngModel)]="item.name">
   </mat-form-field>
   <mat-form-field>
     <mat-label>Quality</mat-label>
-    <mat-select [(ngModel)]="topper.quality">
+    <mat-select [(ngModel)]="item.quality">
       <mat-option *ngFor="let obj of qualities" [value]="obj.value">
         {{obj.name}}
       </mat-option>
@@ -13,16 +16,16 @@
   </mat-form-field>
   <mat-form-field>
     <mat-label>Icon</mat-label>
-    <mat-select [(ngModel)]="topper.icon">
+    <mat-select [(ngModel)]="item.icon">
       <mat-option *ngFor="let obj of objects.icons" [value]="obj.name">
         {{obj.name}}
       </mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-checkbox [(ngModel)]="topper.paintable">Paintable</mat-checkbox>
+  <mat-checkbox [(ngModel)]="item.paintable">Paintable</mat-checkbox>
   <mat-form-field>
     <mat-label>Model</mat-label>
-    <mat-select [(ngModel)]="topper.model">
+    <mat-select [(ngModel)]="item.model">
       <mat-option *ngFor="let obj of objects.models" [value]="obj.name">
         {{obj.name}}
       </mat-option>
@@ -30,7 +33,7 @@
   </mat-form-field>
   <mat-form-field>
     <mat-label>Base texture</mat-label>
-    <mat-select [(ngModel)]="topper.base_texture">
+    <mat-select [(ngModel)]="item.base_texture">
       <mat-option [value]="undefined">None</mat-option>
       <mat-option *ngFor="let obj of objects.textures" [value]="obj.name">
         {{obj.name}}
@@ -39,7 +42,7 @@
   </mat-form-field>
   <mat-form-field>
     <mat-label>RGBA map</mat-label>
-    <mat-select [(ngModel)]="topper.rgba_map">
+    <mat-select [(ngModel)]="item.rgba_map">
       <mat-option [value]="undefined">None</mat-option>
       <mat-option *ngFor="let obj of objects.textures" [value]="obj.name">
         {{obj.name}}

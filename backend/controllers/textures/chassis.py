@@ -12,7 +12,7 @@ def get(body_id: int, body_paint: int = None):
     :param body_id: The ID of the body used in replay files
     :param body_paint: The color of the paint applied to the body
     """
-    body = body_dao.get_by_replay_id(body_id)
+    body = body_dao.get(body_id)
 
     if body is None:
         raise NotFoundException('Body not found')

@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TextureService } from '../../../../service/texture.service';
-import { DataTexture, Texture } from 'three';
+import { DataTexture } from 'three';
 import { MatSnackBar } from '@angular/material';
 
 @Component({

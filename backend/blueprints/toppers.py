@@ -4,6 +4,7 @@ from utils.network.decorators import json_required_params, commit_after
 from database import database
 from entity import Topper
 from dao import TopperDao
+from utils.network.exc import NotFoundException
 
 toppers_blueprint = Blueprint('toppers', __name__, url_prefix='/internal/toppers')
 topper_dao = TopperDao()
@@ -17,7 +18,7 @@ def get_toppers():
 
 @toppers_blueprint.route('', methods=['POST'])
 @jwt_required
-@json_required_params(['name', 'icon', 'quality', 'paintable', 'model'])
+@json_required_params(['id', 'name', 'icon', 'quality', 'paintable', 'model'])
 def add_topper():
     topper = Topper()
     topper.apply_dict(request.json)
@@ -31,4 +32,17 @@ def add_topper():
 @commit_after
 def delete_topper(topper_id):
     topper_dao.delete(topper_id)
+    return '', 200
+
+
+@toppers_blueprint.route('/<topper_id>', methods=['PUT'])
+@jwt_required
+@commit_after
+def update(topper_id):
+    item = topper_dao.get(topper_id)
+
+    if item is None:
+        raise NotFoundException('Decal detail not found')
+
+    item.update(request.json)
     return '', 200
