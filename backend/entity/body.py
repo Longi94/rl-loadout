@@ -8,7 +8,7 @@ from .item import BaseItem
 class Body(Base, BaseItem):
     __tablename__ = 'body'
     model = Column(String(255), nullable=False)
-    blank_skin = Column(String(255), nullable=False)
+    blank_skin = Column(String(255), nullable=True)
     base_skin = Column(String(255), nullable=True)
     chassis_base = Column(String(255), nullable=True)
     chassis_n = Column(String(255), nullable=True)
