@@ -20,7 +20,7 @@ def get_decals():
 
 @decals_blueprint.route('', methods=['POST'])
 @jwt_required
-@json_required_params(['rgba_map', 'decal_detail_id'])
+@json_required_params(['id', 'rgba_map', 'decal_detail_id'])
 def add_decal():
     decal = Decal()
     decal.apply_dict(request.json)

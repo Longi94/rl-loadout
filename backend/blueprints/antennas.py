@@ -18,7 +18,7 @@ def get_antennas():
 
 @antennas_blueprint.route('', methods=['POST'])
 @jwt_required
-@json_required_params(['name', 'icon', 'quality', 'paintable', 'model', 'stick_id'])
+@json_required_params(['id', 'name', 'icon', 'quality', 'paintable', 'model', 'stick_id'])
 def add_antenna():
     antenna = Antenna()
     antenna.apply_dict(request.json)

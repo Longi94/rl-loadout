@@ -1,6 +1,9 @@
 <h1 mat-dialog-title>Edit item</h1>
 <div mat-dialog-content>
   <mat-form-field>
+    <input matInput placeholder="ID" type="number" [(ngModel)]="item.id">
+  </mat-form-field>
+  <mat-form-field>
     <mat-label>Base texture</mat-label>
     <mat-select [(ngModel)]="item.base_texture">
       <mat-option [value]="undefined">None</mat-option>

@@ -18,7 +18,7 @@ def get_bodies():
 
 @bodies_blueprint.route('', methods=['POST'])
 @jwt_required
-@json_required_params(['name', 'icon', 'quality', 'paintable', 'model'])
+@json_required_params(['id', 'name', 'icon', 'quality', 'paintable', 'model'])
 def add_body():
     body = Body()
     body.apply_dict(request.json)

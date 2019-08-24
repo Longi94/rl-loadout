@@ -1,6 +1,9 @@
 <h1 mat-dialog-title>Edit item</h1>
 <div mat-dialog-content>
   <mat-form-field>
+    <input matInput placeholder="ID" type="number" [(ngModel)]="item.id">
+  </mat-form-field>
+  <mat-form-field>
     <input matInput placeholder="Name" [(ngModel)]="item.name">
   </mat-form-field>
   <mat-form-field>
