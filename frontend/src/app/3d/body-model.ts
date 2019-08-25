@@ -62,7 +62,6 @@ export class BodyModel extends AbstractObject implements Paintable {
 
   constructor(body: Body, decal: Decal, paints: { [key: string]: string }) {
     super(getAssetUrl(body.model));
-    this.url = getAssetUrl(body.model);
     this.blankSkinMapUrl = getAssetUrl(body.blank_skin);
     this.baseSkinMapUrl = getAssetUrl(body.base_skin);
 

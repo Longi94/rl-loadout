@@ -35,6 +35,7 @@ import { GUI } from 'dat-gui';
 import * as dat from 'dat.gui';
 import { NotifierService } from 'angular-notifier';
 import * as Stats from 'stats.js';
+import { createBodyModel } from '../../../3d/custom/body/factory';
 
 @Component({
   selector: 'app-canvas',
@@ -131,7 +132,7 @@ export class CanvasComponent implements OnInit {
     const textureLoader = new PromiseLoader(new TextureLoader());
 
     this.loadoutService.loadDefaults().then(() => {
-      this.body = new BodyModel(this.loadoutService.body, this.loadoutService.decal, this.loadoutService.paints);
+      this.body = createBodyModel(this.loadoutService.body, this.loadoutService.decal, this.loadoutService.paints);
       this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints);
 
       const promises = [
@@ -258,7 +259,7 @@ export class CanvasComponent implements OnInit {
     this.body.removeFromScene(this.scene);
     this.body.dispose();
 
-    this.body = new BodyModel(body, this.loadoutService.decal, this.loadoutService.paints);
+    this.body = createBodyModel(body, this.loadoutService.decal, this.loadoutService.paints);
 
     Promise.all([
       this.body.load(),

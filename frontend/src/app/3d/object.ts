@@ -16,23 +16,27 @@ export abstract class AbstractObject {
   load(): Promise<any> {
     return new Promise((resolve, reject) => {
       this.loader.load(this.url, gltf => {
-        this.validate(gltf);
-        this.scene = gltf.scene;
-        traverseMaterials(this.scene, material => {
-          if (material.map) {
-            material.map.encoding = LinearEncoding;
-          }
-          if (material.emissiveMap) {
-            material.emissiveMap.encoding = LinearEncoding;
-          }
-          if (material.map || material.emissiveMap) {
-            material.needsUpdate = true;
-          }
-        });
-        this.handleModel(gltf.scene);
+        this.handleGltf(gltf);
         resolve();
       }, undefined, reject);
     });
+  }
+
+  protected handleGltf(gltf) {
+    this.validate(gltf);
+    this.scene = gltf.scene;
+    traverseMaterials(this.scene, material => {
+      if (material.map) {
+        material.map.encoding = LinearEncoding;
+      }
+      if (material.emissiveMap) {
+        material.emissiveMap.encoding = LinearEncoding;
+      }
+      if (material.map || material.emissiveMap) {
+        material.needsUpdate = true;
+      }
+    });
+    this.handleModel(gltf.scene);
   }
 
   private validate(gltf) {
