@@ -1,7 +1,7 @@
-import { BodyModel } from '../../body-model';
+import { BodyModel } from './body-model';
 import { Color, DataTexture } from 'three';
-import { Decal } from '../../../model/decal';
-import { environment } from '../../../../environments/environment';
+import { Decal } from '../../model/decal';
+import { environment } from '../../../environments/environment';
 
 export const BODY_MAPLE_ID = 2919;
 

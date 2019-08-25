@@ -1,15 +1,15 @@
 import { Bone, Color, Mesh, MeshStandardMaterial, Object3D, Scene } from 'three';
-import { AbstractObject } from './object';
-import { Body } from '../model/body';
-import { PromiseLoader } from '../utils/loader';
-import { TgaRgbaLoader } from '../utils/tga-rgba-loader';
-import { getAssetUrl } from '../utils/network';
-import { RgbaMapPipeTexture } from './rgba-map-pipe-texture';
-import { overBlendColors } from '../utils/color';
-import { disposeIfExists } from '../utils/util';
-import { Paintable } from './paintable';
-import { StaticSkin } from './static-skin';
-import { Decal } from '../model/decal';
+import { AbstractObject } from '../object';
+import { Body } from '../../model/body';
+import { PromiseLoader } from '../../utils/loader';
+import { TgaRgbaLoader } from '../../utils/tga-rgba-loader';
+import { getAssetUrl } from '../../utils/network';
+import { RgbaMapPipeTexture } from '../rgba-map-pipe-texture';
+import { overBlendColors } from '../../utils/color';
+import { disposeIfExists } from '../../utils/util';
+import { Paintable } from '../paintable';
+import { StaticSkin } from '../static-skin';
+import { Decal } from '../../model/decal';
 
 class ChassisSkin extends RgbaMapPipeTexture {
 

@@ -14,7 +14,7 @@ import {
 } from 'three';
 import { LoadoutService } from '../../../service/loadout.service';
 import { Decal } from '../../../model/decal';
-import { BodyModel } from '../../../3d/body-model';
+import { BodyModel } from '../../../3d/body/body-model';
 import { WheelsModel } from '../../../3d/wheels-model';
 import { Wheel } from '../../../model/wheel';
 import { promiseProgress } from '../../../utils/promise';
@@ -35,7 +35,7 @@ import { GUI } from 'dat-gui';
 import * as dat from 'dat.gui';
 import { NotifierService } from 'angular-notifier';
 import * as Stats from 'stats.js';
-import { createBodyModel } from '../../../3d/custom/body/factory';
+import { createBodyModel } from '../../../3d/body/factory';
 
 @Component({
   selector: 'app-canvas',
