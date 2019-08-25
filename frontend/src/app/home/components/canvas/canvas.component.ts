@@ -353,21 +353,19 @@ export class CanvasComponent implements OnInit {
         break;
       case 'body':
         this.skin.bodyPaint = color;
-        this.body.setPaint(color);
+        this.body.setPaintColor(color);
         this.refreshSkin();
         break;
       case 'decal':
-        this.skin.paint = color;
+        this.skin.setPaintColor(color);
         this.refreshSkin();
         break;
       case 'wheel':
-        this.wheels.setPaint(color);
-        this.wheels.refresh();
+        this.wheels.setPaintColor(color);
         break;
       case 'topper':
         if (this.topper) {
-          this.topper.setPaint(color);
-          this.topper.refresh();
+          this.topper.setPaintColor(color);
         }
         break;
       default:

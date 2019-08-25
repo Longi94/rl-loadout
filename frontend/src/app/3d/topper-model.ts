@@ -5,12 +5,13 @@ import { RgbaMapPipeTexture } from './rgba-map-pipe-texture';
 import { overBlendColors } from '../utils/color';
 import { getAssetUrl } from '../utils/network';
 import { disposeIfExists } from '../utils/util';
+import { Paintable } from './paintable';
 
-class TopperSkin extends RgbaMapPipeTexture {
+class TopperSkin extends RgbaMapPipeTexture implements Paintable {
 
-  paint: Color;
-  colorHolder = new Color();
-  baseHolder = new Color();
+  private paint: Color;
+  private colorHolder = new Color();
+  private baseHolder = new Color();
 
   constructor(baseUrl, rgbaMapUrl, paint) {
     super(baseUrl, rgbaMapUrl);
@@ -34,9 +35,13 @@ class TopperSkin extends RgbaMapPipeTexture {
       return this.baseHolder;
     }
   }
+
+  setPaintColor(color: Color) {
+    this.paint = color;
+  }
 }
 
-export class TopperModel extends AbstractObject {
+export class TopperModel extends AbstractObject implements Paintable {
 
   material: MeshStandardMaterial;
   skin: TopperSkin;
@@ -90,13 +95,10 @@ export class TopperModel extends AbstractObject {
     }
   }
 
-  setPaint(color: Color) {
+  setPaintColor(color: Color) {
     if (this.skin) {
-      this.skin.paint = color;
+      this.skin.setPaintColor(color);
+      this.applyTexture();
     }
-  }
-
-  refresh() {
-    this.applyTexture();
   }
 }

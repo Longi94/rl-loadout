@@ -7,12 +7,13 @@ import { getAssetUrl } from '../utils/network';
 import { RgbaMapPipeTexture } from './rgba-map-pipe-texture';
 import { overBlendColors } from '../utils/color';
 import { disposeIfExists } from '../utils/util';
+import { Paintable } from './paintable';
 
-class ChassisSkin extends RgbaMapPipeTexture {
+class ChassisSkin extends RgbaMapPipeTexture implements Paintable {
 
-  paint: Color;
-  colorHolder = new Color();
-  baseHolder = new Color();
+  private paint: Color;
+  private colorHolder = new Color();
+  private baseHolder = new Color();
 
   constructor(baseUrl, rgbaMapUrl, paint) {
     super(baseUrl, rgbaMapUrl);
@@ -36,9 +37,13 @@ class ChassisSkin extends RgbaMapPipeTexture {
       return this.baseHolder;
     }
   }
+
+  setPaintColor(color: Color) {
+    this.paint = color;
+  }
 }
 
-export class BodyModel extends AbstractObject {
+export class BodyModel extends AbstractObject implements Paintable {
 
   textureLoader = new PromiseLoader(new TgaRgbaLoader());
 
@@ -182,10 +187,9 @@ export class BodyModel extends AbstractObject {
    *
    * @param color paint color
    */
-  setPaint(color: Color) {
+  setPaintColor(color: Color) {
     if (this.chassisSkin != undefined) {
-      this.chassisSkin.paint = color;
-      this.chassisSkin.update();
+      this.chassisSkin.setPaintColor(color);
     }
   }
 }

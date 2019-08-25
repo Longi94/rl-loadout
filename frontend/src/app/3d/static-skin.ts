@@ -3,13 +3,14 @@ import { BLACK, overBlendColors } from '../utils/color';
 import { RgbaMapPipeTexture } from './rgba-map-pipe-texture';
 import { Decal } from '../model/decal';
 import { getAssetUrl } from '../utils/network';
+import { Paintable } from './paintable';
 
 
-export class StaticSkin extends RgbaMapPipeTexture {
+export class StaticSkin extends RgbaMapPipeTexture implements Paintable {
 
   primary: Color;
   accent: Color;
-  paint: Color;
+  private paint: Color;
   bodyPaint: Color;
   colorHolder = new Color();
 
@@ -29,6 +30,10 @@ export class StaticSkin extends RgbaMapPipeTexture {
     if (paints.body != undefined) {
       this.bodyPaint = new Color(paints.body);
     }
+  }
+
+  setPaintColor(color: Color) {
+    this.paint = color;
   }
 
   getColor(i: number): Color {
