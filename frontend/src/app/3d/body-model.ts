@@ -1,4 +1,4 @@
-import { Bone, Color, Mesh, MeshStandardMaterial, Object3D, Scene, Texture } from 'three';
+import { Bone, Color, Mesh, MeshStandardMaterial, Object3D, Scene } from 'three';
 import { AbstractObject } from './object';
 import { Body } from '../model/body';
 import { PromiseLoader } from '../utils/loader';
@@ -8,19 +8,17 @@ import { RgbaMapPipeTexture } from './rgba-map-pipe-texture';
 import { overBlendColors } from '../utils/color';
 import { disposeIfExists } from '../utils/util';
 import { Paintable } from './paintable';
+import { StaticSkin } from './static-skin';
+import { Decal } from '../model/decal';
 
-class ChassisSkin extends RgbaMapPipeTexture implements Paintable {
+class ChassisSkin extends RgbaMapPipeTexture {
 
-  private paint: Color;
+  paint: Color;
   private colorHolder = new Color();
   private baseHolder = new Color();
 
-  constructor(baseUrl, rgbaMapUrl, paint) {
+  constructor(baseUrl, rgbaMapUrl) {
     super(baseUrl, rgbaMapUrl);
-
-    if (paint != undefined) {
-      this.paint = new Color(paint);
-    }
   }
 
   getColor(i: number): Color {
@@ -37,10 +35,6 @@ class ChassisSkin extends RgbaMapPipeTexture implements Paintable {
       return this.baseHolder;
     }
   }
-
-  setPaintColor(color: Color) {
-    this.paint = color;
-  }
 }
 
 export class BodyModel extends AbstractObject implements Paintable {
@@ -54,6 +48,7 @@ export class BodyModel extends AbstractObject implements Paintable {
   blankSkinMapUrl: string;
   blankSkinMap: Uint8ClampedArray;
 
+  bodySkin: StaticSkin;
   chassisSkin: ChassisSkin;
 
   // base colors of the body
@@ -65,19 +60,22 @@ export class BodyModel extends AbstractObject implements Paintable {
   hatSocket: Object3D;
   antennaSocket: Object3D;
 
-  constructor(body: Body, paints: { [key: string]: string }) {
+  constructor(body: Body, decal: Decal, paints: { [key: string]: string }) {
     super(getAssetUrl(body.model));
     this.url = getAssetUrl(body.model);
     this.blankSkinMapUrl = getAssetUrl(body.blank_skin);
     this.baseSkinMapUrl = getAssetUrl(body.base_skin);
 
+    this.bodySkin = new StaticSkin(decal);
+
     if (body.chassis_base && body.chassis_n) {
       this.chassisSkin = new ChassisSkin(
         getAssetUrl(body.chassis_base),
-        getAssetUrl(body.chassis_n),
-        paints.body
+        getAssetUrl(body.chassis_n)
       );
     }
+
+    this.applyPaints(paints);
   }
 
   dispose() {
@@ -85,15 +83,15 @@ export class BodyModel extends AbstractObject implements Paintable {
     disposeIfExists(this.bodyMaterial);
     disposeIfExists(this.chassisMaterial);
     disposeIfExists(this.chassisSkin);
-    this.blankSkinMap = undefined;
-    this.baseSkinMap = undefined;
+    disposeIfExists(this.bodySkin);
   }
 
   load(): Promise<any> {
     const promises = [
       super.load(),
       this.textureLoader.load(this.blankSkinMapUrl),
-      this.textureLoader.load(this.baseSkinMapUrl)
+      this.textureLoader.load(this.baseSkinMapUrl),
+      this.bodySkin.load()
     ];
 
     if (this.chassisSkin !== undefined) {
@@ -105,6 +103,9 @@ export class BodyModel extends AbstractObject implements Paintable {
       if (values[2]) {
         this.baseSkinMap = values[2].data;
       }
+
+      this.applyDecal();
+      this.updateDecal();
 
       if (this.chassisSkin) {
         this.chassisMaterial.map = this.chassisSkin.texture;
@@ -142,11 +143,6 @@ export class BodyModel extends AbstractObject implements Paintable {
       this.chassisSkin.update();
       this.chassisMaterial.needsUpdate = true;
     }
-  }
-
-  applyBodyTexture(diffuseMap: Texture) {
-    this.bodyMaterial.map = diffuseMap;
-    this.bodyMaterial.needsUpdate = true;
   }
 
   getWheelPositions() {
@@ -189,7 +185,62 @@ export class BodyModel extends AbstractObject implements Paintable {
    */
   setPaintColor(color: Color) {
     if (this.chassisSkin != undefined) {
-      this.chassisSkin.setPaintColor(color);
+      this.chassisSkin.paint = color;
     }
+    this.bodySkin.bodyPaint = color;
+    this.updateDecal();
+    this.applyChassisSkin();
+  }
+
+  private applyDecal() {
+    this.bodySkin.blankSkinMap = this.blankSkinMap;
+    this.bodySkin.baseSkinMap = this.baseSkinMap;
+    this.bodyMaterial.map = this.bodySkin.texture;
+  }
+
+  private applyPaints(paints: { [key: string]: string }) {
+    this.bodySkin.primary = new Color(paints.primary);
+    this.bodySkin.accent = new Color(paints.accent);
+
+    this.bodySkin.paint = paints.decal != undefined ? new Color(paints.decal) : undefined;
+
+    this.bodySkin.bodyPaint = paints.body != undefined ? new Color(paints.body) : undefined;
+
+    if (this.chassisSkin != undefined) {
+      this.chassisSkin.paint = paints.body != undefined ? new Color(paints.body) : undefined;
+    }
+  }
+
+  private updateDecal() {
+    this.bodySkin.update();
+    this.bodyMaterial.needsUpdate = true;
+  }
+
+  changeDecal(decal: Decal, paints: { [key: string]: string }) {
+    this.bodySkin.dispose();
+    this.bodySkin = new StaticSkin(decal);
+    return new Promise((resolve, reject) => {
+      this.bodySkin.load().then(() => {
+        this.applyDecal();
+        this.applyPaints(paints);
+        this.updateDecal();
+        resolve();
+      }, reject);
+    });
+  }
+
+  setPrimaryColor(color: Color) {
+    this.bodySkin.primary = color;
+    this.updateDecal();
+  }
+
+  setAccentColor(color: Color) {
+    this.bodySkin.accent = color;
+    this.updateDecal();
+  }
+
+  setDecalPaintColor(color: Color) {
+    this.bodySkin.paint = color;
+    this.updateDecal();
   }
 }

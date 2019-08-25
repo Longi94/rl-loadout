@@ -8,9 +8,9 @@ import { overBlendColors } from '../utils/color';
 import { disposeIfExists } from '../utils/util';
 import { Paintable } from './paintable';
 
-class RimSkin extends RgbaMapPipeTexture implements Paintable {
+class RimSkin extends RgbaMapPipeTexture {
 
-  private paint: Color;
+  paint: Color;
   private colorHolder = new Color();
   private baseHolder = new Color();
 
@@ -35,10 +35,6 @@ class RimSkin extends RgbaMapPipeTexture implements Paintable {
     } else {
       return this.baseHolder;
     }
-  }
-
-  setPaintColor(color: Color) {
-    this.paint = color;
   }
 }
 
@@ -146,7 +142,7 @@ export class WheelsModel extends AbstractObject implements Paintable {
 
   setPaintColor(paint: Color) {
     if (this.rimSkin != undefined) {
-      this.rimSkin.setPaintColor(paint);
+      this.rimSkin.paint = paint;
       this.applyRimSkin();
     }
   }

@@ -7,9 +7,9 @@ import { getAssetUrl } from '../utils/network';
 import { disposeIfExists } from '../utils/util';
 import { Paintable } from './paintable';
 
-class TopperSkin extends RgbaMapPipeTexture implements Paintable {
+class TopperSkin extends RgbaMapPipeTexture {
 
-  private paint: Color;
+  paint: Color;
   private colorHolder = new Color();
   private baseHolder = new Color();
 
@@ -34,10 +34,6 @@ class TopperSkin extends RgbaMapPipeTexture implements Paintable {
     } else {
       return this.baseHolder;
     }
-  }
-
-  setPaintColor(color: Color) {
-    this.paint = color;
   }
 }
 
@@ -97,7 +93,7 @@ export class TopperModel extends AbstractObject implements Paintable {
 
   setPaintColor(color: Color) {
     if (this.skin) {
-      this.skin.setPaintColor(color);
+      this.skin.paint = color;
       this.applyTexture();
     }
   }

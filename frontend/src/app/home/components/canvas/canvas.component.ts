@@ -12,7 +12,6 @@ import {
   WebGLRenderTarget,
   AmbientLight
 } from 'three';
-import { StaticSkin } from '../../../3d/static-skin';
 import { LoadoutService } from '../../../service/loadout.service';
 import { Decal } from '../../../model/decal';
 import { BodyModel } from '../../../3d/body-model';
@@ -21,7 +20,6 @@ import { Wheel } from '../../../model/wheel';
 import { promiseProgress } from '../../../utils/promise';
 import { LoadoutStoreService } from '../../../service/loadout-store.service';
 import { Body } from '../../../model/body';
-import { getAssetUrl } from '../../../utils/network';
 import { EquirectangularToCubeGenerator } from 'three/examples/jsm/loaders/EquirectangularToCubeGenerator';
 import { PromiseLoader } from '../../../utils/loader';
 import { PMREMGenerator } from 'three/examples/jsm/pmrem/PMREMGenerator';
@@ -66,9 +64,6 @@ export class CanvasComponent implements OnInit {
   private wheels: WheelsModel;
   private topper: TopperModel;
   private antenna: AntennaModel;
-
-  // colors
-  private skin: StaticSkin;
 
   // Loading stuff
   mathRound = Math.round;
@@ -136,14 +131,12 @@ export class CanvasComponent implements OnInit {
     const textureLoader = new PromiseLoader(new TextureLoader());
 
     this.loadoutService.loadDefaults().then(() => {
-      this.body = new BodyModel(this.loadoutService.body, this.loadoutService.paints);
+      this.body = new BodyModel(this.loadoutService.body, this.loadoutService.decal, this.loadoutService.paints);
       this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints);
-      this.skin = new StaticSkin(this.loadoutService.decal, this.loadoutService.paints);
 
       const promises = [
         textureLoader.load('assets/mannfield_equirectangular.jpg'),
         this.body.load(),
-        this.skin.load(),
         this.wheels.load(),
         this.loadoutStore.initAll(this.loadoutService.body.id)
       ];
@@ -152,7 +145,6 @@ export class CanvasComponent implements OnInit {
         this.initProgress = 100 * (progress + 1) / (promises.length + 1);
       }).then(values => {
         this.processBackground(values[0]);
-        this.applySkin();
         this.applyBodyModel();
         this.applyWheelModel();
         this.applyHitbox();
@@ -266,16 +258,12 @@ export class CanvasComponent implements OnInit {
     this.body.removeFromScene(this.scene);
     this.body.dispose();
 
-    this.body = new BodyModel(body, this.loadoutService.paints);
-
-    this.clearSkin(this.loadoutService.decal);
+    this.body = new BodyModel(body, this.loadoutService.decal, this.loadoutService.paints);
 
     Promise.all([
       this.body.load(),
-      this.loadoutStore.loadDecals(body.id),
-      this.skin.load()
+      this.loadoutStore.loadDecals(body.id)
     ]).then(() => {
-      this.applySkin();
       this.wheels.applyWheelPositions(this.body.getWheelPositions());
 
       if (this.topper) {
@@ -295,25 +283,10 @@ export class CanvasComponent implements OnInit {
 
   private changeDecal(decal: Decal) {
     this.loading.decal = true;
-    this.clearSkin(decal);
-    this.skin.load().then(() => {
-      this.applySkin();
-      this.updateTextureService();
+    this.body.changeDecal(decal, this.loadoutService.paints).then(() => {
       this.loading.decal = false;
+      this.updateTextureService();
     });
-  }
-
-  private clearSkin(newDecal: Decal) {
-    this.skin.clear();
-    this.skin.baseUrl = getAssetUrl(newDecal.base_texture);
-    this.skin.rgbaMapUrl = getAssetUrl(newDecal.rgba_map);
-  }
-
-  private applySkin() {
-    this.skin.blankSkinMap = this.body.blankSkinMap;
-    this.skin.baseSkinMap = this.body.baseSkinMap;
-    this.refreshSkin();
-    this.body.applyBodyTexture(this.skin.texture);
   }
 
   private changeWheel(wheel: Wheel) {
@@ -344,21 +317,16 @@ export class CanvasComponent implements OnInit {
     const color = paint.color != undefined ? new Color(paint.color) : undefined;
     switch (paint.type) {
       case 'primary':
-        this.skin.primary = color;
-        this.refreshSkin();
+        this.body.setPrimaryColor(color);
         break;
       case 'accent':
-        this.skin.accent = color;
-        this.refreshSkin();
+        this.body.setAccentColor(color);
         break;
       case 'body':
-        this.skin.bodyPaint = color;
         this.body.setPaintColor(color);
-        this.refreshSkin();
         break;
       case 'decal':
-        this.skin.setPaintColor(color);
-        this.refreshSkin();
+        this.body.setDecalPaintColor(color);
         break;
       case 'wheel':
         this.wheels.setPaintColor(color);
@@ -373,11 +341,6 @@ export class CanvasComponent implements OnInit {
         return;
     }
     this.updateTextureService();
-  }
-
-  private refreshSkin() {
-    this.skin.update();
-    this.body.bodyMaterial.needsUpdate = true;
   }
 
   private updateTextureService() {
