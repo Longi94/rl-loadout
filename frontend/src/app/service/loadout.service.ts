@@ -6,9 +6,10 @@ import { Body } from '../model/body';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Item } from '../model/item';
-import { DEFAULT_ACCENT, DEFAULT_BLUE_TEAM } from '../utils/color';
+import { COLOR_MAPLE_BLUE, DEFAULT_ACCENT, DEFAULT_BLUE_TEAM } from '../utils/color';
 import { Topper } from '../model/topper';
 import { Antenna } from '../model/antenna';
+import { BODY_MAPLE_ID } from '../utils/ids';
 
 const HOST = `${environment.backend}/internal`;
 
@@ -69,6 +70,13 @@ export class LoadoutService {
   selectBody(body: Body) {
     this.body = body;
     this.decal = Decal.NONE;
+
+    switch (body.id) {
+      case BODY_MAPLE_ID:
+        this.paints.primary = COLOR_MAPLE_BLUE;
+        break;
+    }
+
     this.bodySubject.next(body);
   }
 

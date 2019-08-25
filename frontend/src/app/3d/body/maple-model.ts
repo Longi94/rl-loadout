@@ -1,9 +1,8 @@
 import { BodyModel } from './body-model';
-import { Color, DataTexture } from 'three';
+import { Color, DataTexture, RGBAFormat } from 'three';
 import { Decal } from '../../model/decal';
 import { environment } from '../../../environments/environment';
-
-export const BODY_MAPLE_ID = 2919;
+import { COLOR_MAPLE_ORANGE } from '../../utils/color';
 
 const BODY_ORANGE = `${environment.assetHost}/textures/Body_Maple1_D.tga`;
 const BODY_BLUE = `${environment.assetHost}/textures/Body_Maple2_D.tga`;
@@ -17,6 +16,9 @@ export class MapleModel extends BodyModel {
   private chassisDataOrange: Uint8ClampedArray;
   private chassisDataBlue: Uint8ClampedArray;
 
+  private bodyData: Uint8ClampedArray;
+  private chassisData: Uint8ClampedArray;
+
   private bodyTexture: DataTexture;
   private chassisTexture: DataTexture;
 
@@ -24,6 +26,8 @@ export class MapleModel extends BodyModel {
     super.dispose();
     this.bodyTexture.dispose();
     this.chassisTexture.dispose();
+    this.bodyData = undefined;
+    this.chassisData = undefined;
     this.bodyDataOrange = undefined;
     this.bodyDataBlue = undefined;
     this.chassisDataOrange = undefined;
@@ -53,8 +57,11 @@ export class MapleModel extends BodyModel {
         this.chassisDataOrange = values[2].data;
         this.chassisDataBlue = values[3].data;
 
-        this.bodyTexture = new DataTexture(this.bodyDataOrange, values[0].width, values[0].height);
-        this.chassisTexture = new DataTexture(this.chassisDataOrange, values[0].width, values[0].height);
+        this.bodyData = new Uint8ClampedArray(this.bodyDataBlue);
+        this.chassisData = new Uint8ClampedArray(this.chassisDataBlue);
+
+        this.bodyTexture = new DataTexture(this.bodyData, values[0].width, values[0].height, RGBAFormat);
+        this.chassisTexture = new DataTexture(this.chassisData, values[0].width, values[0].height, RGBAFormat);
 
         this.bodyMaterial.map = this.bodyTexture;
         this.chassisMaterial.map = this.chassisTexture;
@@ -80,6 +87,14 @@ export class MapleModel extends BodyModel {
   }
 
   setPrimaryColor(color: Color) {
+    if (`#${color.getHexString()}` === COLOR_MAPLE_ORANGE) {
+      this.bodyTexture.image.data.set(this.bodyDataOrange);
+      this.chassisTexture.image.data.set(this.chassisDataOrange);
+    } else {
+      this.bodyTexture.image.data.set(this.bodyDataBlue);
+      this.chassisTexture.image.data.set(this.chassisDataBlue);
+    }
+    this.applyTextures();
   }
 
   setAccentColor(color: Color) {

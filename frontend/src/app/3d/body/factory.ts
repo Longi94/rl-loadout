@@ -1,7 +1,8 @@
 import { BodyModel } from './body-model';
 import { Decal } from '../../model/decal';
 import { Body } from '../../model/body';
-import { BODY_MAPLE_ID, MapleModel } from './maple-model';
+import { MapleModel } from './maple-model';
+import { BODY_MAPLE_ID } from '../../utils/ids';
 
 export function createBodyModel(body: Body, decal: Decal, paints: {}): BodyModel {
   switch (body.id) {
