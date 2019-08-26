@@ -1,4 +1,5 @@
 import numpy as np
+from PIL import Image
 from utils.network import load_pil_image
 
 MAX_SIZE = 2048
@@ -15,14 +16,11 @@ class RgbaMap(object):
         self.data = None
 
     def load(self):
-        base_texture_img = load_pil_image(self.base_texture_url)
-        rgba_map_img = load_pil_image(self.rgba_map_url)
-
-        if base_texture_img is not None:
-            self.base_texture = np.array(base_texture_img)
-
-        if rgba_map_img is not None:
-            self.rgba_map = np.array(rgba_map_img)
+        self.base_texture = load_pil_image(self.base_texture_url)
+        self.rgba_map = load_pil_image(self.rgba_map_url)
 
     def update(self):
         raise NotImplementedError("Please Implement this method")
+
+    def to_pil_image(self):
+        return Image.fromarray(self.data)

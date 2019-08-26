@@ -15,12 +15,16 @@ class ChassisTexture(RgbaMap):
 
     def update(self):
         start = time.time()
+
+        base_data = np.array(self.base_texture)
+        map_data = np.array(self.rgba_map)
+
         if self.base_texture is not None:
-            self.data = np.uint8(self.base_texture)
+            self.data = np.uint8(base_data)
         else:
             self.data = np.uint8(np.zeros((MAX_SIZE, MAX_SIZE, 4)))
 
-        if self.rgba_map is not None:
+        if map_data is not None:
             red, green, blue, alpha = self.rgba_map.T
 
             if self.body_paint:
