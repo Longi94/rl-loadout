@@ -4,6 +4,7 @@ from textures.body_texture import BodyTexture
 from utils.network import get_asset_url, serve_pil_image
 from utils.network.exc import NotFoundException
 from rocket.team import TEAM_ORANGE
+from .custom import handle_custom_body_texture
 
 body_dao = BodyDao()
 
@@ -19,6 +20,11 @@ def get(body_id: int, primary_color: int = None, body_paint: int = None, team: i
 
     if body is None:
         raise NotFoundException('Body not found')
+
+    response = handle_custom_body_texture(body, primary_color, body_paint, team)
+
+    if response is not None:
+        return response
 
     if primary_color is None:
         if team == TEAM_ORANGE:

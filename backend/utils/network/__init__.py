@@ -1,3 +1,4 @@
+import requests
 from config import config
 from io import BytesIO
 from flask import send_file
@@ -26,3 +27,12 @@ def serve_pil_image(image):
     image.save(img_io, 'JPEG', quality=90)
     img_io.seek(0)
     return send_file(img_io, mimetype='image/jpeg')
+
+
+def load_pil_image(url: str):
+    if url is None:
+        return None
+    r = requests.get(url)
+    image = Image.open(BytesIO(r.content))
+
+    return image.convert('RGBA')

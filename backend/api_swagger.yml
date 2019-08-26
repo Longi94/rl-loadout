@@ -113,6 +113,14 @@ paths:
             type: integer
             maximum: 16777215
             minimum: 0
+        - name: team
+          in: query
+          required: false
+          description: 'Used when the chassis has different textures for the teams (e.g. Jurassic Jeep)'
+          example: 0
+          schema:
+            type: integer
+            enum: [0, 1]
       responses:
         200:
           description: 'Returns the texture in the chosen format'

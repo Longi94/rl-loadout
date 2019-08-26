@@ -4,6 +4,7 @@ from config import config
 from entity import Body
 from dao import BodyDao
 from utils.network.exc import UnauthorizedException
+from rocket.ids import *
 
 body_dao = BodyDao()
 asset_host = config.get('assets', 'host')
@@ -35,6 +36,9 @@ def _to_body_response(body: Body, api_key: str) -> Dict[str, Any]:
     }
 
     if body.chassis_base is not None:
+        response['chassis_texture'] = f'/api/textures/chassis?key={api_key}&body_id={body.id}'
+
+    if body.id == BODY_MAPLE_ID:
         response['chassis_texture'] = f'/api/textures/chassis?key={api_key}&body_id={body.id}'
 
     return response
