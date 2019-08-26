@@ -10,6 +10,7 @@ import { disposeIfExists } from '../../utils/util';
 import { Paintable } from '../paintable';
 import { StaticSkin } from '../static-skin';
 import { Decal } from '../../model/decal';
+import { BodyTexture } from './body-texture';
 
 class ChassisSkin extends RgbaMapPipeTexture {
 
@@ -48,7 +49,7 @@ export class BodyModel extends AbstractObject implements Paintable {
   blankSkinMapUrl: string;
   blankSkinMap: Uint8ClampedArray;
 
-  bodySkin: StaticSkin;
+  bodySkin: BodyTexture;
   chassisSkin: ChassisSkin;
 
   // base colors of the body
@@ -65,7 +66,7 @@ export class BodyModel extends AbstractObject implements Paintable {
     this.blankSkinMapUrl = getAssetUrl(body.blank_skin);
     this.baseSkinMapUrl = getAssetUrl(body.base_skin);
 
-    this.bodySkin = new StaticSkin(decal);
+    this.bodySkin = this.initBodySkin(decal);
 
     if (body.chassis_base && body.chassis_n) {
       this.chassisSkin = new ChassisSkin(
@@ -75,6 +76,10 @@ export class BodyModel extends AbstractObject implements Paintable {
     }
 
     this.applyPaints(paints);
+  }
+
+  initBodySkin(decal: Decal): BodyTexture {
+    return new StaticSkin(decal);
   }
 
   dispose() {
@@ -98,7 +103,9 @@ export class BodyModel extends AbstractObject implements Paintable {
     }
 
     return new Promise((resolve, reject) => Promise.all(promises).then(values => {
-      this.blankSkinMap = values[1].data;
+      if (values[1]) {
+        this.blankSkinMap = values[1].data;
+      }
       if (values[2]) {
         this.baseSkinMap = values[2].data;
       }
@@ -178,18 +185,22 @@ export class BodyModel extends AbstractObject implements Paintable {
   }
 
   private applyDecal() {
-    this.bodySkin.blankSkinMap = this.blankSkinMap;
-    this.bodySkin.baseSkinMap = this.baseSkinMap;
-    this.bodyMaterial.map = this.bodySkin.texture;
+    if (this.bodySkin != undefined) {
+      this.bodySkin.blankSkinMap = this.blankSkinMap;
+      this.bodySkin.baseSkinMap = this.baseSkinMap;
+      this.bodyMaterial.map = this.bodySkin.getTexture();
+    }
   }
 
   private applyPaints(paints: { [key: string]: string }) {
-    this.bodySkin.primary = new Color(paints.primary);
-    this.bodySkin.accent = new Color(paints.accent);
+    if (this.bodySkin != undefined) {
+      this.bodySkin.primary = new Color(paints.primary);
+      this.bodySkin.accent = new Color(paints.accent);
 
-    this.bodySkin.paint = paints.decal != undefined ? new Color(paints.decal) : undefined;
+      this.bodySkin.paint = paints.decal != undefined ? new Color(paints.decal) : undefined;
 
-    this.bodySkin.bodyPaint = paints.body != undefined ? new Color(paints.body) : undefined;
+      this.bodySkin.bodyPaint = paints.body != undefined ? new Color(paints.body) : undefined;
+    }
 
     if (this.chassisSkin != undefined) {
       this.chassisSkin.paint = paints.body != undefined ? new Color(paints.body) : undefined;
@@ -197,8 +208,10 @@ export class BodyModel extends AbstractObject implements Paintable {
   }
 
   private updateDecal() {
-    this.bodySkin.update();
-    this.bodyMaterial.needsUpdate = true;
+    if (this.bodySkin) {
+      this.bodySkin.update();
+      this.bodyMaterial.needsUpdate = true;
+    }
   }
 
   changeDecal(decal: Decal, paints: { [key: string]: string }) {

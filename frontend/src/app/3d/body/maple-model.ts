@@ -3,6 +3,7 @@ import { Color, DataTexture, RGBAFormat } from 'three';
 import { Decal } from '../../model/decal';
 import { environment } from '../../../environments/environment';
 import { COLOR_MAPLE_ORANGE } from '../../utils/color';
+import { BodyTexture } from './body-texture';
 
 const BODY_ORANGE = `${environment.assetHost}/textures/Body_Maple1_D.tga`;
 const BODY_BLUE = `${environment.assetHost}/textures/Body_Maple2_D.tga`;
@@ -21,6 +22,10 @@ export class MapleModel extends BodyModel {
 
   private bodyTexture: DataTexture;
   private chassisTexture: DataTexture;
+
+  initBodySkin(decal: Decal): BodyTexture {
+    return undefined;
+  }
 
   dispose() {
     super.dispose();

@@ -1,11 +1,12 @@
-import { Color } from 'three';
+import { Color, Texture } from 'three';
 import { BLACK, overBlendColors } from '../utils/color';
 import { RgbaMapPipeTexture } from './rgba-map-pipe-texture';
 import { Decal } from '../model/decal';
 import { getAssetUrl } from '../utils/network';
+import { BodyTexture } from './body/body-texture';
 
 
-export class StaticSkin extends RgbaMapPipeTexture {
+export class StaticSkin extends RgbaMapPipeTexture implements BodyTexture {
 
   primary: Color;
   accent: Color;
@@ -62,14 +63,13 @@ export class StaticSkin extends RgbaMapPipeTexture {
     return this.colorHolder;
   }
 
-  clear() {
-    this.base = undefined;
-    this.rgbaMap = undefined;
-  }
-
   dispose() {
     super.dispose();
     this.blankSkinMap = undefined;
     this.baseSkinMap = undefined;
+  }
+
+  getTexture(): Texture {
+    return this.texture;
   }
 }
