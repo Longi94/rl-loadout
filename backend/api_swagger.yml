@@ -19,13 +19,6 @@ paths:
       operationId: controllers.bodies.get
       tags:
         - bodies
-      parameters:
-        - name: id
-          in: query
-          required: false
-          description: 'ID of the item (in-game item ID).'
-          schema:
-            type: integer
       responses:
         200:
           description: 'List of bodies'
@@ -35,6 +28,33 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Body'
+  /bodies/{id}:
+    get:
+      summary: 'Get a body'
+      operationId: controllers.bodies.get_by_id
+      tags:
+        - bodies
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 'ID of the item (in-game item ID).'
+          example: 23
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Body'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Body'
+        404:
+          description: 'Body not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /textures/body:
     get:
       summary: 'Generate a body texture'
@@ -89,6 +109,10 @@ paths:
                 format: binary
         404:
           description: 'If the texture was not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /textures/chassis:
     get:
       summary: 'Generate a chassis texture'
@@ -131,6 +155,10 @@ paths:
                 format: binary
         404:
           description: 'If the texture was not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -139,6 +167,17 @@ components:
       name: key
       x-apikeyInfoFunc: api.verify_api_key
   schemas:
+    Error:
+      type: object
+      properties:
+        details:
+          type: string
+          description: 'Details of the error'
+          example: 'X not found'
+        status:
+          type: number
+          description: 'HTTP status code'
+          example: 404
     Body:
       type: object
       required:
