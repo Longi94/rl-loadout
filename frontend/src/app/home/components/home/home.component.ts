@@ -3,6 +3,7 @@ import { MatDialog } from '@angular/material';
 import { AboutDialogComponent } from '../about-dialog/about-dialog.component';
 import { environment } from '../../../../environments/environment';
 import { TextureViewerComponent } from '../debug/texture-viewer/texture-viewer.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -13,7 +14,8 @@ export class HomeComponent implements OnInit {
 
   isDev = !environment.production;
 
-  constructor(private dialog: MatDialog) { }
+  constructor(private dialog: MatDialog,
+              public router: Router) { }
 
   ngOnInit() {
   }

@@ -22,6 +22,7 @@ import { CreateTopperComponent } from './components/dialog/create-topper/create-
 import { CreateWheelComponent } from './components/dialog/create-wheel/create-wheel.component';
 import { ApiKeysComponent } from './components/api-keys/api-keys.component';
 import { CreateApiKeyComponent } from './components/api-keys/create-api-key/create-api-key.component';
+import { AdminRoutingModule } from './admin-routing.module';
 
 
 
@@ -50,6 +51,7 @@ import { CreateApiKeyComponent } from './components/api-keys/create-api-key/crea
   imports: [
     CommonModule,
     RouterModule,
+    AdminRoutingModule,
     SharedModule,
     SharedMaterialModule
   ],
