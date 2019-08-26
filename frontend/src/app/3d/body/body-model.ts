@@ -1,4 +1,4 @@
-import { Bone, Color, Mesh, MeshStandardMaterial, Object3D, Scene } from 'three';
+import { Bone, Color, Mesh, MeshStandardMaterial, Object3D, Scene, Vector3 } from 'three';
 import { AbstractObject } from '../object';
 import { Body } from '../../model/body';
 import { PromiseLoader } from '../../utils/loader';
@@ -147,32 +147,18 @@ export class BodyModel extends AbstractObject implements Paintable {
   getWheelPositions() {
     const config = {};
 
-    const skeletonPos = this.skeleton.position.clone();
-
-    for (const bone of this.skeleton.children) {
-      if (bone.name.endsWith('WheelTranslation_jnt')) {
-        const wheelType = bone.name.substr(0, 2).toLowerCase();
-        const wheelPos = skeletonPos.clone();
-        wheelPos.add(bone.position);
-        let scale = 1;
-
-        if (wheelType.startsWith('f')) {
-          const pivotJoint = bone.children.find(value => value.name.endsWith('Pivot_jnt'));
-          const discJoint = pivotJoint.children[0];
-          wheelPos.add(pivotJoint.position).add(discJoint.position);
-          scale = this.wheelScale[0];
-        } else {
-          const discJoint = bone.children.find(value => value.name.endsWith('Disc_jnt')) as Bone;
-          wheelPos.add(discJoint.position);
-          scale = this.wheelScale[1];
-        }
+    this.skeleton.traverse(object => {
+      if (object.name.endsWith('Disc_jnt')) {
+        const wheelType = object.name.substr(0, 2).toLowerCase();
+        const wheelPos = object.localToWorld(new Vector3());
+        const scale = wheelType.startsWith('f') ? this.wheelScale[0] : this.wheelScale[1];
 
         config[wheelType] = {
           pos: wheelPos,
           scale
         };
       }
-    }
+    });
 
     return config;
   }

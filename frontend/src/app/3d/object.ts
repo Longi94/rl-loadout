@@ -36,6 +36,7 @@ export abstract class AbstractObject {
         material.needsUpdate = true;
       }
     });
+    gltf.scene.updateMatrixWorld(true);
     this.handleModel(gltf.scene);
   }
 

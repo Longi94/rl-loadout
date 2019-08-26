@@ -105,13 +105,9 @@ export class WheelsModel extends AbstractObject implements Paintable {
 
   applyWheelPositions(config) {
     for (const key of Object.keys(config)) {
-      this.wheels[key].position.set(
-        config[key].pos.x,
-        config[key].pos.z,
-        config[key].pos.y
-      );
+      this.wheels[key].position.copy(config[key].pos);
 
-      if (key.endsWith('r')) {
+      if (key.endsWith('l')) {
         this.wheels[key].rotation.set(0, Math.PI, 0);
         this.wheels[key].rotation.needsUpdate = true;
       }
