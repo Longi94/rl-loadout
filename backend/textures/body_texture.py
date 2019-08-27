@@ -2,7 +2,7 @@ import time
 import logging
 import numpy as np
 from PIL import Image
-from . import MAX_SIZE
+from .consts import MAX_SIZE
 from utils.color import int_to_rgb_array
 from utils.network import load_pil_image
 

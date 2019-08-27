@@ -2,7 +2,7 @@ from dao import BodyDao
 from textures.chassis_texture import generate_chassis_texture
 from utils.network import get_asset_url, serve_pil_image
 from utils.network.exc import NotFoundException
-from .custom import handle_custom_chassis_texture
+from textures.custom import handle_custom_chassis_texture
 
 body_dao = BodyDao()
 

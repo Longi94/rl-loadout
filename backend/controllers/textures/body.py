@@ -3,7 +3,7 @@ from textures.body_texture import generate_body_texture
 from utils.network import get_asset_url, serve_pil_image
 from utils.network.exc import NotFoundException
 from rocket.team import TEAM_ORANGE
-from .custom import handle_custom_body_texture
+from textures.custom import handle_custom_body_texture
 
 body_dao = BodyDao()
 
