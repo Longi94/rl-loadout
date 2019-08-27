@@ -19,10 +19,10 @@ def get(body_id: int, body_paint: int = None, team: int = None):
     if body is None:
         raise NotFoundException('Body not found')
 
-    response = handle_custom_chassis_texture(body, body_paint, team)
+    image = handle_custom_chassis_texture(body, body_paint, team)
 
-    if response is not None:
-        return response
+    if image is not None:
+        return serve_pil_image(image)
 
     if body.chassis_base is None:
         raise NotFoundException(

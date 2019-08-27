@@ -1,5 +1,5 @@
 from rocket.team import TEAM_ORANGE
-from utils.network import load_pil_image, get_asset_url, serve_pil_image
+from utils.network import load_pil_image, get_asset_url
 
 
 def get_maple_body_texture(team: int):
@@ -8,7 +8,7 @@ def get_maple_body_texture(team: int):
     else:
         image = load_pil_image(get_asset_url('textures/Body_Maple2_D.tga'))
 
-    return serve_pil_image(image)
+    return image
 
 
 def get_maple_chassis_texture(team: int):
@@ -17,4 +17,4 @@ def get_maple_chassis_texture(team: int):
     else:
         image = load_pil_image(get_asset_url('textures/Chassis_Maple2_D.tga'))
 
-    return serve_pil_image(image)
+    return image

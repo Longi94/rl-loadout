@@ -3,7 +3,7 @@ import time
 from PIL import Image, ImageChops
 from entity import Body
 from utils.color import int_to_rgb_array
-from utils.network import get_asset_url, serve_pil_image, load_pil_image
+from utils.network import get_asset_url, load_pil_image
 
 log = logging.getLogger(__name__)
 
@@ -31,4 +31,4 @@ def get_dark_car_body_texture(body: Body, color: int):
 
     log.info(f'Texture generation took {time.time() - start} seconds.')
 
-    return serve_pil_image(base)
+    return base

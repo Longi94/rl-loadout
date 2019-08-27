@@ -26,16 +26,14 @@ def get(body_id: int, primary_color: int = None, body_paint: int = None, team: i
         else:
             primary_color = 0x0C88FC
 
-    response = handle_custom_body_texture(body, primary_color, body_paint, team)
+    image = handle_custom_body_texture(body, primary_color, body_paint, team)
 
-    if response is not None:
-        return response
-
-    image = generate_body_texture(
-        get_asset_url(body.base_skin),
-        get_asset_url(body.blank_skin),
-        primary_color,
-        body_paint
-    )
+    if image is None:
+        image = generate_body_texture(
+            get_asset_url(body.base_skin),
+            get_asset_url(body.blank_skin),
+            primary_color,
+            body_paint
+        )
 
     return serve_pil_image(image)
