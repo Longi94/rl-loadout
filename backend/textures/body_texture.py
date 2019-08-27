@@ -2,14 +2,14 @@ import time
 import logging
 import numpy as np
 from PIL import Image
-from .rgba_map import MAX_SIZE
+from . import MAX_SIZE
 from utils.color import int_to_rgb_array
 from utils.network import load_pil_image
 
 log = logging.getLogger(__name__)
 
 
-def generate_body_texture(base_texture_url, rgba_map_url, primary, body_paint):
+def generate_body_texture(base_texture_url: str, rgba_map_url: str, primary: int, body_paint: int):
     base_texture = load_pil_image(base_texture_url)
     rgba_map = load_pil_image(rgba_map_url)
 

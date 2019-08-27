@@ -1,6 +1,5 @@
-from PIL import Image
 from dao import BodyDao
-from textures.chassis_texture import ChassisTexture
+from textures.chassis_texture import generate_chassis_texture
 from utils.network import get_asset_url, serve_pil_image
 from utils.network.exc import NotFoundException
 from .custom import handle_custom_chassis_texture
@@ -28,15 +27,10 @@ def get(body_id: int, body_paint: int = None, team: int = None):
         raise NotFoundException(
             'Body has no chassis textures. This is most likely because the chassis is not paintable.')
 
-    texture = ChassisTexture(
+    image = generate_chassis_texture(
         get_asset_url(body.chassis_base),
         get_asset_url(body.chassis_n),
         body_paint
     )
-
-    texture.load()
-    texture.update()
-
-    image = Image.fromarray(texture.data)
 
     return serve_pil_image(image)
