@@ -94,7 +94,7 @@ export abstract class AbstractObject {
   }
 }
 
-function traverseMaterials(object, callback) {
+export function traverseMaterials(object, callback) {
   object.traverse((node) => {
     if (!node.isMesh) {
       return;

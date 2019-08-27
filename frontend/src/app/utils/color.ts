@@ -1,6 +1,6 @@
 import { Color } from 'three';
 import { Body } from '../model/body';
-import { BODY_MAPLE_ID } from './ids';
+import { BODY_MAPLE_ID, BODY_SLIME_ID } from './ids';
 
 // https://www.reddit.com/r/RLFashionAdvice/comments/9l1swx/rocket_league_color_palette_with_hex_and_rgb/
 export const BLUE_PRIMARY_COLORS = [
@@ -319,6 +319,7 @@ function hexToRgb(hex) {
 export function getColorsForBody(body: Body): { [team: string]: string[] } {
   switch (body.id) {
     case BODY_MAPLE_ID:
+    case BODY_SLIME_ID:
       return {blue: [COLOR_MAPLE_BLUE], orange: [COLOR_MAPLE_ORANGE]};
     default:
       return {blue: BLUE_PRIMARY_COLORS, orange: ORANGE_PRIMARY_COLORS};

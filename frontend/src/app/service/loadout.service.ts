@@ -9,7 +9,7 @@ import { Item } from '../model/item';
 import { COLOR_MAPLE_BLUE, DEFAULT_ACCENT, DEFAULT_BLUE_TEAM } from '../utils/color';
 import { Topper } from '../model/topper';
 import { Antenna } from '../model/antenna';
-import { BODY_MAPLE_ID } from '../utils/ids';
+import { BODY_MAPLE_ID, BODY_SLIME_ID } from '../utils/ids';
 
 const HOST = `${environment.backend}/internal`;
 
@@ -73,6 +73,7 @@ export class LoadoutService {
 
     switch (body.id) {
       case BODY_MAPLE_ID:
+      case BODY_SLIME_ID:
         this.paints.primary = COLOR_MAPLE_BLUE;
         break;
     }
