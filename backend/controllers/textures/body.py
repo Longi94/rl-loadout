@@ -1,6 +1,5 @@
-from PIL import Image
 from dao import BodyDao
-from textures.body_texture import BodyTexture
+from textures.body_texture import generate_body_texture
 from utils.network import get_asset_url, serve_pil_image
 from utils.network.exc import NotFoundException
 from rocket.team import TEAM_ORANGE
@@ -32,16 +31,11 @@ def get(body_id: int, primary_color: int = None, body_paint: int = None, team: i
     if response is not None:
         return response
 
-    static_skin = BodyTexture(
+    image = generate_body_texture(
         get_asset_url(body.base_skin),
         get_asset_url(body.blank_skin),
         primary_color,
         body_paint
     )
-
-    static_skin.load()
-    static_skin.update()
-
-    image = Image.fromarray(static_skin.data)
 
     return serve_pil_image(image)

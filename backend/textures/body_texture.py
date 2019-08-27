@@ -1,37 +1,45 @@
 import time
 import logging
 import numpy as np
-from .rgba_map import RgbaMap, MAX_SIZE
+from PIL import Image
+from .rgba_map import MAX_SIZE
 from utils.color import int_to_rgb_array
+from utils.network import load_pil_image
 
 log = logging.getLogger(__name__)
 
 
-class BodyTexture(RgbaMap):
+def generate_body_texture(base_texture_url, rgba_map_url, primary, body_paint):
+    base_texture = load_pil_image(base_texture_url)
+    rgba_map = load_pil_image(rgba_map_url)
 
-    def __init__(self, base_texture_url, rgba_map_url, primary, body_paint):
-        super(BodyTexture, self).__init__(base_texture_url, rgba_map_url)
-        self.primary = int_to_rgb_array(primary)
-        self.body_paint = int_to_rgb_array(body_paint)
+    start = time.time()
 
-    def update(self):
-        start = time.time()
+    if base_texture is None:
+        base_texture = Image.new('RGBA', (MAX_SIZE, MAX_SIZE))
 
-        base_data = np.array(self.base_texture)
-        map_data = np.array(self.rgba_map)
+    if body_paint is not None:
+        # start with the body paint color
+        base_texture.paste(int_to_rgb_array(body_paint), (0, 0, base_texture.size[0], base_texture.size[1]))
 
-        if self.base_texture is not None:
-            self.data = np.uint8(base_data)
-        else:
-            self.data = np.uint8(np.zeros((MAX_SIZE, MAX_SIZE, 4)))
+    if rgba_map is not None:
+        red = rgba_map.getchannel('R')
+        blue = rgba_map.getchannel('B')
 
-        if self.rgba_map is not None:
-            red, green, blue, alpha = map_data.T
+        # remove reds that are less then 150
+        red_data = np.array(red.getdata())
+        red_data[red_data < 150] = 0
+        red.putdata(red_data)
 
-            if self.body_paint:
-                self.data[(red <= 150).T] = self.body_paint
-            if self.primary:
-                self.data[(red > 150).T] = self.primary
-            self.data[(blue == 255).T] = (0, 0, 0, 255)
+        primary_img = Image.new('RGBA', base_texture.size, color=int_to_rgb_array(primary))
+        primary_img.putalpha(red)
 
-        log.info(f'Texture generation took {time.time() - start} seconds.')
+        windows_img = Image.new('RGBA', base_texture.size, color='black')
+        windows_img.putalpha(blue)
+
+        base_texture.paste(primary_img, (0, 0), primary_img)
+        base_texture.paste(windows_img, (0, 0), windows_img)
+
+    log.info(f'Texture generation took {time.time() - start} seconds.')
+
+    return base_texture
