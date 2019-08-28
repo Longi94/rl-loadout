@@ -1,6 +1,6 @@
 import { Color } from 'three';
 import { Body } from '../model/body';
-import { BODY_MAPLE_ID, BODY_SLIME_ID } from './ids';
+import { BODY_BERRY_ID, BODY_MAPLE_ID, BODY_SLIME_ID } from './ids';
 
 // https://www.reddit.com/r/RLFashionAdvice/comments/9l1swx/rocket_league_color_palette_with_hex_and_rgb/
 export const BLUE_PRIMARY_COLORS = [
@@ -282,6 +282,9 @@ export const BLACK = new Color(0, 0, 0);
 export const COLOR_MAPLE_BLUE = '#0000F3';
 export const COLOR_MAPLE_ORANGE = '#800000';
 
+export const COLOR_BERRY_ORANGE = '#B3915F';
+export const COLOR_BERRY_BLUE = '#656336';
+
 export function overBlendColors(foreground: Color, background: Color, foregroundAlpha: number, holder: Color) {
   foregroundAlpha = foregroundAlpha / 255;
   const r = (foreground.r * foregroundAlpha) + (background.r * (1.0 - foregroundAlpha));
@@ -321,6 +324,8 @@ export function getColorsForBody(body: Body): { [team: string]: string[] } {
     case BODY_MAPLE_ID:
     case BODY_SLIME_ID:
       return {blue: [COLOR_MAPLE_BLUE], orange: [COLOR_MAPLE_ORANGE]};
+    case BODY_BERRY_ID:
+      return {blue: [COLOR_BERRY_BLUE], orange: [COLOR_BERRY_ORANGE]};
     default:
       return {blue: BLUE_PRIMARY_COLORS, orange: ORANGE_PRIMARY_COLORS};
   }
