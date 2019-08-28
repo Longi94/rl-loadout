@@ -11,7 +11,7 @@ def handle_custom_body_texture(body: Body, primary_color: int = None, body_paint
         return get_dark_car_body_texture(body, primary_color)
     if body.id == BODY_MAPLE_ID:
         return get_maple_body_texture(team)
-    if body.id == BODY_EGGPLANT_ID:
+    if body.id == BODY_EGGPLANT_ID or body.id == BODY_BERRY_ID:
         return get_eggplant_body_texture(body, primary_color)
     if body.id == BODY_SLIME_ID:
         return get_slime_body_texture(team)
