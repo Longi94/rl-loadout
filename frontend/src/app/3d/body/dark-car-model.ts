@@ -21,18 +21,19 @@ class DarkCarBodySkin extends RgbaMapPipeTexture implements BodyTexture {
   }
 
   getColor(i: number): Color {
+    this.colorHolder2.setRGB(
+      this.base[i] / 255,
+      this.base[i + 1] / 255,
+      this.base[i + 2] / 255
+    );
+
     if (this.rgbaMap[i + 2] === 255) {
-      return BLACK;
+      return this.colorHolder2;
     }
 
     this.colorHolder.set(this.primary);
 
     if (this.rgbaMap[i + 3] > 0) {
-      this.colorHolder2.setRGB(
-        this.base[i] / 255,
-        this.base[i + 1] / 255,
-        this.base[i + 2] / 255
-      );
 
       overBlendColors(this.colorHolder2, this.colorHolder, this.rgbaMap[i + 3], this.colorHolder);
 

@@ -28,13 +28,14 @@ export class StaticSkin extends RgbaMapPipeTexture implements BodyTexture {
         this.baseSkinMap[i + 1] / 255,
         this.baseSkinMap[i + 2] / 255
       );
+      overBlendColors(this.colorHolder, BLACK, this.baseSkinMap[i + 3], this.colorHolder);
     } else {
       this.colorHolder.set(BLACK);
     }
 
     if (this.blankSkinMap !== undefined) {
       if (this.blankSkinMap[i + 2] === 255) {
-        return BLACK;
+        return this.colorHolder;
       }
 
       if (this.blankSkinMap[i] > 150) {

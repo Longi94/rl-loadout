@@ -5,7 +5,6 @@ from PIL import Image
 from .consts import MAX_SIZE
 from utils.color import int_to_rgb_array
 from utils.network import load_pil_image
-from .utils import create_windows_image
 
 log = logging.getLogger(__name__)
 
@@ -34,10 +33,7 @@ def generate_body_texture(base_texture_url: str, rgba_map_url: str, primary: int
         primary_img = Image.new('RGBA', base_texture.size, color=int_to_rgb_array(primary))
         primary_img.putalpha(red)
 
-        windows_img = create_windows_image(rgba_map)
-
         base_texture.paste(primary_img, (0, 0), primary_img)
-        base_texture.paste(windows_img, (0, 0), windows_img)
 
     log.info(f'Texture generation took {time.time() - start} seconds.')
 

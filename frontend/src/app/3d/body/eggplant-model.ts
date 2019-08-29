@@ -3,7 +3,7 @@ import { RgbaMapPipeTexture } from '../rgba-map-pipe-texture';
 import { Color, Texture } from 'three';
 import { Decal } from '../../model/decal';
 import { BodyTexture } from './body-texture';
-import { BLACK, overBlendColors } from '../../utils/color';
+import { overBlendColors } from '../../utils/color';
 
 class EggplantBodySkin extends RgbaMapPipeTexture implements BodyTexture {
 
@@ -21,10 +21,13 @@ class EggplantBodySkin extends RgbaMapPipeTexture implements BodyTexture {
   }
 
   getColor(i: number): Color {
+    this.colorHolder.setRGB(
+      this.base[i] / 255,
+      this.base[i + 1] / 255,
+      this.base[i + 2] / 255,
+    );
 
-    if (this.rgbaMap[i + 2] === 255) {
-      return BLACK;
-    } else if (this.rgbaMap[i + 3] === 255) {
+    if (this.rgbaMap[i + 3] === 255) {
       return this.bodyColor;
     }
 
