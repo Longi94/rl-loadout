@@ -21,16 +21,13 @@ class FelineBodySkin extends RgbaMapPipeTexture implements BodyTexture {
   }
 
   getColor(i: number): Color {
-
-    if (this.rgbaMap[i + 2] === 255) {
-      return BLACK;
-    }
-
     this.colorHolder.setRGB(
       this.base[i] / 255,
       this.base[i + 1] / 255,
       this.base[i + 2] / 255,
     );
+
+    overBlendColors(this.colorHolder, BLACK, this.base[i + 3], this.colorHolder);
 
     if (this.rgbaMap[i] < 42) {
       return this.colorHolder;
