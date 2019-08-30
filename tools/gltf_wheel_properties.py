@@ -22,10 +22,10 @@ except FileExistsError:
 def row_to_wheel_conf(row):
     return {
         'wheelMeshRadius': row['WheelMeshRadius'].item(),
-        'wheelWidth': row['WheelMeshRadius'].item(),
-        'wheelMeshOffsetSide': row['WheelMeshRadius'].item(),
-        'wheelRadius': row['WheelMeshRadius'].item(),
-        'wheelOffsetForward': row['WheelMeshRadius'].item(),
+        'wheelWidth': row['WheelWidth'].item(),
+        'wheelMeshOffsetSide': row['WheelMeshOffsetSide'].item(),
+        'wheelRadius': row['WheelRadius'].item(),
+        'wheelOffsetForward': row['WheelOffsetForward'].item(),
         'wheelOffsetSide': row['WheelOffsetSide'].item()
     }
 

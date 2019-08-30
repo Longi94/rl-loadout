@@ -3,6 +3,8 @@ import bpy
 import os
 import re
 import math
+import csv
+import requests
 from mathutils import Vector, Euler
 
 bl_info = {
@@ -25,6 +27,8 @@ socket_regex = re.compile('#exec MESH ATTACHNAME {2}'
                           'Y=(?P<y>-?[0-9]+(\.[0-9]+(e-?[0-9]+)?)?) '
                           'Z=(?P<z>-?[0-9]+(\.[0-9]+(e-?[0-9]+)?)?)')
 rotator_regex = re.compile('\/\/ rotator: P=(?P<pitch>[0-9]+) Y=(?P<yaw>[0-9]+) R=(?P<roll>[0-9]+)')
+
+BODIES_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1ZP_0-xEH_pk2zs4Wfr38NaLYa0vZmB3r5CdMYnfNbEY/export?format=csv&id=1ZP_0-xEH_pk2zs4Wfr38NaLYa0vZmB3r5CdMYnfNbEY&gid=0'
 
 
 def rotator_to_deg(rot):
@@ -49,7 +53,7 @@ def set_active_collection(name):
 
 
 class ImportSockets(bpy.types.Operator):
-    """Import sockets from n Unreal Script for a Rocket League model"""
+    """Import sockets from an Unreal Script for a Rocket League model"""
     bl_idname = 'import_scene.rl_sockets'
     bl_label = 'Import Unreal Script Sockets'
     bl_options = {'UNDO'}
@@ -105,17 +109,92 @@ class ImportSockets(bpy.types.Operator):
         return {'RUNNING_MODAL'}
 
 
+class ImportWheelSettings(bpy.types.Operator):
+    """Import wheel settings from the rl-loadout spreadsheet for a Rocket League model"""
+    bl_idname = 'import_scene.rl_wheel_settings'
+    bl_label = 'Import Wheel Settings'
+    bl_options = {'UNDO'}
+
+    products_db = bpy.props.StringProperty(name='ProductsDB value')
+
+    @classmethod
+    def poll(cls, context):
+        return True
+
+    def execute(self, context):
+        print(self.products_db)
+
+        r = requests.get(BODIES_SHEET_URL)
+        csv_reader = csv.reader(r.text.splitlines(), delimiter=',')
+
+        header1 = None
+        header2 = None
+        header = None
+
+        bodies = []
+
+        def to_dict(header, row):
+            d = {}
+
+            for i, name in enumerate(header):
+                d[name] = row[i]
+
+            return d
+
+        for i, row in enumerate(csv_reader):
+            if i == 0:
+                header1 = row
+            elif i == 1:
+                header2 = row
+                header = [f'{header1[i]}.{header2[i]}' for i in range(len(header1))]
+            else:
+                bodies.append(to_dict(header, row))
+
+        body = next(body for body in bodies if body['ProductsDB.ProductsDB'].lower() == self.products_db.lower())
+
+        context.scene['wheelSettings'] = {
+            'frontAxle': {
+                'wheelMeshRadius': float(body['FrontAxle.WheelMeshRadius']),
+                'wheelWidth': float(body['FrontAxle.WheelWidth']),
+                'wheelMeshOffsetSide': float(body['FrontAxle.WheelMeshOffsetSide']),
+                'wheelRadius': float(body['FrontAxle.WheelRadius']),
+                'wheelOffsetForward': float(body['FrontAxle.WheelOffsetForward']),
+                'wheelOffsetSide': float(body['FrontAxle.WheelOffsetSide'])
+            },
+            'backAxle': {
+                'wheelMeshRadius': float(body['BackAxle.WheelMeshRadius']),
+                'wheelWidth': float(body['BackAxle.WheelWidth']),
+                'wheelMeshOffsetSide': float(body['BackAxle.WheelMeshOffsetSide']),
+                'wheelRadius': float(body['BackAxle.WheelRadius']),
+                'wheelOffsetForward': float(body['BackAxle.WheelOffsetForward']),
+                'wheelOffsetSide': float(body['BackAxle.WheelOffsetSide'])
+            }
+        }
+
+        return {'FINISHED'}
+
+    def invoke(self, context, event):
+        return context.window_manager.invoke_props_dialog(self, width=500)
+
+    def draw(self, context):
+        row = self.layout
+        row.prop(self, 'products_db', text='ProductsDB value')
+        row.separator()
+
+
 def menu_import_draw(self, context):
     self.layout.operator(ImportSockets.bl_idname, text="Unreal Script Sockets")
 
 
 def register():
     bpy.utils.register_class(ImportSockets)
+    bpy.utils.register_class(ImportWheelSettings)
     bpy.types.TOPBAR_MT_file_import.append(menu_import_draw)
 
 
 def unregister():
     bpy.utils.unregister_class(ImportSockets)
+    bpy.utils.unregister_class(ImportWheelSettings)
     bpy.types.TOPBAR_MT_file_import.remove(menu_import_draw)
 
 
