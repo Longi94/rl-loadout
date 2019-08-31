@@ -1,6 +1,6 @@
 import os
 import argparse
-import numpy as np
+import pandas as pd
 from pygltflib import GLTF2
 
 SHEETS_URL = 'https://docs.google.com/spreadsheets/d/1ZP_0-xEH_pk2zs4Wfr38NaLYa0vZmB3r5CdMYnfNbEY/export?format=csv&id=1ZP_0-xEH_pk2zs4Wfr38NaLYa0vZmB3r5CdMYnfNbEY&gid=0'
