@@ -56,7 +56,9 @@ export class BodyModel extends AbstractObject implements Paintable {
   baseSkinMapUrl: string;
   baseSkinMap: Uint8ClampedArray;
 
-  wheelScale: number[] = [1, 1];
+  hitboxConfig: {};
+  wheelSettings: {};
+  wheelPositions: {};
 
   hatSocket: Object3D;
   antennaSocket: Object3D;
@@ -122,8 +124,11 @@ export class BodyModel extends AbstractObject implements Paintable {
   }
 
   handleModel(scene: Scene) {
-    if ('wheelScale' in scene.userData) {
-      this.wheelScale = scene.userData.wheelScale;
+    if ('hitbox' in scene.userData) {
+      this.hitboxConfig = scene.userData.hitbox;
+    }
+    if ('wheelSettings' in scene.userData) {
+      this.wheelSettings = scene.userData.wheelSettings;
     }
 
     this.hatSocket = scene.getObjectByName('HatSocket');
@@ -142,6 +147,15 @@ export class BodyModel extends AbstractObject implements Paintable {
         }
       }
     });
+
+    this.getWheelPositions();
+  }
+
+  getWheelConfig() {
+    return {
+      settings: this.wheelSettings,
+      positions: this.wheelPositions
+    }
   }
 
   private applyChassisSkin() {
@@ -151,23 +165,21 @@ export class BodyModel extends AbstractObject implements Paintable {
     }
   }
 
-  getWheelPositions() {
+  private getWheelPositions() {
     const config = {};
 
     this.skeleton.traverse(object => {
       if (object.name.endsWith('Disc_jnt')) {
         const wheelType = object.name.substr(0, 2).toLowerCase();
         const wheelPos = object.localToWorld(new Vector3());
-        const scale = wheelType.startsWith('f') ? this.wheelScale[0] : this.wheelScale[1];
 
         config[wheelType] = {
-          pos: wheelPos,
-          scale
+          pos: wheelPos
         };
       }
     });
 
-    return config;
+    this.wheelPositions = config;
   }
 
   /**

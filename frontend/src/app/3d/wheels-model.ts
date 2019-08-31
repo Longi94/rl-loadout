@@ -1,5 +1,5 @@
 import { AbstractObject } from './object';
-import { Color, Mesh, MeshStandardMaterial, Scene } from 'three';
+import { Color, Mesh, MeshStandardMaterial, Object3D, Scene, Vector3 } from 'three';
 import { RgbaMapPipeTexture } from './rgba-map-pipe-texture';
 import { Wheel } from '../model/wheel';
 import { getAssetUrl } from '../utils/network';
@@ -7,6 +7,9 @@ import { SkeletonUtils } from 'three/examples/jsm/utils/SkeletonUtils';
 import { overBlendColors } from '../utils/color';
 import { disposeIfExists } from '../utils/util';
 import { Paintable } from './paintable';
+
+const BASE_RADIUS = 16.313;
+const BASE_WIDTH = 14.5288;
 
 class RimSkin extends RgbaMapPipeTexture {
 
@@ -40,7 +43,7 @@ class RimSkin extends RgbaMapPipeTexture {
 
 export class WheelsModel extends AbstractObject implements Paintable {
 
-  wheels = {
+  wheels: { [key: string]: Object3D } = {
     fr: undefined,
     fl: undefined,
     br: undefined,
@@ -97,27 +100,38 @@ export class WheelsModel extends AbstractObject implements Paintable {
       }
     });
 
-    this.wheels.fr = SkeletonUtils.clone(scene);
-    this.wheels.fl = SkeletonUtils.clone(scene);
-    this.wheels.br = SkeletonUtils.clone(scene);
-    this.wheels.bl = SkeletonUtils.clone(scene);
+    this.wheels.fr = SkeletonUtils.clone(scene) as Object3D;
+    this.wheels.fl = SkeletonUtils.clone(scene) as Object3D;
+    this.wheels.br = SkeletonUtils.clone(scene) as Object3D;
+    this.wheels.bl = SkeletonUtils.clone(scene) as Object3D;
   }
 
-  applyWheelPositions(config) {
-    for (const key of Object.keys(config)) {
-      this.wheels[key].position.copy(config[key].pos);
+  applyWheelConfig(config) {
+    const frontWidthScale = config.settings.frontAxle.wheelWidth / BASE_WIDTH;
+    const frontRadiusScale = config.settings.frontAxle.wheelMeshRadius / BASE_RADIUS;
+
+    const backWidthScale = config.settings.backAxle.wheelWidth / BASE_WIDTH;
+    const backRadiusScale = config.settings.backAxle.wheelMeshRadius / BASE_RADIUS;
+
+    for (const key of Object.keys(config.positions)) {
+      const wheel = this.wheels[key];
+      const position = new Vector3();
+
+      position.copy(config.positions[key].pos);
 
       if (key.endsWith('l')) {
-        this.wheels[key].rotation.set(0, Math.PI, 0);
-        this.wheels[key].rotation.needsUpdate = true;
+        wheel.rotation.set(0, Math.PI, 0);
       }
 
-      this.wheels[key].needsUpdate = true;
-      this.wheels[key].position.needsUpdate = true;
+      if (key.startsWith('f')) {
+        wheel.scale.set(frontRadiusScale, frontRadiusScale, frontWidthScale);
+        position.add(new Vector3(0, 0, -config.settings.frontAxle.wheelMeshOffsetSide));
+      } else {
+        wheel.scale.set(backRadiusScale, backRadiusScale, backWidthScale);
+        position.add(new Vector3(0, 0, -config.settings.backAxle.wheelMeshOffsetSide));
+      }
 
-      const scale = config[key].scale;
-      this.wheels[key].scale.set(scale, scale, scale);
-      this.wheels[key].scale.needsUpdate = true;
+      wheel.position.copy(position);
     }
   }
 

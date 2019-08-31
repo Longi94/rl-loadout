@@ -30,7 +30,7 @@ import { TopperModel } from '../../../3d/topper-model';
 import { AntennaModel } from '../../../3d/antenna-model';
 import { Antenna } from '../../../model/antenna';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
-import { getHitboxModel, HitboxModel } from '../../../3d/hitbox-model';
+import { HitboxModel } from '../../../3d/hitbox-model';
 import { GUI } from 'dat-gui';
 import * as dat from 'dat.gui';
 import { NotifierService } from 'angular-notifier';
@@ -265,7 +265,7 @@ export class CanvasComponent implements OnInit {
       this.body.load(),
       this.loadoutStore.loadDecals(body.id)
     ]).then(() => {
-      this.wheels.applyWheelPositions(this.body.getWheelPositions());
+      this.wheels.applyWheelConfig(this.body.getWheelConfig());
 
       if (this.topper) {
         this.topper.applyAnchor(this.body.hatSocket);
@@ -303,7 +303,7 @@ export class CanvasComponent implements OnInit {
   }
 
   private applyWheelModel() {
-    this.wheels.applyWheelPositions(this.body.getWheelPositions());
+    this.wheels.applyWheelConfig(this.body.getWheelConfig());
     this.wheels.setEnvMap(this.envMap);
     this.wheels.addToScene(this.scene);
   }
@@ -434,7 +434,7 @@ export class CanvasComponent implements OnInit {
       this.notifierService.notify('warning', `Topper position of ${body.name} is unknown.`);
     }
 
-    if (getHitboxModel(body.hitbox) == undefined) {
+    if (this.body.hitboxConfig == undefined) {
       console.warn(`The hitbox of body ${body.name} is unknown (${body.hitbox}).`);
       this.notifierService.notify('warning', `Hitbox of ${body.name} is unknown.`);
     }
@@ -444,8 +444,8 @@ export class CanvasComponent implements OnInit {
       this.notifierService.notify('warning', `${body.name} has incomplete hitbox data. Hitbox won't be accurate.`);
     }
 
-    if (this.body.wheelScale == undefined) {
-      console.warn(`${body.name} has no wheelScale attribute`);
+    if (this.body.wheelSettings == undefined) {
+      console.warn(`${body.name} has no wheelSettings attribute`);
       this.notifierService.notify('warning', `Size of wheels are unknown for ${body.name}.`);
     }
   }
