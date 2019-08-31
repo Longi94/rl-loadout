@@ -35,29 +35,31 @@ export class HitboxModel {
   }
 
   applyBody(body: BodyModel) {
-    const config = getHitboxModel(body.hitboxConfig.preset);
-
     const pos = new Vector3();
     let scale = new Vector3(1, 1, 1);
     let rot = new Euler();
 
-    if (config != undefined) {
-      pos.add(config.position);
-      scale = config.scale;
-      rot = config.rotation;
+    if (body.hitboxConfig != undefined) {
+      const config = getHitboxModel(body.hitboxConfig.preset);
+
+      if (config != undefined) {
+        pos.add(config.position);
+        scale = config.scale;
+        rot = config.rotation;
+      }
+
+      const translate = new Vector3();
+
+      if (body.hitboxConfig.translateX != undefined) {
+        translate.setX(-body.hitboxConfig.translateX);
+      }
+
+      if (body.hitboxConfig.translateX != undefined) {
+        translate.setY(-body.hitboxConfig.translateX);
+      }
+
+      pos.add(translate);
     }
-
-    const translate = new Vector3();
-
-    if (body.hitboxConfig.translateX != undefined) {
-      translate.setX(-body.hitboxConfig.translateX);
-    }
-
-    if (body.hitboxConfig.translateX != undefined) {
-      translate.setY(-body.hitboxConfig.translateX);
-    }
-
-    pos.add(translate);
 
     this.mesh.scale.copy(scale);
     this.mesh.position.copy(pos);

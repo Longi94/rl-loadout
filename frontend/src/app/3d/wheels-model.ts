@@ -107,11 +107,21 @@ export class WheelsModel extends AbstractObject implements Paintable {
   }
 
   applyWheelConfig(config) {
-    const frontWidthScale = config.settings.frontAxle.wheelWidth / BASE_WIDTH;
-    const frontRadiusScale = config.settings.frontAxle.wheelMeshRadius / BASE_RADIUS;
+    let frontWidthScale = 1;
+    let frontRadiusScale = 1;
+    let backWidthScale = 1;
+    let backRadiusScale = 1;
+    let frontOffset = 0;
+    let backOffset = 0;
 
-    const backWidthScale = config.settings.backAxle.wheelWidth / BASE_WIDTH;
-    const backRadiusScale = config.settings.backAxle.wheelMeshRadius / BASE_RADIUS;
+    if (config.settings != undefined) {
+      frontWidthScale = config.settings.frontAxle.wheelWidth / BASE_WIDTH;
+      frontRadiusScale = config.settings.frontAxle.wheelMeshRadius / BASE_RADIUS;
+      backWidthScale = config.settings.backAxle.wheelWidth / BASE_WIDTH;
+      backRadiusScale = config.settings.backAxle.wheelMeshRadius / BASE_RADIUS;
+      frontOffset = -config.settings.frontAxle.wheelMeshOffsetSide;
+      backOffset = -config.settings.backAxle.wheelMeshOffsetSide;
+    }
 
     for (const key of Object.keys(config.positions)) {
       const wheel = this.wheels[key];
@@ -125,10 +135,10 @@ export class WheelsModel extends AbstractObject implements Paintable {
 
       if (key.startsWith('f')) {
         wheel.scale.set(frontRadiusScale, frontRadiusScale, frontWidthScale);
-        position.add(new Vector3(0, 0, -config.settings.frontAxle.wheelMeshOffsetSide));
+        position.add(new Vector3(0, 0, frontOffset));
       } else {
         wheel.scale.set(backRadiusScale, backRadiusScale, backWidthScale);
-        position.add(new Vector3(0, 0, -config.settings.backAxle.wheelMeshOffsetSide));
+        position.add(new Vector3(0, 0, backOffset));
       }
 
       wheel.position.copy(position);
