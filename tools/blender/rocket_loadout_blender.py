@@ -122,8 +122,6 @@ class ImportWheelSettings(bpy.types.Operator):
         return True
 
     def execute(self, context):
-        print(self.products_db)
-
         r = requests.get(BODIES_SHEET_URL)
         csv_reader = csv.reader(r.text.splitlines(), delimiter=',')
 
@@ -170,6 +168,18 @@ class ImportWheelSettings(bpy.types.Operator):
                 'wheelOffsetSide': float(body['BackAxle.WheelOffsetSide'])
             }
         }
+
+        hitbox = {
+            'preset': body['HandlingPreset.HandlingPreset_TA']
+        }
+
+        if len(body['Hitbox.Translation.X']) > 0:
+            hitbox['translationX'] = float(body['Hitbox.Translation.X'])
+
+        if len(body['Hitbox.Translation.Z']) > 0:
+            hitbox['translationZ'] = float(body['Hitbox.Translation.Z'])
+
+        context.scene['hitbox'] = hitbox
 
         return {'FINISHED'}
 

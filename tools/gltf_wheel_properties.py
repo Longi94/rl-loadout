@@ -1,6 +1,6 @@
 import os
 import argparse
-import pandas as pd
+import numpy as np
 from pygltflib import GLTF2
 
 SHEETS_URL = 'https://docs.google.com/spreadsheets/d/1ZP_0-xEH_pk2zs4Wfr38NaLYa0vZmB3r5CdMYnfNbEY/export?format=csv&id=1ZP_0-xEH_pk2zs4Wfr38NaLYa0vZmB3r5CdMYnfNbEY&gid=0'
@@ -21,12 +21,12 @@ except FileExistsError:
 
 def row_to_wheel_conf(row):
     return {
-        'wheelMeshRadius': row['WheelMeshRadius'].item(),
-        'wheelWidth': row['WheelWidth'].item(),
-        'wheelMeshOffsetSide': row['WheelMeshOffsetSide'].item(),
-        'wheelRadius': row['WheelRadius'].item(),
-        'wheelOffsetForward': row['WheelOffsetForward'].item(),
-        'wheelOffsetSide': row['WheelOffsetSide'].item()
+        'wheelMeshRadius': row['WheelMeshRadius'].values[0],
+        'wheelWidth': row['WheelWidth'].values[0],
+        'wheelMeshOffsetSide': row['WheelMeshOffsetSide'].values[0],
+        'wheelRadius': row['WheelRadius'].values[0],
+        'wheelOffsetForward': row['WheelOffsetForward'].values[0],
+        'wheelOffsetSide': row['WheelOffsetSide'].values[0]
     }
 
 
@@ -43,6 +43,18 @@ for file in files:
         'frontAxle': front_axle,
         'backAxle': back_axle
     }
+
+    hitbox = {
+        'preset': row['HandlingPreset', 'HandlingPreset_TA'].values[0]
+    }
+
+    if not row['Hitbox', 'Translation.X'].isna().values[0]:
+        hitbox['translationX'] = row['Hitbox', 'Translation.X'].values[0]
+
+    if not row['Hitbox', 'Translation.Z'].isna().values[0]:
+        hitbox['translationZ'] = row['Hitbox', 'Translation.Z'].values[0]
+
+    gltf.scenes[0].extras['hitbox'] = hitbox
 
     gltf.scenes[0].extras.pop('glTF2ExportSettings', None)
     gltf.scenes[0].extras.pop('wheelScale', None)
