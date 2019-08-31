@@ -119,8 +119,8 @@ export class WheelsModel extends AbstractObject implements Paintable {
       frontRadiusScale = config.settings.frontAxle.wheelMeshRadius / BASE_RADIUS;
       backWidthScale = config.settings.backAxle.wheelWidth / BASE_WIDTH;
       backRadiusScale = config.settings.backAxle.wheelMeshRadius / BASE_RADIUS;
-      frontOffset = -config.settings.frontAxle.wheelMeshOffsetSide;
-      backOffset = -config.settings.backAxle.wheelMeshOffsetSide;
+      frontOffset = config.settings.frontAxle.wheelMeshOffsetSide;
+      backOffset = config.settings.backAxle.wheelMeshOffsetSide;
     }
 
     for (const key of Object.keys(config.positions)) {
@@ -135,10 +135,20 @@ export class WheelsModel extends AbstractObject implements Paintable {
 
       if (key.startsWith('f')) {
         wheel.scale.set(frontRadiusScale, frontRadiusScale, frontWidthScale);
-        position.add(new Vector3(0, 0, frontOffset));
+
+        if (key.endsWith('l')) {
+          position.add(new Vector3(0, 0, -frontOffset));
+        } else {
+          position.add(new Vector3(0, 0, frontOffset));
+        }
       } else {
         wheel.scale.set(backRadiusScale, backRadiusScale, backWidthScale);
-        position.add(new Vector3(0, 0, backOffset));
+
+        if (key.endsWith('l')) {
+          position.add(new Vector3(0, 0, -backOffset));
+        } else {
+          position.add(new Vector3(0, 0, backOffset));
+        }
       }
 
       wheel.position.copy(position);

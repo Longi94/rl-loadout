@@ -437,11 +437,11 @@ export class CanvasComponent implements OnInit {
     if (this.body.hitboxConfig == undefined || getHitboxModel(this.body.hitboxConfig.preset) == undefined) {
       console.warn(`The hitbox of body ${body.name} is unknown.`);
       this.notifierService.notify('warning', `Hitbox of ${body.name} is unknown.`);
-    }
-
-    if (body.hitbox_translate_x == undefined || body.hitbox_translate_z == undefined) {
-      console.warn(`Body ${body.name} missing hitbox translate values.`);
-      this.notifierService.notify('warning', `${body.name} has incomplete hitbox data. Hitbox won't be accurate.`);
+    } else {
+      if (this.body.hitboxConfig.translateX == undefined || this.body.hitboxConfig.translateZ == undefined) {
+        console.warn(`Body ${body.name} missing hitbox translate values.`);
+        this.notifierService.notify('warning', `${body.name} has incomplete hitbox data. Hitbox won't be accurate.`);
+      }
     }
 
     if (this.body.wheelSettings == undefined) {
