@@ -10,7 +10,7 @@ import {
   Vector3
 } from 'three';
 import { Hitbox } from '../model/hitbox';
-import { Body } from '../model/body';
+import { BodyModel } from './body/body-model';
 
 export class HitboxModel {
 
@@ -34,8 +34,8 @@ export class HitboxModel {
     this.lineSegments = new LineSegments(this.edges, this.lineMaterial);
   }
 
-  applyBody(body: Body) {
-    const config = getHitboxModel(body.hitbox);
+  applyBody(body: BodyModel) {
+    const config = getHitboxModel(body.hitboxConfig.preset);
 
     const pos = new Vector3();
     let scale = new Vector3(1, 1, 1);
@@ -49,12 +49,12 @@ export class HitboxModel {
 
     const translate = new Vector3();
 
-    if (body.hitbox_translate_x != undefined) {
-      translate.setX(-body.hitbox_translate_x);
+    if (body.hitboxConfig.translateX != undefined) {
+      translate.setX(-body.hitboxConfig.translateX);
     }
 
-    if (body.hitbox_translate_z != undefined) {
-      translate.setY(-body.hitbox_translate_z);
+    if (body.hitboxConfig.translateX != undefined) {
+      translate.setY(-body.hitboxConfig.translateX);
     }
 
     pos.add(translate);
@@ -116,7 +116,6 @@ export const HIT_BOX_HYBRID: HitboxConfig = {
   position: new Vector3(13.87566, 20.75499),
   rotation: new Euler(0, 0, -degToRad(0.55))
 };
-export const HIT_BOX_BATMOBILE: HitboxConfig = HIT_BOX_PLANK;
 
 export function getHitboxModel(hitbox: Hitbox): HitboxConfig {
   switch (hitbox) {
@@ -130,8 +129,8 @@ export function getHitboxModel(hitbox: Hitbox): HitboxConfig {
       return HIT_BOX_BREAKOUT;
     case Hitbox.HYBRID:
       return HIT_BOX_HYBRID;
-    case Hitbox.BATMOBILE:
-      return HIT_BOX_BATMOBILE;
+    default:
+      return undefined;
   }
 }
 

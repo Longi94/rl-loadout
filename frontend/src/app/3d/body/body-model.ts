@@ -56,9 +56,9 @@ export class BodyModel extends AbstractObject implements Paintable {
   baseSkinMapUrl: string;
   baseSkinMap: Uint8ClampedArray;
 
-  hitboxConfig: {};
-  wheelSettings: {};
-  wheelPositions: {};
+  hitboxConfig: { [key: string]: any };
+  wheelSettings: { [key: string]: any };
+  wheelPositions: { [key: string]: any };
 
   hatSocket: Object3D;
   antennaSocket: Object3D;
@@ -155,7 +155,7 @@ export class BodyModel extends AbstractObject implements Paintable {
     return {
       settings: this.wheelSettings,
       positions: this.wheelPositions
-    }
+    };
   }
 
   private applyChassisSkin() {

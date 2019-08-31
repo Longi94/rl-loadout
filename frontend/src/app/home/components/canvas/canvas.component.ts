@@ -30,7 +30,7 @@ import { TopperModel } from '../../../3d/topper-model';
 import { AntennaModel } from '../../../3d/antenna-model';
 import { Antenna } from '../../../model/antenna';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
-import { HitboxModel } from '../../../3d/hitbox-model';
+import { getHitboxModel, HitboxModel } from '../../../3d/hitbox-model';
 import { GUI } from 'dat-gui';
 import * as dat from 'dat.gui';
 import { NotifierService } from 'angular-notifier';
@@ -418,7 +418,7 @@ export class CanvasComponent implements OnInit {
   }
 
   private applyHitbox() {
-    this.hitbox.applyBody(this.loadoutService.body);
+    this.hitbox.applyBody(this.body);
   }
 
   private validateBody() {
@@ -434,8 +434,8 @@ export class CanvasComponent implements OnInit {
       this.notifierService.notify('warning', `Topper position of ${body.name} is unknown.`);
     }
 
-    if (this.body.hitboxConfig == undefined) {
-      console.warn(`The hitbox of body ${body.name} is unknown (${body.hitbox}).`);
+    if (this.body.hitboxConfig == undefined || getHitboxModel(this.body.hitboxConfig.preset) == undefined) {
+      console.warn(`The hitbox of body ${body.name} is unknown.`);
       this.notifierService.notify('warning', `Hitbox of ${body.name} is unknown.`);
     }
 

@@ -20,15 +20,6 @@ export abstract class CreateDialog<T> implements OnInit {
     {value: Quality.PREMIUM, name: 'Premium'}
   ];
 
-  hitboxes = [
-    {value: Hitbox.OCTANE, name: 'Octane'},
-    {value: Hitbox.DOMINUS, name: 'Dominus'},
-    {value: Hitbox.PLANK, name: 'Plank'},
-    {value: Hitbox.BREAKOUT, name: 'Breakout'},
-    {value: Hitbox.HYBRID, name: 'Hybrid'},
-    {value: Hitbox.BATMOBILE, name: 'Batmobile'}
-  ];
-
   objects: { [key: string]: CloudObject[] } = {
     icons: [],
     textures: [],
