@@ -1,5 +1,5 @@
 import { Color, DataTexture } from 'three';
-import { BLACK, overBlendColors } from '../utils/color';
+import { overBlendColors } from '../utils/color';
 
 export class LayeredTexture {
   readonly texture: DataTexture;
@@ -9,7 +9,7 @@ export class LayeredTexture {
   private readonly colorHolder2 = new Color();
 
   constructor(private readonly base: Uint8ClampedArray, width: number, height: number) {
-    this.data = new Uint8ClampedArray(base);
+    this.data = new Uint8ClampedArray(this.base);
     this.texture = new DataTexture(this.data, width, height);
   }
 
@@ -19,10 +19,6 @@ export class LayeredTexture {
 
   addLayer(layer: Layer) {
     this.layers.push(layer);
-  }
-
-  getLayer(i: number): Layer {
-    return this.layers[i];
   }
 
   /**
@@ -39,18 +35,8 @@ export class LayeredTexture {
     }
 
     for (let i = 0; i < this.data.length; i += 4) {
-      // if (mask != undefined && mask.getAlpha(i) === 0) {
-      //   continue;
-      // }
-
-      let j = 0;
-
-      // find the last opaque pixel in the layers list to start from
-      for (let k = this.layers.length - 1; k >= 0; k--) {
-        if (this.layers[k].getAlpha(i / 4) === 255) {
-          j = k;
-          break;
-        }
+      if (mask != undefined && mask.getAlpha(i) === 0) {
+        continue;
       }
 
       this.colorHolder.setRGB(
@@ -59,8 +45,11 @@ export class LayeredTexture {
         this.base[i + 2] / 255
       );
 
-      for (; j < this.layers.length; j++) {
-        const layer = this.layers[j];
+      for (const layer of this.layers) {
+        if (layer.data == undefined) {
+          continue;
+        }
+
         const alpha = layer.getAlpha(i / 4);
 
         if (alpha === 0) {
@@ -92,11 +81,7 @@ export class Layer {
   }
 
   getAlpha(i: number): number {
-    if (this.data == undefined) {
-      return 0;
-    }
-
-    if (this.mask instanceof Uint8ClampedArray) {
+    if (this.mask.constructor === Uint8ClampedArray) {
       return this.mask[i];
     } else {
       return this.mask ? 255 : 0;
@@ -104,7 +89,8 @@ export class Layer {
   }
 
   getColor(i: number, color: Color) {
-    if (this.data instanceof Color) {
+    if (this.data.constructor === Color) {
+      // @ts-ignore
       color.set(this.data);
     } else {
       color.setRGB(
