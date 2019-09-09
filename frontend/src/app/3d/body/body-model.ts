@@ -4,37 +4,47 @@ import { Body } from '../../model/body';
 import { PromiseLoader } from '../../utils/loader';
 import { TgaRgbaLoader } from '../../utils/tga-rgba-loader';
 import { getAssetUrl } from '../../utils/network';
-import { RgbaMapPipeTexture } from '../rgba-map-pipe-texture';
-import { overBlendColors } from '../../utils/color';
-import { disposeIfExists } from '../../utils/util';
+import { disposeIfExists, timed } from '../../utils/util';
 import { Paintable } from '../paintable';
 import { StaticSkin } from '../static-skin';
 import { Decal } from '../../model/decal';
 import { BodyTexture } from './body-texture';
+import { Layer, LayeredTexture } from '../layered-texture';
+import { getChannel, ImageChannel } from '../../utils/image';
+import { BLACK } from '../../utils/color';
 
-class ChassisSkin extends RgbaMapPipeTexture {
+class ChassisSkin {
 
-  paint: Color;
-  private colorHolder = new Color();
-  private baseHolder = new Color();
+  private tgaLoader = new PromiseLoader(new TgaRgbaLoader());
+  private paint: Color = BLACK;
+  private paintLayer: Layer;
+  texture: LayeredTexture;
 
-  constructor(baseUrl, rgbaMapUrl) {
-    super(baseUrl, rgbaMapUrl);
+  constructor(private baseUrl: string, private rgbaMapUrl: string) {
   }
 
-  getColor(i: number): Color {
-    this.baseHolder.setRGB(
-      this.base[i] / 255,
-      this.base[i + 1] / 255,
-      this.base[i + 2] / 255
-    );
+  load(): Promise<any> {
+    return new Promise<any>((resolve, reject) => Promise.all([
+      this.tgaLoader.load(this.baseUrl),
+      this.tgaLoader.load(this.rgbaMapUrl)
+    ]).then(values => {
+      this.texture = new LayeredTexture(values[0].data, values[0].width, values[1].height);
 
-    if (this.paint != undefined && this.rgbaMap[i] > 230) {
-      overBlendColors(this.paint, this.baseHolder, 255, this.colorHolder);
-      return this.colorHolder;
-    } else {
-      return this.baseHolder;
+      this.paintLayer = new Layer(getChannel(values[1].data, ImageChannel.R), this.paint);
+      this.texture.addLayer(this.paintLayer);
+      resolve();
+    }).catch(reject));
+  }
+
+  setPaint(paint: Color) {
+    this.paint = paint;
+    if (this.paintLayer != undefined) {
+      this.paintLayer.data = paint;
     }
+  }
+
+  updatePaint() {
+    this.texture.update(this.paintLayer);
   }
 }
 
@@ -116,7 +126,7 @@ export class BodyModel extends AbstractObject implements Paintable {
       this.updateDecal();
 
       if (this.chassisSkin) {
-        this.chassisMaterial.map = this.chassisSkin.texture;
+        this.chassisMaterial.map = this.chassisSkin.texture.texture;
         this.applyChassisSkin();
       }
       resolve();
@@ -158,10 +168,16 @@ export class BodyModel extends AbstractObject implements Paintable {
     };
   }
 
-  private applyChassisSkin() {
+  private applyChassisSkin(paintUpdate: boolean = false) {
     if (this.chassisMaterial != undefined && this.chassisSkin != undefined) {
-      this.chassisSkin.update();
-      this.chassisMaterial.needsUpdate = true;
+      timed('Chassis texture generation', () => {
+        if (paintUpdate) {
+          this.chassisSkin.updatePaint();
+        } else {
+          this.chassisSkin.texture.update();
+        }
+        this.chassisMaterial.needsUpdate = true;
+      });
     }
   }
 
@@ -189,11 +205,11 @@ export class BodyModel extends AbstractObject implements Paintable {
    */
   setPaintColor(color: Color) {
     if (this.chassisSkin != undefined) {
-      this.chassisSkin.paint = color;
+      this.chassisSkin.setPaint(color);
     }
     this.bodySkin.bodyPaint = color;
     this.updateDecal();
-    this.applyChassisSkin();
+    this.applyChassisSkin(true);
   }
 
   private applyDecal() {
@@ -215,7 +231,7 @@ export class BodyModel extends AbstractObject implements Paintable {
     }
 
     if (this.chassisSkin != undefined) {
-      this.chassisSkin.paint = paints.body != undefined ? new Color(paints.body) : undefined;
+      this.chassisSkin.setPaint(paints.body != undefined ? new Color(paints.body) : undefined);
     }
   }
 

@@ -4,6 +4,7 @@ import { RgbaMapPipeTexture } from './rgba-map-pipe-texture';
 import { Decal } from '../model/decal';
 import { getAssetUrl } from '../utils/network';
 import { BodyTexture } from './body/body-texture';
+import { timed } from '../utils/util';
 
 
 export class StaticSkin extends RgbaMapPipeTexture implements BodyTexture {
@@ -19,6 +20,10 @@ export class StaticSkin extends RgbaMapPipeTexture implements BodyTexture {
 
   constructor(decal: Decal) {
     super(getAssetUrl(decal.base_texture), getAssetUrl(decal.rgba_map));
+  }
+
+  update() {
+    timed('static skin texture generation', () => super.update());
   }
 
   getColor(i: number): Color {

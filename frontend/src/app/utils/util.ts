@@ -25,3 +25,14 @@ export function copyMessage(val: string) {
   document.execCommand('copy');
   document.body.removeChild(selBox);
 }
+
+/**
+ * Prints to console the amount of milliseconds running the function took.
+ * @param name
+ * @param timedFunc
+ */
+export function timed(name: string, timedFunc: () => void) {
+  const start = Date.now();
+  timedFunc();
+  console.debug(`${name} took ${Date.now() - start} milliseconds.`);
+}
