@@ -74,20 +74,19 @@ export class WheelsModel extends AbstractObject implements Paintable {
     disposeIfExists(this.wheels.bl);
   }
 
-  load(): Promise<any> {
-    const promises = [super.load()];
+  async load() {
+    const superTask = super.load();
 
     if (this.rimSkin) {
-      promises.push(this.rimSkin.load());
+      await this.rimSkin.load();
     }
 
-    return new Promise((resolve, reject) => Promise.all(promises).then(() => {
-      if (this.rimSkin) {
-        this.rimMaterial.map = this.rimSkin.texture;
-      }
-      this.applyRimSkin();
-      resolve();
-    }, reject));
+    await superTask;
+
+    if (this.rimSkin) {
+      this.rimMaterial.map = this.rimSkin.texture;
+    }
+    this.applyRimSkin();
   }
 
   handleModel(scene: Scene) {

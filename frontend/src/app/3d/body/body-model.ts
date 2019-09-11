@@ -23,17 +23,17 @@ class ChassisSkin {
   constructor(private baseUrl: string, private rgbaMapUrl: string) {
   }
 
-  load(): Promise<any> {
-    return new Promise<any>((resolve, reject) => Promise.all([
-      this.tgaLoader.load(this.baseUrl),
-      this.tgaLoader.load(this.rgbaMapUrl)
-    ]).then(values => {
-      this.texture = new LayeredTexture(values[0].data, values[0].width, values[1].height);
+  async load() {
+    const baseTask = this.tgaLoader.load(this.baseUrl);
+    const rgbaMapTask = this.tgaLoader.load(this.rgbaMapUrl);
 
-      this.paintLayer = new Layer(getChannel(values[1].data, ImageChannel.R), this.paint);
-      this.texture.addLayer(this.paintLayer);
-      resolve();
-    }).catch(reject));
+    const baseResult = await baseTask;
+    const rgbaMapResult = await rgbaMapTask;
+
+    this.texture = new LayeredTexture(baseResult.data, baseResult.width, baseResult.height);
+
+    this.paintLayer = new Layer(getChannel(rgbaMapResult.data, ImageChannel.R), this.paint);
+    this.texture.addLayer(this.paintLayer);
   }
 
   setPaint(paint: Color) {
@@ -102,35 +102,29 @@ export class BodyModel extends AbstractObject implements Paintable {
     disposeIfExists(this.bodySkin);
   }
 
-  load(): Promise<any> {
-    const promises = [
-      super.load(),
-      this.textureLoader.load(this.blankSkinMapUrl),
-      this.textureLoader.load(this.baseSkinMapUrl),
-      this.bodySkin.load()
-    ];
+  async load() {
+    const superTask = super.load();
+    const blankSkinTask = this.textureLoader.load(this.blankSkinMapUrl);
+    const baseSkinTask = this.textureLoader.load(this.baseSkinMapUrl);
+    const bodySkinTask = this.bodySkin.load();
 
-    if (this.chassisSkin !== undefined) {
-      promises.push(this.chassisSkin.load());
+    if (this.chassisSkin != undefined) {
+      await this.chassisSkin.load();
     }
 
-    return new Promise((resolve, reject) => Promise.all(promises).then(values => {
-      if (values[1]) {
-        this.blankSkinMap = values[1].data;
-      }
-      if (values[2]) {
-        this.baseSkinMap = values[2].data;
-      }
+    await superTask;
+    await bodySkinTask;
 
-      this.applyDecal();
-      this.updateDecal();
+    this.blankSkinMap = (await blankSkinTask).data;
+    this.baseSkinMap = (await baseSkinTask).data;
 
-      if (this.chassisSkin) {
-        this.chassisMaterial.map = this.chassisSkin.texture.texture;
-        this.applyChassisSkin();
-      }
-      resolve();
-    }, reject));
+    this.applyDecal();
+    this.updateDecal();
+
+    if (this.chassisSkin) {
+      this.chassisMaterial.map = this.chassisSkin.texture.texture;
+      this.applyChassisSkin();
+    }
   }
 
   handleModel(scene: Scene) {
@@ -242,17 +236,13 @@ export class BodyModel extends AbstractObject implements Paintable {
     }
   }
 
-  changeDecal(decal: Decal, paints: { [key: string]: string }) {
+  async changeDecal(decal: Decal, paints: { [key: string]: string }) {
     this.bodySkin.dispose();
     this.bodySkin = new StaticSkin(decal);
-    return new Promise((resolve, reject) => {
-      this.bodySkin.load().then(() => {
-        this.applyDecal();
-        this.applyPaints(paints);
-        this.updateDecal();
-        resolve();
-      }, reject);
-    });
+    await this.bodySkin.load();
+    this.applyDecal();
+    this.applyPaints(paints);
+    this.updateDecal();
   }
 
   setPrimaryColor(color: Color) {

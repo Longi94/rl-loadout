@@ -59,8 +59,7 @@ export class DarkCarModel extends BodyModel {
   setPaintColor(color: Color) {
   }
 
-  changeDecal(decal: Decal, paints: { [p: string]: string }): Promise<any> {
-    return Promise.resolve();
+  async changeDecal(decal: Decal, paints: { [p: string]: string }) {
   }
 
   setPrimaryColor(color: Color) {

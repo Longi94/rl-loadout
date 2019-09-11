@@ -1,25 +1,23 @@
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { LinearEncoding, Mesh, MeshStandardMaterial, Object3D, Scene, Texture } from 'three';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+import { PromiseLoader } from '../utils/loader';
 
 export abstract class AbstractObject {
 
   url: string;
-  loader: GLTFLoader = new GLTFLoader();
+  private gltfLoader: GLTFLoader = new GLTFLoader();
+  loader: PromiseLoader = new PromiseLoader(this.gltfLoader);
   scene: Scene;
 
   protected constructor(modelUrl: string) {
     this.url = modelUrl;
-    this.loader.setDRACOLoader(new DRACOLoader());
+    this.gltfLoader.setDRACOLoader(new DRACOLoader());
   }
 
-  load(): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.loader.load(this.url, gltf => {
-        this.handleGltf(gltf);
-        resolve();
-      }, undefined, reject);
-    });
+  async load() {
+    const gltf = await this.loader.load(this.url);
+    this.handleGltf(gltf);
   }
 
   protected handleGltf(gltf) {

@@ -42,44 +42,35 @@ export class SlimeModel extends BodyModel {
     this.chassisDataBlue = undefined;
   }
 
-  load(): Promise<any> {
-    const modelPromise = new Promise((resolve, reject) => {
-      this.loader.load(this.url, gltf => {
-        this.handleGltf(gltf);
-        resolve();
-      }, undefined, reject);
-    });
+  async load() {
+    const modelTask = this.loader.load(this.url);
+    const bodyOrangeTask = this.textureLoader.load(BODY_ORANGE);
+    const bodyBlueTask = this.textureLoader.load(BODY_BLUE);
+    const chassisOrangeTask = this.textureLoader.load(CHASSIS_ORANGE);
+    const chassisBlueTask = this.textureLoader.load(CHASSIS_BLUE);
 
-    const promises = [
-      this.textureLoader.load(BODY_ORANGE),
-      this.textureLoader.load(BODY_BLUE),
-      this.textureLoader.load(CHASSIS_ORANGE),
-      this.textureLoader.load(CHASSIS_BLUE),
-      modelPromise
-    ];
+    const gltf = await modelTask;
+    this.handleGltf(gltf);
 
-    return new Promise((resolve, reject) => {
-      Promise.all(promises).then(values => {
-        this.bodyDataOrange = values[0].data;
-        this.bodyDataBlue = values[1].data;
-        this.chassisDataOrange = values[2].data;
-        this.chassisDataBlue = values[3].data;
+    const result = await bodyOrangeTask;
 
-        this.bodyData = new Uint8ClampedArray(this.bodyDataBlue);
-        this.chassisData = new Uint8ClampedArray(this.chassisDataBlue);
+    this.bodyDataOrange = result.data;
+    this.bodyDataBlue = (await bodyBlueTask).data;
+    this.chassisDataOrange = (await chassisOrangeTask).data;
+    this.chassisDataBlue = (await chassisBlueTask).data;
 
-        this.bodyTexture = new DataTexture(this.bodyData, values[0].width, values[0].height, RGBAFormat);
-        this.chassisTexture = new DataTexture(this.chassisData, values[0].width, values[0].height, RGBAFormat);
+    this.bodyData = new Uint8ClampedArray(this.bodyDataBlue);
+    this.chassisData = new Uint8ClampedArray(this.chassisDataBlue);
 
-        this.bodyMaterial.map = this.bodyTexture;
-        this.chassisMaterial.map = this.chassisTexture;
+    this.bodyTexture = new DataTexture(this.bodyData, result.width, result.height, RGBAFormat);
+    this.chassisTexture = new DataTexture(this.chassisData, result.width, result.height, RGBAFormat);
 
-        this.lensMaterial.color.setRGB(0, 0, 0.8);
+    this.bodyMaterial.map = this.bodyTexture;
+    this.chassisMaterial.map = this.chassisTexture;
 
-        this.applyTextures();
-        resolve();
-      }, reject);
-    });
+    this.lensMaterial.color.setRGB(0, 0, 0.8);
+
+    this.applyTextures();
   }
 
   handleModel(scene: Scene) {
@@ -103,8 +94,7 @@ export class SlimeModel extends BodyModel {
   setPaintColor(color: Color) {
   }
 
-  changeDecal(decal: Decal, paints: { [p: string]: string }): Promise<any> {
-    return Promise.resolve();
+  async changeDecal(decal: Decal, paints: { [p: string]: string }) {
   }
 
   setPrimaryColor(color: Color) {

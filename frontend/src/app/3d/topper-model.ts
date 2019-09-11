@@ -68,20 +68,19 @@ export class TopperModel extends AbstractObject implements Paintable {
     });
   }
 
-  load(): Promise<any> {
-    const promises = [super.load()];
+  async load() {
+    const superTask = super.load();
 
     if (this.skin) {
-      promises.push(this.skin.load());
+      await this.skin.load();
     }
 
-    return new Promise<any>((resolve, reject) => Promise.all(promises).then(() => {
-      if (this.skin) {
-        this.material.map = this.skin.texture;
-        this.applyTexture();
-      }
-      resolve();
-    }, reject));
+    await superTask;
+
+    if (this.skin) {
+      this.material.map = this.skin.texture;
+      this.applyTexture();
+    }
   }
 
   private applyTexture() {

@@ -1,11 +1,12 @@
 import { TgaRgbaLoader } from '../utils/tga-rgba-loader';
 import { Color, DataTexture, RepeatWrapping, RGBAFormat } from 'three';
 import { disposeIfExists } from '../utils/util';
+import { PromiseLoader } from '../utils/loader';
 
 export abstract class RgbaMapPipeTexture {
   baseUrl: string;
   rgbaMapUrl: string;
-  loader: TgaRgbaLoader = new TgaRgbaLoader();
+  loader: PromiseLoader = new PromiseLoader(new TgaRgbaLoader());
 
   base: Uint8ClampedArray;
   rgbaMap: Uint8ClampedArray;
@@ -30,41 +31,27 @@ export abstract class RgbaMapPipeTexture {
   /**
    * Load the textures.
    */
-  load(): Promise<any> {
-    const promises = [];
+  async load() {
+    let baseTask = this.loader.load(this.baseUrl);
+    let rgbaMapTask = this.loader.load(this.rgbaMapUrl);
 
-    if (this.baseUrl !== undefined) {
-      promises.push(new Promise((resolve, reject) => {
-        this.loader.load(this.baseUrl, buffer => {
-          this.base = buffer.data;
-          resolve(buffer);
-        }, undefined, reject);
-      }));
+    const baseResult = await baseTask;
+    const rgbaMapResult = await rgbaMapTask;
+
+    if (baseResult != undefined) {
+      this.base = baseResult.data;
+      this.width = baseResult.width;
+      this.height = baseResult.height;
     }
 
-    if (this.rgbaMapUrl !== undefined) {
-      promises.push(new Promise((resolve, reject) => {
-        this.loader.load(this.rgbaMapUrl, buffer => {
-          this.rgbaMap = buffer.data;
-          resolve(buffer);
-        }, undefined, reject);
-      }));
+    if (rgbaMapResult != undefined) {
+      this.rgbaMap = rgbaMapResult.data;
     }
 
-    return new Promise((resolve, reject) => {
-      Promise.all(promises).then(values => {
-        if (values.length > 0) {
-          this.width = values[0].width;
-          this.height = values[0].height;
-        }
-
-        this.data = new Uint8Array(this.width * this.height * 4);
-        this.texture = new DataTexture(this.data, this.width, this.height, RGBAFormat);
-        this.texture.wrapS = RepeatWrapping;
-        this.texture.wrapT = RepeatWrapping;
-        resolve();
-      }, reject);
-    });
+    this.data = new Uint8Array(this.width * this.height * 4);
+    this.texture = new DataTexture(this.data, this.width, this.height, RGBAFormat);
+    this.texture.wrapS = RepeatWrapping;
+    this.texture.wrapT = RepeatWrapping;
   }
 
   /**
