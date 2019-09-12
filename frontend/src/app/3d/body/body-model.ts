@@ -13,6 +13,7 @@ import { Layer, LayeredTexture } from '../layered-texture';
 import { getChannel, ImageChannel } from '../../utils/image';
 import { BLACK } from '../../utils/color';
 import { PaintConfig } from '../../service/loadout.service';
+import { AxleSettings } from '../../model/axle-settings';
 
 class ChassisSkin {
 
@@ -73,7 +74,7 @@ export class BodyModel extends AbstractObject implements Paintable {
   chassisSkin: ChassisSkin;
 
   hitboxConfig: { [key: string]: any };
-  wheelSettings: { [key: string]: any };
+  wheelSettings: { [key: string]: AxleSettings };
   wheelPositions: { [key: string]: any };
 
   hatSocket: Object3D;
@@ -133,7 +134,10 @@ export class BodyModel extends AbstractObject implements Paintable {
       this.hitboxConfig = scene.userData.hitbox;
     }
     if ('wheelSettings' in scene.userData) {
-      this.wheelSettings = scene.userData.wheelSettings;
+      this.wheelSettings = {
+        frontAxle: AxleSettings.fromObject(scene.userData.wheelSettings.frontAxle),
+        backAxle: AxleSettings.fromObject(scene.userData.wheelSettings.backAxle),
+      };
     }
 
     this.hatSocket = scene.getObjectByName('HatSocket');
