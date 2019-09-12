@@ -7,6 +7,7 @@ import { SkeletonUtils } from 'three/examples/jsm/utils/SkeletonUtils';
 import { overBlendColors } from '../utils/color';
 import { disposeIfExists } from '../utils/util';
 import { Paintable } from './paintable';
+import { PaintConfig } from '../service/loadout.service';
 
 const BASE_RADIUS = 16.313;
 const BASE_WIDTH = 14.5288;
@@ -53,7 +54,7 @@ export class WheelsModel extends AbstractObject implements Paintable {
   rimMaterial: MeshStandardMaterial;
   rimSkin: RimSkin;
 
-  constructor(wheel: Wheel, paints: { [key: string]: string }) {
+  constructor(wheel: Wheel, paints: PaintConfig) {
     super(getAssetUrl(wheel.model));
     if (wheel.rim_base && wheel.rim_rgb_map) {
       this.rimSkin = new RimSkin(

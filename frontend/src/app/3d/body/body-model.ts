@@ -12,6 +12,7 @@ import { BodyTexture } from './body-texture';
 import { Layer, LayeredTexture } from '../layered-texture';
 import { getChannel, ImageChannel } from '../../utils/image';
 import { BLACK } from '../../utils/color';
+import { PaintConfig } from '../../service/loadout.service';
 
 class ChassisSkin {
 
@@ -78,7 +79,7 @@ export class BodyModel extends AbstractObject implements Paintable {
   hatSocket: Object3D;
   antennaSocket: Object3D;
 
-  constructor(body: Body, decal: Decal, paints: { [key: string]: string }) {
+  constructor(body: Body, decal: Decal, paints: PaintConfig) {
     super(getAssetUrl(body.model));
 
     this.body = body;
@@ -95,7 +96,7 @@ export class BodyModel extends AbstractObject implements Paintable {
     this.applyPaints(paints);
   }
 
-  initBodySkin(body: Body, decal: Decal, paints: { [key: string]: string }): BodyTexture {
+  initBodySkin(body: Body, decal: Decal, paints: PaintConfig): BodyTexture {
     return new StaticSkin(body, decal, paints);
   }
 
@@ -212,7 +213,7 @@ export class BodyModel extends AbstractObject implements Paintable {
     }
   }
 
-  private applyPaints(paints: { [key: string]: string }) {
+  private applyPaints(paints: PaintConfig) {
     if (this.chassisSkin != undefined) {
       this.chassisSkin.setPaint(paints.body != undefined ? new Color(paints.body) : undefined);
     }
@@ -224,7 +225,7 @@ export class BodyModel extends AbstractObject implements Paintable {
     }
   }
 
-  async changeDecal(decal: Decal, paints: { [key: string]: string }) {
+  async changeDecal(decal: Decal, paints: PaintConfig) {
     this.bodySkin.dispose();
     this.bodySkin = new StaticSkin(this.body, decal, paints);
     await this.bodySkin.load();

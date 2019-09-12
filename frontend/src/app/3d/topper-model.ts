@@ -6,6 +6,7 @@ import { overBlendColors } from '../utils/color';
 import { getAssetUrl } from '../utils/network';
 import { disposeIfExists } from '../utils/util';
 import { Paintable } from './paintable';
+import { PaintConfig } from '../service/loadout.service';
 
 class TopperSkin extends RgbaMapPipeTexture {
 
@@ -42,7 +43,7 @@ export class TopperModel extends AbstractObject implements Paintable {
   material: MeshStandardMaterial;
   skin: TopperSkin;
 
-  constructor(topper: Topper, paints: { [key: string]: string }) {
+  constructor(topper: Topper, paints: PaintConfig) {
     super(getAssetUrl(topper.model));
 
     if (topper.base_texture && topper.rgba_map) {

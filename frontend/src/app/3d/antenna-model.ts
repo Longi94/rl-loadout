@@ -5,6 +5,7 @@ import { Object3D, Scene } from 'three';
 import { PromiseLoader } from '../utils/loader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+import { PaintConfig } from '../service/loadout.service';
 
 export class AntennaModel extends AbstractObject {
 
@@ -14,7 +15,7 @@ export class AntennaModel extends AbstractObject {
 
   socket: Object3D;
 
-  constructor(antenna: Antenna, paints: { [key: string]: string }) {
+  constructor(antenna: Antenna, paints: PaintConfig) {
     super(getAssetUrl(antenna.stick));
     this.antennaUrl = getAssetUrl(antenna.model);
 

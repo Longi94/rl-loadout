@@ -7,8 +7,9 @@ import { DarkCarModel } from './dark-car-model';
 import { EggplantModel } from './eggplant-model';
 import { SlimeModel } from './slime-model';
 import { FelineModel } from './feline-model';
+import { PaintConfig } from '../../service/loadout.service';
 
-export function createBodyModel(body: Body, decal: Decal, paints: {}): BodyModel {
+export function createBodyModel(body: Body, decal: Decal, paints: PaintConfig): BodyModel {
   switch (body.id) {
     case BODY_MAPLE_ID:
       return new MapleModel(body, decal, paints);

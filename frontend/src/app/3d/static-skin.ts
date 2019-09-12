@@ -7,6 +7,7 @@ import { TgaRgbaLoader } from '../utils/tga-rgba-loader';
 import { Layer, LayeredTexture } from './layered-texture';
 import { Body } from '../model/body';
 import { getChannel, getMaskPixels, ImageChannel } from '../utils/image';
+import { PaintConfig } from '../service/loadout.service';
 
 
 export class StaticSkin implements BodyTexture {
@@ -40,7 +41,7 @@ export class StaticSkin implements BodyTexture {
   private decalPixels: number[];
   private decalPaintPixels: number[];
 
-  constructor(body: Body, decal: Decal, paints: { [key: string]: string }) {
+  constructor(body: Body, decal: Decal, paints: PaintConfig) {
     this.baseUrl = getAssetUrl(decal.base_texture);
     this.rgbaMapUrl = getAssetUrl(decal.rgba_map);
     this.bodyBaseSkinUrl = getAssetUrl(body.base_skin);

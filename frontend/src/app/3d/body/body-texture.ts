@@ -6,6 +6,6 @@ export interface BodyTexture {
   setPaint(color: Color);
   setBodyPaint(color: Color);
   dispose();
-  load();
+  load(): Promise<any>;
   getTexture(): Texture;
 }

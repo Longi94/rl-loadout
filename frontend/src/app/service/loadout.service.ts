@@ -13,6 +13,15 @@ import { BODY_MAPLE_ID, BODY_SLIME_ID } from '../utils/ids';
 
 const HOST = `${environment.backend}/internal`;
 
+export class PaintConfig {
+  primary: string = DEFAULT_BLUE_TEAM;
+  accent: string =  DEFAULT_ACCENT;
+  body: string;
+  decal: string;
+  wheel: string;
+  topper: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -26,14 +35,7 @@ export class LoadoutService {
   private decalSubject: Subject<Decal> = new Subject<Decal>();
   decalChanged$: Observable<Decal> = this.decalSubject.asObservable();
 
-  paints = {
-    primary: DEFAULT_BLUE_TEAM,
-    accent: DEFAULT_ACCENT,
-    body: undefined,
-    decal: undefined,
-    wheel: undefined,
-    topper: undefined
-  };
+  paints = new PaintConfig();
   private paintSubject: Subject<any> = new Subject();
   paintChanged$: Observable<any> = this.paintSubject.asObservable();
 
