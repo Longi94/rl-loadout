@@ -438,7 +438,7 @@ export class CanvasComponent implements OnInit {
       console.warn(`The hitbox of body ${body.name} is unknown.`);
       this.notifierService.notify('warning', `Hitbox of ${body.name} is unknown.`);
     } else {
-      if (this.body.hitboxConfig.translationX == undefined || this.body.hitboxConfig.translationZ == undefined) {
+      if (this.body.hitboxConfig.translateX == undefined || this.body.hitboxConfig.translateZ == undefined) {
         console.warn(`Body ${body.name} missing hitbox translate values.`);
         this.notifierService.notify('warning', `${body.name} has incomplete hitbox data. Hitbox won't be accurate.`);
       }
