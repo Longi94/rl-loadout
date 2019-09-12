@@ -1,5 +1,6 @@
 import os
 import argparse
+import math
 import pandas as pd
 from pygltflib import GLTF2
 
@@ -19,15 +20,20 @@ except FileExistsError:
     pass
 
 
+def get_if_not_nan(row, property, d, key):
+    if not math.isnan(row[property].values[0]):
+        d[key] = row[property].values[0]
+
+
 def row_to_wheel_conf(row):
-    return {
-        'wheelMeshRadius': row['WheelMeshRadius'].values[0],
-        'wheelWidth': row['WheelWidth'].values[0],
-        'wheelMeshOffsetSide': row['WheelMeshOffsetSide'].values[0],
-        'wheelRadius': row['WheelRadius'].values[0],
-        'wheelOffsetForward': row['WheelOffsetForward'].values[0],
-        'wheelOffsetSide': row['WheelOffsetSide'].values[0]
-    }
+    d = {}
+    get_if_not_nan(row, 'WheelMeshRadius', d, 'wheelMeshRadius')
+    get_if_not_nan(row, 'WheelWidth', d, 'wheelWidth')
+    get_if_not_nan(row, 'WheelMeshOffsetSide', d, 'wheelMeshOffsetSide')
+    get_if_not_nan(row, 'WheelRadius', d, 'wheelRadius')
+    get_if_not_nan(row, 'WheelOffsetForward', d, 'wheelOffsetForward')
+    get_if_not_nan(row, 'WheelOffsetSide', d, 'wheelOffsetSide')
+    return d
 
 
 for file in files:

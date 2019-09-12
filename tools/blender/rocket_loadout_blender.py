@@ -150,23 +150,39 @@ class ImportWheelSettings(bpy.types.Operator):
 
         body = next(body for body in bodies if body['ProductsDB.ProductsDB'].lower() == self.products_db.lower())
 
+        front_axle = {}
+
+        if body['FrontAxle.WheelMeshRadius']:
+            front_axle['wheelMeshRadius'] = float(body['FrontAxle.WheelMeshRadius'])
+        if body['FrontAxle.WheelWidth']:
+            front_axle['wheelWidth'] = float(body['FrontAxle.WheelWidth'])
+        if body['FrontAxle.WheelMeshOffsetSide']:
+            front_axle['wheelMeshOffsetSide'] = float(body['FrontAxle.WheelMeshOffsetSide'])
+        if body['FrontAxle.WheelRadius']:
+            front_axle['wheelRadius'] = float(body['FrontAxle.WheelRadius'])
+        if body['FrontAxle.WheelOffsetForward']:
+            front_axle['wheelOffsetForward'] = float(body['FrontAxle.WheelOffsetForward'])
+        if body['FrontAxle.WheelOffsetSide']:
+            front_axle['wheelOffsetSide'] = float(body['FrontAxle.WheelOffsetSide'])
+
+        back_axle = {}
+
+        if body['BackAxle.WheelMeshRadius']:
+            back_axle['wheelMeshRadius'] = float(body['BackAxle.WheelMeshRadius'])
+        if body['BackAxle.WheelWidth']:
+            back_axle['wheelWidth'] = float(body['BackAxle.WheelWidth'])
+        if body['BackAxle.WheelMeshOffsetSide']:
+            back_axle['wheelMeshOffsetSide'] = float(body['BackAxle.WheelMeshOffsetSide'])
+        if body['BackAxle.WheelRadius']:
+            back_axle['wheelRadius'] = float(body['BackAxle.WheelRadius'])
+        if body['BackAxle.WheelOffsetForward']:
+            back_axle['wheelOffsetForward'] = float(body['BackAxle.WheelOffsetForward'])
+        if body['BackAxle.WheelOffsetSide']:
+            back_axle['wheelOffsetSide'] = float(body['BackAxle.WheelOffsetSide'])
+
         context.scene['wheelSettings'] = {
-            'frontAxle': {
-                'wheelMeshRadius': float(body['FrontAxle.WheelMeshRadius']),
-                'wheelWidth': float(body['FrontAxle.WheelWidth']),
-                'wheelMeshOffsetSide': float(body['FrontAxle.WheelMeshOffsetSide']),
-                'wheelRadius': float(body['FrontAxle.WheelRadius']),
-                'wheelOffsetForward': float(body['FrontAxle.WheelOffsetForward']),
-                'wheelOffsetSide': float(body['FrontAxle.WheelOffsetSide'])
-            },
-            'backAxle': {
-                'wheelMeshRadius': float(body['BackAxle.WheelMeshRadius']),
-                'wheelWidth': float(body['BackAxle.WheelWidth']),
-                'wheelMeshOffsetSide': float(body['BackAxle.WheelMeshOffsetSide']),
-                'wheelRadius': float(body['BackAxle.WheelRadius']),
-                'wheelOffsetForward': float(body['BackAxle.WheelOffsetForward']),
-                'wheelOffsetSide': float(body['BackAxle.WheelOffsetSide'])
-            }
+            'frontAxle': front_axle,
+            'backAxle': back_axle
         }
 
         hitbox = {
