@@ -17,8 +17,6 @@ class EggplantBodySkin implements BodyTexture {
   private readonly baseUrl;
   private readonly blankSkinUrl;
 
-  private baseSkinMap: Uint8ClampedArray;
-  private blankSkinMap: Uint8ClampedArray;
   private primary: Color;
 
   private texture: LayeredTexture;
@@ -38,12 +36,12 @@ class EggplantBodySkin implements BodyTexture {
 
     const baseResult = await baseTask;
 
-    this.baseSkinMap = baseResult.data;
-    this.blankSkinMap = (await rgbaMapTask).data;
+    const baseSkinMap = baseResult.data;
+    const blankSkinMap = (await rgbaMapTask).data;
 
-    this.texture = new LayeredTexture(this.baseSkinMap, baseResult.width, baseResult.height);
+    this.texture = new LayeredTexture(baseSkinMap, baseResult.width, baseResult.height);
 
-    const primaryMask = getChannel(this.blankSkinMap, ImageChannel.A);
+    const primaryMask = getChannel(blankSkinMap, ImageChannel.A);
     invertChannel(primaryMask);
     this.primaryLayer = new Layer(primaryMask, this.primary);
     this.primaryPixels = getMaskPixels(primaryMask);

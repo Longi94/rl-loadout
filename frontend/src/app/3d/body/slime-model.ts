@@ -20,9 +20,6 @@ export class SlimeModel extends BodyModel {
   private chassisDataOrange: Uint8ClampedArray;
   private chassisDataBlue: Uint8ClampedArray;
 
-  private bodyData: Uint8ClampedArray;
-  private chassisData: Uint8ClampedArray;
-
   private bodyTexture: DataTexture;
   private chassisTexture: DataTexture;
 
@@ -36,8 +33,6 @@ export class SlimeModel extends BodyModel {
     super.dispose();
     this.bodyTexture.dispose();
     this.chassisTexture.dispose();
-    this.bodyData = undefined;
-    this.chassisData = undefined;
     this.bodyDataOrange = undefined;
     this.bodyDataBlue = undefined;
     this.chassisDataOrange = undefined;
@@ -61,11 +56,8 @@ export class SlimeModel extends BodyModel {
     this.chassisDataOrange = (await chassisOrangeTask).data;
     this.chassisDataBlue = (await chassisBlueTask).data;
 
-    this.bodyData = new Uint8ClampedArray(this.bodyDataBlue);
-    this.chassisData = new Uint8ClampedArray(this.chassisDataBlue);
-
-    this.bodyTexture = new DataTexture(this.bodyData, result.width, result.height, RGBAFormat);
-    this.chassisTexture = new DataTexture(this.chassisData, result.width, result.height, RGBAFormat);
+    this.bodyTexture = new DataTexture(new Uint8ClampedArray(this.bodyDataBlue), result.width, result.height, RGBAFormat);
+    this.chassisTexture = new DataTexture(new Uint8ClampedArray(this.chassisDataBlue), result.width, result.height, RGBAFormat);
 
     this.bodyMaterial.map = this.bodyTexture;
     this.chassisMaterial.map = this.chassisTexture;
