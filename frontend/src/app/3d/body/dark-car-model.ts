@@ -1,70 +1,101 @@
 import { BodyModel } from './body-model';
-import { RgbaMapPipeTexture } from '../rgba-map-pipe-texture';
 import { Color, Texture } from 'three';
 import { Decal } from '../../model/decal';
 import { BodyTexture } from './body-texture';
-import { BLACK, overBlendColors } from '../../utils/color';
+import { Layer, LayeredTexture } from '../layered-texture';
+import { PromiseLoader } from '../../utils/loader';
+import { TgaRgbaLoader } from '../../utils/tga-rgba-loader';
+import { PaintConfig } from '../../service/loadout.service';
+import { Body } from '../../model/body';
+import { getAssetUrl } from '../../utils/network';
+import { getChannel, getMaskPixels, ImageChannel, invertChannel } from '../../utils/image';
+import { BLACK } from '../../utils/color';
 
-class DarkCarBodySkin extends RgbaMapPipeTexture implements BodyTexture {
+class DarkCarBodySkin implements BodyTexture {
 
-  accent: Color;
-  baseSkinMap: Uint8ClampedArray;
-  blankSkinMap: Uint8ClampedArray;
-  bodyPaint: Color;
-  paint: Color;
-  primary: Color;
-  private colorHolder = new Color();
-  private colorHolder2 = new Color();
+  private readonly loader = new PromiseLoader(new TgaRgbaLoader());
 
-  constructor(baseUrl: string, rgbaMapUrl: string) {
-    super(baseUrl, rgbaMapUrl);
+  private readonly baseUrl;
+  private readonly blankSkinUrl;
+
+  private baseSkinMap: Uint8ClampedArray;
+  private blankSkinMap: Uint8ClampedArray;
+  private primary: Color;
+
+  private texture: LayeredTexture;
+
+  private primaryLayer: Layer;
+  private primaryPixels: number[];
+
+  constructor(body: Body, paints: PaintConfig) {
+    this.baseUrl = getAssetUrl(body.base_skin);
+    this.blankSkinUrl = getAssetUrl(body.blank_skin);
+    this.primary = new Color(paints.primary);
   }
 
-  getColor(i: number): Color {
-    this.colorHolder2.setRGB(
-      this.base[i] / 255,
-      this.base[i + 1] / 255,
-      this.base[i + 2] / 255
-    );
+  async load() {
+    const baseTask = this.loader.load(this.baseUrl);
+    const rgbaMapTask = this.loader.load(this.blankSkinUrl);
 
-    if (this.rgbaMap[i + 2] === 255) {
-      return this.colorHolder2;
-    }
+    const baseResult = await baseTask;
 
-    this.colorHolder.set(this.primary);
+    this.baseSkinMap = baseResult.data;
+    this.blankSkinMap = (await rgbaMapTask).data;
 
-    if (this.rgbaMap[i + 3] > 0) {
+    this.texture = new LayeredTexture(this.baseSkinMap, baseResult.width, baseResult.height);
 
-      overBlendColors(this.colorHolder2, this.colorHolder, this.rgbaMap[i + 3], this.colorHolder);
+    const shadowMask = getChannel(this.blankSkinMap, ImageChannel.G);
+    invertChannel(shadowMask);
 
-      if (this.rgbaMap[i + 1] < 255) {
-        overBlendColors(BLACK, this.colorHolder, 255 - this.rgbaMap[i + 1], this.colorHolder);
-      }
-    }
+    const primaryMask = getChannel(this.blankSkinMap, ImageChannel.A);
+    invertChannel(primaryMask);
 
-    return this.colorHolder;
+    this.primaryLayer = new Layer(primaryMask, this.primary);
+    this.primaryPixels = getMaskPixels(primaryMask);
+
+    this.texture.addLayer(new Layer(shadowMask, BLACK));
+    this.texture.addLayer(this.primaryLayer);
+    this.texture.update();
+  }
+
+  dispose() {
+    this.texture.dispose();
+  }
+
+  setAccent(color: Color) {
+  }
+
+  setBodyPaint(color: Color) {
+  }
+
+  setPaint(color: Color) {
+  }
+
+  setPrimary(color: Color) {
+    this.primary = color;
+    this.primaryLayer.data = color;
+    this.texture.update(this.primaryPixels);
   }
 
   getTexture(): Texture {
-    return this.texture;
+    return this.texture.texture;
   }
 }
 
 export class DarkCarModel extends BodyModel {
 
-  initBodySkin(decal: Decal): BodyTexture {
-    return new DarkCarBodySkin(this.baseSkinMapUrl, this.blankSkinMapUrl);
+  initBodySkin(body: Body, decal: Decal, paints: PaintConfig): BodyTexture {
+    return new DarkCarBodySkin(body, paints);
   }
 
   setPaintColor(color: Color) {
   }
 
-  async changeDecal(decal: Decal, paints: { [p: string]: string }) {
+  async changeDecal(decal: Decal, paints: PaintConfig) {
   }
 
   setPrimaryColor(color: Color) {
-    this.bodySkin.primary = color;
-    this.bodySkin.update();
+    this.bodySkin.setPrimary(color);
   }
 
   setAccentColor(color: Color) {
