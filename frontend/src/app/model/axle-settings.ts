@@ -1,3 +1,8 @@
+export class WheelSettings {
+  frontAxle: AxleSettings;
+  backAxle: AxleSettings;
+}
+
 export class AxleSettings {
   wheelMeshRadius = 15.0;
   wheelWidth = 15.0;

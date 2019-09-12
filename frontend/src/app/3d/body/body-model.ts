@@ -13,7 +13,8 @@ import { Layer, LayeredTexture } from '../layered-texture';
 import { getChannel, ImageChannel } from '../../utils/image';
 import { BLACK } from '../../utils/color';
 import { PaintConfig } from '../../service/loadout.service';
-import { AxleSettings } from '../../model/axle-settings';
+import { AxleSettings, WheelSettings } from '../../model/axle-settings';
+import { HitboxConfig } from '../../model/hitbox-config';
 
 class ChassisSkin {
 
@@ -73,8 +74,8 @@ export class BodyModel extends AbstractObject implements Paintable {
   bodySkin: BodyTexture;
   chassisSkin: ChassisSkin;
 
-  hitboxConfig: { [key: string]: any };
-  wheelSettings: { [key: string]: AxleSettings };
+  hitboxConfig: HitboxConfig;
+  wheelSettings: WheelSettings;
   wheelPositions: { [key: string]: any };
 
   hatSocket: Object3D;
