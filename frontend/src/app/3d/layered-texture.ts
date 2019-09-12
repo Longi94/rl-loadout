@@ -31,7 +31,7 @@ export class LayeredTexture {
     }
 
     if (pixel != undefined) {
-      for (let i of pixel) {
+      for (const i of pixel) {
         this.updatePixel(i);
       }
     } else {

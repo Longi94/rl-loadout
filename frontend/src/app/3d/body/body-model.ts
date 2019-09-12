@@ -4,7 +4,7 @@ import { Body } from '../../model/body';
 import { PromiseLoader } from '../../utils/loader';
 import { TgaRgbaLoader } from '../../utils/tga-rgba-loader';
 import { getAssetUrl } from '../../utils/network';
-import { disposeIfExists, timed } from '../../utils/util';
+import { disposeIfExists } from '../../utils/util';
 import { Paintable } from '../paintable';
 import { StaticSkin } from '../static-skin';
 import { Decal } from '../../model/decal';
@@ -165,14 +165,12 @@ export class BodyModel extends AbstractObject implements Paintable {
 
   private applyChassisSkin(paintUpdate: boolean = false) {
     if (this.chassisMaterial != undefined && this.chassisSkin != undefined) {
-      timed('Chassis texture generation', () => {
-        if (paintUpdate) {
-          this.chassisSkin.updatePaint();
-        } else {
-          this.chassisSkin.texture.update();
-        }
-        this.chassisMaterial.needsUpdate = true;
-      });
+      if (paintUpdate) {
+        this.chassisSkin.updatePaint();
+      } else {
+        this.chassisSkin.texture.update();
+      }
+      this.chassisMaterial.needsUpdate = true;
     }
   }
 
