@@ -1,40 +1,54 @@
 import { AbstractObject } from './object';
 import { Color, Mesh, MeshStandardMaterial, Scene } from 'three';
 import { Topper } from '../model/topper';
-import { RgbaMapPipeTexture } from './rgba-map-pipe-texture';
-import { overBlendColors } from '../utils/color';
 import { getAssetUrl } from '../utils/network';
 import { disposeIfExists } from '../utils/util';
 import { Paintable } from './paintable';
 import { PaintConfig } from '../service/loadout.service';
+import { PromiseLoader } from '../utils/loader';
+import { TgaRgbaLoader } from '../utils/tga-rgba-loader';
+import { Layer, LayeredTexture } from './layered-texture';
+import { getChannel, getMaskPixels, ImageChannel, invertChannel } from '../utils/image';
 
-class TopperSkin extends RgbaMapPipeTexture {
+class TopperSkin {
 
-  paint: Color;
-  private colorHolder = new Color();
-  private baseHolder = new Color();
+  private readonly loader: PromiseLoader = new PromiseLoader(new TgaRgbaLoader());
 
-  constructor(baseUrl, rgbaMapUrl, paint) {
-    super(baseUrl, rgbaMapUrl);
+  private paint: Color;
+  texture: LayeredTexture;
+  private paintLayer: Layer;
+  private paintPixels: number[];
 
+  constructor(private readonly baseUrl, private readonly rgbaMapUrl, paint) {
     if (paint != undefined) {
       this.paint = new Color(paint);
     }
   }
 
-  getColor(i: number): Color {
-    this.baseHolder.setRGB(
-      this.base[i] / 255,
-      this.base[i + 1] / 255,
-      this.base[i + 2] / 255
-    );
+  async load() {
+    const baseTask = this.loader.load(this.baseUrl);
+    const rgbaMapTask = this.loader.load(this.rgbaMapUrl);
 
-    if (this.paint != undefined && this.rgbaMap[i + 3] > 0) {
-      overBlendColors(this.paint, this.baseHolder, this.rgbaMap[i + 3], this.colorHolder);
-      return this.colorHolder;
-    } else {
-      return this.baseHolder;
+    const baseResult = await baseTask;
+
+    if (baseResult != undefined) {
+      const rgbaMap = (await rgbaMapTask).data;
+      this.texture = new LayeredTexture(baseResult.data, baseResult.width, baseResult.height);
+
+      const paintMask = getChannel(rgbaMap, ImageChannel.A);
+
+      this.paintLayer = new Layer(paintMask, this.paint);
+      this.paintPixels = getMaskPixels(paintMask);
+
+      this.texture.addLayer(this.paintLayer);
+      this.texture.update();
     }
+  }
+
+  setPaint(color: Color) {
+    this.paint = color;
+    this.paintLayer.data = color;
+    this.texture.update(this.paintPixels);
   }
 }
 
@@ -79,22 +93,14 @@ export class TopperModel extends AbstractObject implements Paintable {
     await superTask;
 
     if (this.skin) {
-      this.material.map = this.skin.texture;
-      this.applyTexture();
-    }
-  }
-
-  private applyTexture() {
-    if (this.skin) {
-      this.skin.update();
+      this.material.map = this.skin.texture.texture;
       this.material.needsUpdate = true;
     }
   }
 
   setPaintColor(color: Color) {
     if (this.skin) {
-      this.skin.paint = color;
-      this.applyTexture();
+      this.skin.setPaint(color);
     }
   }
 }

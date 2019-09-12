@@ -1,44 +1,59 @@
 import { AbstractObject } from './object';
 import { Color, Mesh, MeshStandardMaterial, Object3D, Scene, Vector3 } from 'three';
-import { RgbaMapPipeTexture } from './rgba-map-pipe-texture';
 import { Wheel } from '../model/wheel';
 import { getAssetUrl } from '../utils/network';
 import { SkeletonUtils } from 'three/examples/jsm/utils/SkeletonUtils';
-import { overBlendColors } from '../utils/color';
 import { disposeIfExists } from '../utils/util';
 import { Paintable } from './paintable';
 import { PaintConfig } from '../service/loadout.service';
+import { Layer, LayeredTexture } from './layered-texture';
+import { PromiseLoader } from '../utils/loader';
+import { TgaRgbaLoader } from '../utils/tga-rgba-loader';
+import { getChannel, getMaskPixels, ImageChannel, invertChannel } from '../utils/image';
 
 const BASE_RADIUS = 16.313;
 const BASE_WIDTH = 14.5288;
 
-class RimSkin extends RgbaMapPipeTexture {
+class RimSkin {
 
-  paint: Color;
-  private colorHolder = new Color();
-  private baseHolder = new Color();
+  private readonly loader: PromiseLoader = new PromiseLoader(new TgaRgbaLoader());
 
-  constructor(baseUrl, rgbaMapUrl, paint) {
-    super(baseUrl, rgbaMapUrl);
+  private paint: Color;
+  texture: LayeredTexture;
+  private paintLayer: Layer;
+  private paintPixels: number[];
 
+  constructor(private readonly baseUrl, private readonly rgbaMapUrl, paint) {
     if (paint != undefined) {
       this.paint = new Color(paint);
     }
   }
 
-  getColor(i: number): Color {
-    this.baseHolder.setRGB(
-      this.base[i] / 255,
-      this.base[i + 1] / 255,
-      this.base[i + 2] / 255
-    );
+  async load() {
+    const baseTask = this.loader.load(this.baseUrl);
+    const rgbaMapTask = this.loader.load(this.rgbaMapUrl);
 
-    if (this.paint != undefined) {
-      overBlendColors(this.paint, this.baseHolder, 255 - this.rgbaMap[i], this.colorHolder);
-      return this.colorHolder;
-    } else {
-      return this.baseHolder;
+    const baseResult = await baseTask;
+
+    if (baseResult != undefined) {
+      const rgbaMap = (await rgbaMapTask).data;
+      this.texture = new LayeredTexture(baseResult.data, baseResult.width, baseResult.height);
+
+      const paintMask = getChannel(rgbaMap, ImageChannel.R);
+      invertChannel(paintMask);
+
+      this.paintLayer = new Layer(paintMask, this.paint);
+      this.paintPixels = getMaskPixels(paintMask);
+
+      this.texture.addLayer(this.paintLayer);
+      this.texture.update();
     }
+  }
+
+  setPaint(color: Color) {
+    this.paint = color;
+    this.paintLayer.data = color;
+    this.texture.update(this.paintPixels);
   }
 }
 
@@ -85,9 +100,9 @@ export class WheelsModel extends AbstractObject implements Paintable {
     await superTask;
 
     if (this.rimSkin) {
-      this.rimMaterial.map = this.rimSkin.texture;
+      this.rimMaterial.map = this.rimSkin.texture.texture;
+      this.rimMaterial.needsUpdate = true;
     }
-    this.applyRimSkin();
   }
 
   handleModel(scene: Scene) {
@@ -163,17 +178,9 @@ export class WheelsModel extends AbstractObject implements Paintable {
     scene.remove(this.wheels.fr, this.wheels.fl, this.wheels.br, this.wheels.bl);
   }
 
-  private applyRimSkin() {
-    if (this.rimMaterial != undefined && this.rimSkin != undefined) {
-      this.rimSkin.update();
-      this.rimMaterial.needsUpdate = true;
-    }
-  }
-
   setPaintColor(paint: Color) {
     if (this.rimSkin != undefined) {
-      this.rimSkin.paint = paint;
-      this.applyRimSkin();
+      this.rimSkin.setPaint(paint);
     }
   }
 }
