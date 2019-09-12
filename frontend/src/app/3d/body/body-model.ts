@@ -60,21 +60,16 @@ class ChassisSkin {
 
 export class BodyModel extends AbstractObject implements Paintable {
 
+  private readonly body: Body;
+
   textureLoader = new PromiseLoader(new TgaRgbaLoader());
 
   skeleton: Bone;
   bodyMaterial: MeshStandardMaterial;
   chassisMaterial: MeshStandardMaterial;
 
-  blankSkinMapUrl: string;
-  blankSkinMap: Uint8ClampedArray;
-
   bodySkin: BodyTexture;
   chassisSkin: ChassisSkin;
-
-  // base colors of the body
-  baseSkinMapUrl: string;
-  baseSkinMap: Uint8ClampedArray;
 
   hitboxConfig: { [key: string]: any };
   wheelSettings: { [key: string]: any };
@@ -85,10 +80,10 @@ export class BodyModel extends AbstractObject implements Paintable {
 
   constructor(body: Body, decal: Decal, paints: { [key: string]: string }) {
     super(getAssetUrl(body.model));
-    this.blankSkinMapUrl = getAssetUrl(body.blank_skin);
-    this.baseSkinMapUrl = getAssetUrl(body.base_skin);
 
-    this.bodySkin = this.initBodySkin(decal);
+    this.body = body;
+
+    this.bodySkin = this.initBodySkin(body, decal, paints);
 
     if (body.chassis_base && body.chassis_n) {
       this.chassisSkin = new ChassisSkin(
@@ -100,8 +95,8 @@ export class BodyModel extends AbstractObject implements Paintable {
     this.applyPaints(paints);
   }
 
-  initBodySkin(decal: Decal): BodyTexture {
-    return new StaticSkin(decal);
+  initBodySkin(body: Body, decal: Decal, paints: { [key: string]: string }): BodyTexture {
+    return new StaticSkin(body, decal, paints);
   }
 
   dispose() {
@@ -114,8 +109,6 @@ export class BodyModel extends AbstractObject implements Paintable {
 
   async load() {
     const superTask = super.load();
-    const blankSkinTask = this.textureLoader.load(this.blankSkinMapUrl);
-    const baseSkinTask = this.textureLoader.load(this.baseSkinMapUrl);
     const bodySkinTask = this.bodySkin.load();
 
     if (this.chassisSkin != undefined) {
@@ -124,9 +117,6 @@ export class BodyModel extends AbstractObject implements Paintable {
 
     await superTask;
     await bodySkinTask;
-
-    this.blankSkinMap = (await blankSkinTask).data;
-    this.baseSkinMap = (await baseSkinTask).data;
 
     this.applyDecal();
     this.updateDecal();
@@ -211,29 +201,18 @@ export class BodyModel extends AbstractObject implements Paintable {
     if (this.chassisSkin != undefined) {
       this.chassisSkin.setPaint(color);
     }
-    this.bodySkin.bodyPaint = color;
+    this.bodySkin.setBodyPaint(color);
     this.updateDecal();
     this.applyChassisSkin(true);
   }
 
   private applyDecal() {
     if (this.bodySkin != undefined) {
-      this.bodySkin.blankSkinMap = this.blankSkinMap;
-      this.bodySkin.baseSkinMap = this.baseSkinMap;
       this.bodyMaterial.map = this.bodySkin.getTexture();
     }
   }
 
   private applyPaints(paints: { [key: string]: string }) {
-    if (this.bodySkin != undefined) {
-      this.bodySkin.primary = new Color(paints.primary);
-      this.bodySkin.accent = new Color(paints.accent);
-
-      this.bodySkin.paint = paints.decal != undefined ? new Color(paints.decal) : undefined;
-
-      this.bodySkin.bodyPaint = paints.body != undefined ? new Color(paints.body) : undefined;
-    }
-
     if (this.chassisSkin != undefined) {
       this.chassisSkin.setPaint(paints.body != undefined ? new Color(paints.body) : undefined);
     }
@@ -241,14 +220,13 @@ export class BodyModel extends AbstractObject implements Paintable {
 
   private updateDecal() {
     if (this.bodySkin) {
-      this.bodySkin.update();
       this.bodyMaterial.needsUpdate = true;
     }
   }
 
   async changeDecal(decal: Decal, paints: { [key: string]: string }) {
     this.bodySkin.dispose();
-    this.bodySkin = new StaticSkin(decal);
+    this.bodySkin = new StaticSkin(this.body, decal, paints);
     await this.bodySkin.load();
     this.applyDecal();
     this.applyPaints(paints);
@@ -256,17 +234,17 @@ export class BodyModel extends AbstractObject implements Paintable {
   }
 
   setPrimaryColor(color: Color) {
-    this.bodySkin.primary = color;
+    this.bodySkin.setPrimary(color);
     this.updateDecal();
   }
 
   setAccentColor(color: Color) {
-    this.bodySkin.accent = color;
+    this.bodySkin.setAccent(color);
     this.updateDecal();
   }
 
   setDecalPaintColor(color: Color) {
-    this.bodySkin.paint = color;
+    this.bodySkin.setPaint(color);
     this.updateDecal();
   }
 }

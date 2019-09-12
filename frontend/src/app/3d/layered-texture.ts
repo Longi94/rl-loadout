@@ -8,7 +8,7 @@ export class LayeredTexture {
   private readonly colorHolder = new Color();
   private readonly colorHolder2 = new Color();
 
-  constructor(private readonly base: Uint8ClampedArray, width: number, height: number) {
+  constructor(private base?: Uint8ClampedArray, width?: number, height?: number) {
     this.data = new Uint8ClampedArray(this.base);
     this.texture = new DataTexture(this.data, width, height);
   }
@@ -51,7 +51,7 @@ export class LayeredTexture {
     );
 
     for (const layer of this.layers) {
-      if (layer.data == undefined) {
+      if (layer.data == undefined || layer.mask == undefined) {
         continue;
       }
 
