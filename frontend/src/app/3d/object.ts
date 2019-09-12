@@ -64,7 +64,6 @@ export abstract class AbstractObject {
       if (object instanceof Mesh) {
         const mat = object.material as MeshStandardMaterial;
         mat.envMap = envMap;
-        mat.envMapIntensity = 1.0;
         mat.needsUpdate = true;
       }
     });

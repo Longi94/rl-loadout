@@ -154,6 +154,9 @@ export class BodyModel extends AbstractObject implements Paintable {
           this.bodyMaterial = mat;
         } else if (matName.includes('chassis')) {
           this.chassisMaterial = mat;
+        } else if (matName === 'window_material') {
+          mat.envMapIntensity = 5.0;
+          mat.needsUpdate = true;
         }
       }
     });
