@@ -1,63 +1,96 @@
 import { BodyModel } from './body-model';
-import { RgbaMapPipeTexture } from '../rgba-map-pipe-texture';
 import { Color, Texture } from 'three';
 import { Decal } from '../../model/decal';
 import { BodyTexture } from './body-texture';
-import { overBlendColors } from '../../utils/color';
+import { Body } from '../../model/body';
+import { PaintConfig } from '../../service/loadout.service';
+import { PromiseLoader } from '../../utils/loader';
+import { TgaRgbaLoader } from '../../utils/tga-rgba-loader';
+import { Layer, LayeredTexture } from '../layered-texture';
+import { getAssetUrl } from '../../utils/network';
+import { getChannel, getMaskPixels, ImageChannel, invertChannel } from '../../utils/image';
 
-class EggplantBodySkin extends RgbaMapPipeTexture implements BodyTexture {
+class EggplantBodySkin implements BodyTexture {
 
-  accent: Color;
-  baseSkinMap: Uint8ClampedArray;
-  blankSkinMap: Uint8ClampedArray;
-  bodyPaint: Color;
-  paint: Color;
-  primary: Color;
-  private bodyColor = new Color('#111111');
-  private colorHolder = new Color();
+  private readonly loader = new PromiseLoader(new TgaRgbaLoader());
 
-  constructor(baseUrl: string, rgbaMapUrl: string) {
-    super(baseUrl, rgbaMapUrl);
+  private readonly baseUrl;
+  private readonly blankSkinUrl;
+
+  private baseSkinMap: Uint8ClampedArray;
+  private blankSkinMap: Uint8ClampedArray;
+  private primary: Color;
+
+  private texture: LayeredTexture;
+
+  private primaryLayer: Layer;
+  private primaryPixels: number[];
+
+  constructor(body: Body, paints: PaintConfig) {
+    this.baseUrl = getAssetUrl(body.base_skin);
+    this.blankSkinUrl = getAssetUrl(body.blank_skin);
+    this.primary = new Color(paints.primary);
   }
 
-  getColor(i: number): Color {
-    this.colorHolder.setRGB(
-      this.base[i] / 255,
-      this.base[i + 1] / 255,
-      this.base[i + 2] / 255,
-    );
+  async load() {
+    const baseTask = this.loader.load(this.baseUrl);
+    const rgbaMapTask = this.loader.load(this.blankSkinUrl);
 
-    if (this.rgbaMap[i + 3] === 255) {
-      return this.bodyColor;
-    }
+    const baseResult = await baseTask;
 
-    this.colorHolder.set(this.bodyColor);
+    this.baseSkinMap = baseResult.data;
+    this.blankSkinMap = (await rgbaMapTask).data;
 
-    overBlendColors(this.primary, this.colorHolder, 255 - this.rgbaMap[i + 3], this.colorHolder);
+    this.texture = new LayeredTexture(this.baseSkinMap, baseResult.width, baseResult.height);
 
-    return this.colorHolder;
+    const primaryMask = getChannel(this.blankSkinMap, ImageChannel.A);
+    invertChannel(primaryMask);
+    this.primaryLayer = new Layer(primaryMask, this.primary);
+    this.primaryPixels = getMaskPixels(primaryMask);
+
+    this.texture.addLayer(new Layer(true, new Color('#111111')));
+    this.texture.addLayer(this.primaryLayer);
+    this.texture.update();
+  }
+
+  dispose() {
+    this.texture.dispose();
+  }
+
+  setAccent(color: Color) {
+  }
+
+  setBodyPaint(color: Color) {
+  }
+
+  setPaint(color: Color) {
+  }
+
+  setPrimary(color: Color) {
+    this.primary = color;
+    this.primaryLayer.data = color;
+    this.texture.update(this.primaryPixels);
   }
 
   getTexture(): Texture {
-    return this.texture;
+    return this.texture.texture;
   }
 }
 
 export class EggplantModel extends BodyModel {
 
-  initBodySkin(decal: Decal): BodyTexture {
-    return new EggplantBodySkin(this.baseSkinMapUrl, this.blankSkinMapUrl);
+  initBodySkin(body: Body, decal: Decal, paints: PaintConfig): BodyTexture {
+    return new EggplantBodySkin(body, paints);
   }
 
   setPaintColor(color: Color) {
   }
 
-  async changeDecal(decal: Decal, paints: { [p: string]: string }) {
+  async changeDecal(decal: Decal, paints: PaintConfig) {
   }
 
   setPrimaryColor(color: Color) {
-    this.bodySkin.primary = color;
-    this.bodySkin.update();
+    this.bodySkin.setPrimary(color);
   }
 
   setAccentColor(color: Color) {
