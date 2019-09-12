@@ -23,51 +23,53 @@ export class LayeredTexture {
 
   /**
    * Update the texture.
-   * @param mask the layer to use as an update mask, only pixels are updated where this layer has a non-zero alpha
+   * @pixel mask the pixel indexes to update (divisible by 4)
    */
-  update(mask?: number | Layer) {
+  update(pixel?: number[]) {
     if (this.layers.length === 0) {
       return;
     }
 
-    if (typeof mask === 'number') {
-      mask = this.layers[mask];
-    }
-
-    for (let i = 0; i < this.data.length; i += 4) {
-      if (mask != undefined && mask.getAlpha(i) === 0) {
-        continue;
+    if (pixel != undefined) {
+      for (let i of pixel) {
+        this.updatePixel(i);
       }
-
-      this.colorHolder.setRGB(
-        this.base[i] / 255,
-        this.base[i + 1] / 255,
-        this.base[i + 2] / 255
-      );
-
-      for (const layer of this.layers) {
-        if (layer.data == undefined) {
-          continue;
-        }
-
-        const alpha = layer.getAlpha(i / 4);
-
-        if (alpha === 0) {
-          continue;
-        }
-
-        layer.getColor(i, this.colorHolder2);
-
-        overBlendColors(this.colorHolder2, this.colorHolder, alpha, this.colorHolder);
+    } else {
+      for (let i = 0; i < this.data.length; i += 4) {
+        this.updatePixel(i);
       }
-
-      this.data[i] = this.colorHolder.r * 255;
-      this.data[i + 1] = this.colorHolder.g * 255;
-      this.data[i + 2] = this.colorHolder.b * 255;
-      this.data[i + 3] = 255;
     }
 
     this.texture.needsUpdate = true;
+  }
+
+  private updatePixel(i: number) {
+    this.colorHolder.setRGB(
+      this.base[i] / 255,
+      this.base[i + 1] / 255,
+      this.base[i + 2] / 255
+    );
+
+    for (const layer of this.layers) {
+      if (layer.data == undefined) {
+        continue;
+      }
+
+      const alpha = layer.getAlpha(i / 4);
+
+      if (alpha === 0) {
+        continue;
+      }
+
+      layer.getColor(i, this.colorHolder2);
+
+      overBlendColors(this.colorHolder2, this.colorHolder, alpha, this.colorHolder);
+    }
+
+    this.data[i] = this.colorHolder.r * 255;
+    this.data[i + 1] = this.colorHolder.g * 255;
+    this.data[i + 2] = this.colorHolder.b * 255;
+    this.data[i + 3] = 255;
   }
 }
 

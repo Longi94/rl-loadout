@@ -18,6 +18,7 @@ class ChassisSkin {
   private tgaLoader = new PromiseLoader(new TgaRgbaLoader());
   private paint: Color = BLACK;
   private paintLayer: Layer;
+  private paintPixels: number[];
   texture: LayeredTexture;
 
   constructor(private baseUrl: string, private rgbaMapUrl: string) {
@@ -32,7 +33,16 @@ class ChassisSkin {
 
     this.texture = new LayeredTexture(baseResult.data, baseResult.width, baseResult.height);
 
-    this.paintLayer = new Layer(getChannel(rgbaMapResult.data, ImageChannel.R), this.paint);
+    const alphaChannel = getChannel(rgbaMapResult.data, ImageChannel.R);
+
+    this.paintPixels = [];
+    for (let i = 0; i < alphaChannel.length; i++) {
+      if (alphaChannel[i] > 0) {
+        this.paintPixels.push(i * 4);
+      }
+    }
+
+    this.paintLayer = new Layer(alphaChannel, this.paint);
     this.texture.addLayer(this.paintLayer);
   }
 
@@ -44,7 +54,7 @@ class ChassisSkin {
   }
 
   updatePaint() {
-    this.texture.update(this.paintLayer);
+    this.texture.update(this.paintPixels);
   }
 }
 
