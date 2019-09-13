@@ -50,12 +50,12 @@ export class HitboxModel {
 
       const translate = new Vector3();
 
-      if (body.hitboxConfig.translateX != undefined) {
-        translate.setX(-body.hitboxConfig.translateX);
+      if (body.hitboxConfig.translationX != undefined) {
+        translate.setX(-body.hitboxConfig.translationX);
       }
 
-      if (body.hitboxConfig.translateX != undefined) {
-        translate.setY(-body.hitboxConfig.translateX);
+      if (body.hitboxConfig.translationZ != undefined) {
+        translate.setY(-body.hitboxConfig.translationZ);
       }
 
       pos.add(translate);
