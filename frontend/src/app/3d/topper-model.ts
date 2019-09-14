@@ -8,21 +8,17 @@ import { PaintConfig } from '../service/loadout.service';
 import { PromiseLoader } from '../utils/loader';
 import { TgaRgbaLoader } from '../utils/tga-rgba-loader';
 import { Layer, LayeredTexture } from './layered-texture';
-import { getChannel, getMaskPixels, ImageChannel, invertChannel } from '../utils/image';
+import { getChannel, getMaskPixels, ImageChannel } from '../utils/image';
 
 class TopperSkin {
 
   private readonly loader: PromiseLoader = new PromiseLoader(new TgaRgbaLoader());
 
-  private paint: Color;
   texture: LayeredTexture;
   private paintLayer: Layer;
   private paintPixels: number[];
 
-  constructor(private readonly baseUrl, private readonly rgbaMapUrl, paint) {
-    if (paint != undefined) {
-      this.paint = new Color(paint);
-    }
+  constructor(private readonly baseUrl, private readonly rgbaMapUrl, private paint: Color) {
   }
 
   async load() {

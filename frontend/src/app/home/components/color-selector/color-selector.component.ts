@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { LoadoutService } from '../../../service/loadout.service';
 import {
   ACCENT_COLORS,
-  BLUE_PRIMARY_COLORS, getColorsForBody,
+  getColorsForBody,
   getTextColor,
-  ORANGE_PRIMARY_COLORS,
   PAINT_COLORS
 } from '../../../utils/color';
+import { Color } from 'three';
 
 @Component({
   selector: 'app-color-selector',
@@ -66,13 +66,13 @@ export class ColorSelectorComponent implements OnInit {
     this.blueColors = primaryColors.blue;
 
     for (const key of Object.keys(this.loadoutService.paints)) {
-      this.colors[key].value = this.loadoutService.paints[key];
-      this.colors[key].textColor = getTextColor(this.colors[key].value);
+      this.colors[key].value = `#${this.loadoutService.paints[key].getHexString()}`;
+      this.colors[key].textColor = getTextColor(this.loadoutService.paints[key]);
     }
   }
 
   colorChanged(color: string, type: string) {
-    this.colors[type].textColor = getTextColor(color);
+    this.colors[type].textColor = getTextColor(new Color(color));
     this.loadoutService.setPaint(type, color);
   }
 

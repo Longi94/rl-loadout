@@ -28,7 +28,7 @@ class FelineBodySkin implements BodyTexture {
   constructor(body: Body, paints: PaintConfig) {
     this.baseUrl = getAssetUrl(body.base_skin);
     this.blankSkinUrl = getAssetUrl(body.blank_skin);
-    this.primary = new Color(paints.primary);
+    this.primary = paints.primary;
   }
 
   async load() {

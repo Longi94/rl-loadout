@@ -47,16 +47,10 @@ export class StaticSkin implements BodyTexture {
     this.bodyBaseSkinUrl = getAssetUrl(body.base_skin);
     this.bodyBlankSkinUrl = getAssetUrl(body.blank_skin);
 
-    this.primary = new Color(paints.primary);
-    this.accent = new Color(paints.accent);
-
-    if (paints.decal) {
-      this.paint = new Color(paints.decal);
-    }
-
-    if (paints.body) {
-      this.bodyPaint = new Color(paints.body);
-    }
+    this.primary = paints.primary;
+    this.accent = paints.accent;
+    this.paint = paints.decal;
+    this.bodyPaint = paints.body;
   }
 
   async load() {

@@ -10,16 +10,17 @@ import { COLOR_MAPLE_BLUE, DEFAULT_ACCENT, DEFAULT_BLUE_TEAM } from '../utils/co
 import { Topper } from '../model/topper';
 import { Antenna } from '../model/antenna';
 import { BODY_MAPLE_ID, BODY_SLIME_ID } from '../utils/ids';
+import { Color } from 'three';
 
 const HOST = `${environment.backend}/internal`;
 
 export class PaintConfig {
-  primary: string = DEFAULT_BLUE_TEAM;
-  accent: string =  DEFAULT_ACCENT;
-  body: string;
-  decal: string;
-  wheel: string;
-  topper: string;
+  primary: Color = new Color(DEFAULT_BLUE_TEAM);
+  accent: Color = new Color(DEFAULT_ACCENT);
+  body: Color;
+  decal: Color;
+  wheel: Color;
+  topper: Color;
 }
 
 @Injectable({
@@ -59,7 +60,8 @@ export class LoadoutService {
     this.decalSubject.next(decal);
   }
 
-  setPaint(type: string, color: string) {
+  setPaint(type: string, colorStr: string) {
+    const color = colorStr == undefined ? undefined : new Color(colorStr);
     this.paints[type] = color;
     this.paintSubject.next({type, color});
   }
@@ -76,7 +78,7 @@ export class LoadoutService {
     switch (body.id) {
       case BODY_MAPLE_ID:
       case BODY_SLIME_ID:
-        this.paints.primary = COLOR_MAPLE_BLUE;
+        this.paints.primary = new Color(COLOR_MAPLE_BLUE);
         break;
     }
 

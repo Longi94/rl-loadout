@@ -299,24 +299,12 @@ export function overBlendColors(foreground: Color, background: Color, foreground
  *
  * @param backgroundColor color of background in #FFFFFF format
  */
-export function getTextColor(backgroundColor: string) {
+export function getTextColor(backgroundColor: Color) {
   if (backgroundColor == undefined) {
     return 'white';
   }
-  const bg = hexToRgb(backgroundColor);
-  const o = Math.round(((bg.r * 299) + (bg.g * 587) + (bg.b * 114)) / 1000);
+  const o = Math.round(((backgroundColor.r * 76245) + (backgroundColor.g * 149685) + (backgroundColor.b * 29070)) / 1000);
   return (o > 125) ? 'black' : 'white';
-}
-
-const HEX_REGEX = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i;
-
-function hexToRgb(hex) {
-  const result = HEX_REGEX.exec(hex);
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : undefined;
 }
 
 export function getColorsForBody(body: Body): { [team: string]: string[] } {

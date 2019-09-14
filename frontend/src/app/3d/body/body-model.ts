@@ -221,7 +221,7 @@ export class BodyModel extends AbstractObject implements Paintable {
 
   private applyPaints(paints: PaintConfig) {
     if (this.chassisSkin != undefined) {
-      this.chassisSkin.setPaint(paints.body != undefined ? new Color(paints.body) : undefined);
+      this.chassisSkin.setPaint(paints.body);
     }
   }
 
