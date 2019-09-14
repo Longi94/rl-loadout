@@ -58,7 +58,7 @@ paths:
   /textures/body:
     get:
       summary: 'Generate a body texture'
-      description: 'Generate a body texture based on the body and provided colors'
+      description: 'Generate a body texture based on the body and provided colors. Custom colors will override any preset colors. If no colors are provided, the default blue/orange colors will be used depending on the "team" parameter.'
       operationId: controllers.textures.body.get
       tags:
         - texture
@@ -76,7 +76,16 @@ paths:
         - name: primary_color
           in: query
           required: false
-          description: 'The primary color of the body in 0xFFFFFF integer format. If not provided, the default blue is applied.'
+          description: 'The ID primary color of the body.'
+          example: 35
+          schema:
+            type: integer
+            maximum: 69
+            minimum: 0
+        - name: primary_color_custom
+          in: query
+          required: false
+          description: 'Custom primary color of the body in 0xFFFFFF integer format.'
           example: 16777215
           schema:
             type: integer
@@ -85,7 +94,16 @@ paths:
         - name: body_paint
           in: query
           required: false
-          description: 'The color of the paint applied to the body'
+          description: 'The ID of the paint. See https://github.com/Longi94/rl-loadout/blob/master/backend/rocket/paint.py for list of IDs.'
+          example: 1
+          schema:
+            type: integer
+            maximum: 13
+            minimum: 0
+        - name: body_paint_custom
+          in: query
+          required: false
+          description: 'Custom body paint color of the body in 0xFFFFFF integer format.'
           example: 16777215
           schema:
             type: integer
@@ -99,6 +117,7 @@ paths:
           schema:
             type: integer
             enum: [0, 1]
+            default: 0
       responses:
         200:
           description: 'Returns the texture in the chosen format'
@@ -116,7 +135,7 @@ paths:
   /textures/chassis:
     get:
       summary: 'Generate a chassis texture'
-      description: 'Generate a chassis texture based on the body and provided colors. Only a few bodies need this as most of the chassis is not paintable.'
+      description: 'Generate a chassis texture based on the body and provided colors. Only a few bodies need this as most of the chassis is not paintable. Custom colors will override any preset colors.'
       operationId: controllers.textures.chassis.get
       tags:
         - texture
@@ -131,7 +150,16 @@ paths:
         - name: body_paint
           in: query
           required: false
-          description: 'The color of the paint applied to the body'
+          description: 'The ID of the paint. See https://github.com/Longi94/rl-loadout/blob/master/backend/rocket/paint.py for list of IDs.'
+          example: 1
+          schema:
+            type: integer
+            maximum: 13
+            minimum: 0
+        - name: body_paint_custom
+          in: query
+          required: false
+          description: 'Custom body paint color of the body in 0xFFFFFF integer format.'
           example: 16777215
           schema:
             type: integer
@@ -145,6 +173,7 @@ paths:
           schema:
             type: integer
             enum: [0, 1]
+            default: 0
       responses:
         200:
           description: 'Returns the texture in the chosen format'
