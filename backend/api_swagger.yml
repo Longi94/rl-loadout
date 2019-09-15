@@ -147,6 +147,24 @@ paths:
           description: 'The ID of the body used in replay files'
           schema:
             type: integer
+        - name: primary_color
+          in: query
+          required: false
+          description: 'The ID primary color of the body. Currently only needed for the DeLorean.'
+          example: 35
+          schema:
+            type: integer
+            maximum: 69
+            minimum: 0
+        - name: primary_color_custom
+          in: query
+          required: false
+          description: 'Custom primary color of the body in 0xFFFFFF integer format. Currently only needed for the DeLorean.'
+          example: 16777215
+          schema:
+            type: integer
+            maximum: 16777215
+            minimum: 0
         - name: body_paint
           in: query
           required: false

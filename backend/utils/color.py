@@ -1,5 +1,6 @@
 from typing import List
 from rocket.paint import *
+from rocket.team import TEAM_ORANGE
 
 BLUE_PRIMARY_COLORS = [
     0x507F39,
@@ -284,3 +285,19 @@ def int_to_rgb_array(n: int) -> List[int] or None:
         n & 255,
         255
     )
+
+
+def get_primary_color(primary_id: int, custom: int, team: int):
+    if custom is not None:
+        return custom
+
+    if team == TEAM_ORANGE:
+        if primary_id is None:
+            return DEFAULT_ORANGE_TEAM
+        else:
+            return ORANGE_PRIMARY_COLORS[primary_id]
+    else:
+        if primary_id is None:
+            return DEFAULT_BLUE_TEAM
+        else:
+            return BLUE_PRIMARY_COLORS[primary_id]
