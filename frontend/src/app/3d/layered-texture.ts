@@ -1,4 +1,4 @@
-import { Color, DataTexture } from 'three';
+import { Color, DataTexture, RepeatWrapping } from 'three';
 import { overBlendColors } from '../utils/color';
 
 export class LayeredTexture {
@@ -11,6 +11,8 @@ export class LayeredTexture {
   constructor(private base?: Uint8ClampedArray, width?: number, height?: number) {
     this.data = new Uint8ClampedArray(this.base);
     this.texture = new DataTexture(this.data, width, height);
+    this.texture.wrapS = RepeatWrapping;
+    this.texture.wrapT = RepeatWrapping;
   }
 
   dispose() {
