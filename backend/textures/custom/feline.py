@@ -23,7 +23,7 @@ def get_feline_body_texture(body: Body, color: int):
     red_data[red_data < 42] = 0
     red.putdata(red_data)
 
-    body_img = Image.new('RGBA', base.size, 'black')
+    body_img = Image.new('RGBA', base.size, 0x0D0D0D)
     body_img.putalpha(red)
 
     alpha = rgba_map.getchannel('A')

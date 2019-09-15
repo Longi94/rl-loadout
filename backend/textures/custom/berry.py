@@ -8,9 +8,9 @@ from utils.network import get_asset_url, load_pil_image
 log = logging.getLogger(__name__)
 
 
-def get_eggplant_body_texture(body: Body, color: int):
+def get_berry_body_texture(body: Body, color: int):
     rgba_map = load_pil_image(get_asset_url(body.blank_skin))
-    base = Image.new('RGBA', rgba_map.size, 0x333333)
+    base = Image.new('RGBA', rgba_map.size, 0x404040)
 
     start = time.time()
 
