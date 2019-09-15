@@ -2,7 +2,6 @@ import { BodyModel } from './body-model';
 import { Decal } from '../../model/decal';
 import { BodyTexture } from './body-texture';
 import { Color, Texture } from 'three';
-import { BLACK } from '../../utils/color';
 import { Body } from '../../model/body';
 import { PaintConfig } from '../../service/loadout.service';
 import { PromiseLoader } from '../../utils/loader';
@@ -56,7 +55,7 @@ class FelineBodySkin implements BodyTexture {
 
     const backLightMask = getChannel(blankSkinMap, ImageChannel.G);
 
-    this.texture.addLayer(new Layer(bodyMask, BLACK));
+    this.texture.addLayer(new Layer(bodyMask, new Color(0.04943346, 0.04943346, 0.04943346)));
     this.texture.addLayer(this.primaryLayer);
     this.texture.addLayer(new Layer(backLightMask, new Color('#7f0000')));
     this.texture.update();

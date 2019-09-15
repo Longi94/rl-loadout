@@ -17,6 +17,7 @@ import { SlimeModel } from './slime-model';
 import { FelineModel } from './feline-model';
 import { PaintConfig } from '../../service/loadout.service';
 import { GreyCarModel } from './grey-car-model';
+import { BerryModel } from './berry-model';
 
 export function createBodyModel(body: Body, decal: Decal, paints: PaintConfig): BodyModel {
   switch (body.id) {
@@ -29,7 +30,7 @@ export function createBodyModel(body: Body, decal: Decal, paints: PaintConfig): 
     case BODY_SLIME_ID:
       return new SlimeModel(body, decal, paints);
     case BODY_BERRY_ID:
-      return new EggplantModel(body, decal, paints);
+      return new BerryModel(body, decal, paints);
     case BODY_FELINE_ID:
       return new FelineModel(body, decal, paints);
     case BODY_GREY_CAR_ID:

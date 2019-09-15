@@ -10,7 +10,7 @@ import { Layer, LayeredTexture } from '../layered-texture';
 import { getAssetUrl } from '../../utils/network';
 import { getChannel, getMaskPixels, ImageChannel, invertChannel } from '../../utils/image';
 
-class EggplantBodySkin implements BodyTexture {
+class BerryBodySkin implements BodyTexture {
 
   private readonly loader = new PromiseLoader(new TgaRgbaLoader());
 
@@ -46,7 +46,7 @@ class EggplantBodySkin implements BodyTexture {
     this.primaryLayer = new Layer(primaryMask, this.primary);
     this.primaryPixels = getMaskPixels(primaryMask);
 
-    this.texture.addLayer(new Layer(true, new Color(0.1988877, 0.1988877, 0.1988877)));
+    this.texture.addLayer(new Layer(true, new Color(0.25, 0.25, 0.25)));
     this.texture.addLayer(this.primaryLayer);
     this.texture.update();
   }
@@ -75,10 +75,10 @@ class EggplantBodySkin implements BodyTexture {
   }
 }
 
-export class EggplantModel extends BodyModel {
+export class BerryModel extends BodyModel {
 
   initBodySkin(body: Body, decal: Decal, paints: PaintConfig): BodyTexture {
-    return new EggplantBodySkin(body, paints);
+    return new BerryBodySkin(body, paints);
   }
 
   setPaintColor(color: Color) {
