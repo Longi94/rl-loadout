@@ -24,7 +24,12 @@ class ChassisSkin {
   private paintPixels: number[];
   texture: LayeredTexture;
 
-  constructor(private baseUrl: string, private rgbaMapUrl: string) {
+  constructor(private baseUrl: string, private rgbaMapUrl: string, paints: PaintConfig) {
+    this.paint = paints.body;
+  }
+
+  dispose() {
+    this.texture.dispose();
   }
 
   async load() {
@@ -47,6 +52,7 @@ class ChassisSkin {
 
     this.paintLayer = new Layer(alphaChannel, this.paint);
     this.texture.addLayer(this.paintLayer);
+    this.texture.update();
   }
 
   setPaint(paint: Color) {
@@ -54,6 +60,7 @@ class ChassisSkin {
     if (this.paintLayer != undefined) {
       this.paintLayer.data = paint;
     }
+    this.updatePaint();
   }
 
   updatePaint() {
@@ -91,11 +98,10 @@ export class BodyModel extends AbstractObject implements Paintable {
     if (body.chassis_base && body.chassis_n) {
       this.chassisSkin = new ChassisSkin(
         getAssetUrl(body.chassis_base),
-        getAssetUrl(body.chassis_n)
+        getAssetUrl(body.chassis_n),
+        paints
       );
     }
-
-    this.applyPaints(paints);
   }
 
   initBodySkin(body: Body, decal: Decal, paints: PaintConfig): BodyTexture {
@@ -126,7 +132,7 @@ export class BodyModel extends AbstractObject implements Paintable {
 
     if (this.chassisSkin) {
       this.chassisMaterial.map = this.chassisSkin.texture.texture;
-      this.applyChassisSkin();
+      this.chassisMaterial.needsUpdate = true;
     }
   }
 
@@ -171,17 +177,6 @@ export class BodyModel extends AbstractObject implements Paintable {
     };
   }
 
-  private applyChassisSkin(paintUpdate: boolean = false) {
-    if (this.chassisMaterial != undefined && this.chassisSkin != undefined) {
-      if (paintUpdate) {
-        this.chassisSkin.updatePaint();
-      } else {
-        this.chassisSkin.texture.update();
-      }
-      this.chassisMaterial.needsUpdate = true;
-    }
-  }
-
   private getWheelPositions() {
     const config = {};
 
@@ -210,18 +205,11 @@ export class BodyModel extends AbstractObject implements Paintable {
     }
     this.bodySkin.setBodyPaint(color);
     this.updateDecal();
-    this.applyChassisSkin(true);
   }
 
   private applyDecal() {
     if (this.bodySkin != undefined) {
       this.bodyMaterial.map = this.bodySkin.getTexture();
-    }
-  }
-
-  private applyPaints(paints: PaintConfig) {
-    if (this.chassisSkin != undefined) {
-      this.chassisSkin.setPaint(paints.body);
     }
   }
 
@@ -236,7 +224,6 @@ export class BodyModel extends AbstractObject implements Paintable {
     this.bodySkin = new StaticSkin(this.body, decal, paints);
     await this.bodySkin.load();
     this.applyDecal();
-    this.applyPaints(paints);
     this.updateDecal();
   }
 
