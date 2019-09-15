@@ -13,6 +13,7 @@ export class LayeredTexture {
     this.texture = new DataTexture(this.data, width, height);
     this.texture.wrapS = RepeatWrapping;
     this.texture.wrapT = RepeatWrapping;
+    this.texture.needsUpdate = true;
   }
 
   dispose() {

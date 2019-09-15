@@ -7,6 +7,12 @@ export function getChannel(data: Uint8ClampedArray, channel: ImageChannel): Uint
   return new Uint8ClampedArray(yieldChannel(data, channel));
 }
 
+function* yieldChannel(data: Uint8ClampedArray, channel: ImageChannel) {
+  for (let i = 0; i < data.length; i += 4) {
+    yield data[i + channel];
+  }
+}
+
 export function invertChannel(channel: Uint8ClampedArray) {
   if (channel == undefined) {
     return;
@@ -29,8 +35,12 @@ export function getMaskPixels(mask: Uint8ClampedArray): number[] {
   return result;
 }
 
-function* yieldChannel(data: Uint8ClampedArray, channel: ImageChannel) {
-  for (let i = 0; i < data.length; i += 4) {
-    yield data[i + channel];
+export function opaque(data: Uint8ClampedArray): Uint8ClampedArray {
+  const newData = new Uint8ClampedArray(data);
+
+  for (let i = 0; i < newData.length; i += 4) {
+    newData[i + 3] = 255;
   }
+
+  return newData;
 }

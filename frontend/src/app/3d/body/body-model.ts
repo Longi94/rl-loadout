@@ -9,64 +9,11 @@ import { Paintable } from '../paintable';
 import { StaticSkin } from '../static-skin';
 import { Decal } from '../../model/decal';
 import { BodyTexture } from './body-texture';
-import { Layer, LayeredTexture } from '../layered-texture';
-import { getChannel, ImageChannel } from '../../utils/image';
-import { BLACK } from '../../utils/color';
 import { PaintConfig } from '../../service/loadout.service';
 import { AxleSettings, WheelSettings } from '../../model/axle-settings';
 import { HitboxConfig } from '../../model/hitbox-config';
+import { ChassisSkin } from '../chassis-skin';
 
-class ChassisSkin {
-
-  private tgaLoader = new PromiseLoader(new TgaRgbaLoader());
-  private paint: Color = BLACK;
-  private paintLayer: Layer;
-  private paintPixels: number[];
-  texture: LayeredTexture;
-
-  constructor(private baseUrl: string, private rgbaMapUrl: string, paints: PaintConfig) {
-    this.paint = paints.body;
-  }
-
-  dispose() {
-    this.texture.dispose();
-  }
-
-  async load() {
-    const baseTask = this.tgaLoader.load(this.baseUrl);
-    const rgbaMapTask = this.tgaLoader.load(this.rgbaMapUrl);
-
-    const baseResult = await baseTask;
-    const rgbaMapResult = await rgbaMapTask;
-
-    this.texture = new LayeredTexture(baseResult.data, baseResult.width, baseResult.height);
-
-    const alphaChannel = getChannel(rgbaMapResult.data, ImageChannel.R);
-
-    this.paintPixels = [];
-    for (let i = 0; i < alphaChannel.length; i++) {
-      if (alphaChannel[i] > 0) {
-        this.paintPixels.push(i * 4);
-      }
-    }
-
-    this.paintLayer = new Layer(alphaChannel, this.paint);
-    this.texture.addLayer(this.paintLayer);
-    this.texture.update();
-  }
-
-  setPaint(paint: Color) {
-    this.paint = paint;
-    if (this.paintLayer != undefined) {
-      this.paintLayer.data = paint;
-    }
-    this.updatePaint();
-  }
-
-  updatePaint() {
-    this.texture.update(this.paintPixels);
-  }
-}
 
 export class BodyModel extends AbstractObject implements Paintable {
 
@@ -95,7 +42,7 @@ export class BodyModel extends AbstractObject implements Paintable {
 
     this.bodySkin = this.initBodySkin(body, decal, paints);
 
-    if (body.chassis_base && body.chassis_n) {
+    if (body.chassis_base) {
       this.chassisSkin = new ChassisSkin(
         getAssetUrl(body.chassis_base),
         getAssetUrl(body.chassis_n),
@@ -128,7 +75,6 @@ export class BodyModel extends AbstractObject implements Paintable {
     await bodySkinTask;
 
     this.applyDecal();
-    this.updateDecal();
 
     if (this.chassisSkin) {
       this.chassisMaterial.map = this.chassisSkin.texture.texture;
@@ -204,7 +150,6 @@ export class BodyModel extends AbstractObject implements Paintable {
       this.chassisSkin.setPaint(color);
     }
     this.bodySkin.setBodyPaint(color);
-    this.updateDecal();
   }
 
   private applyDecal() {
@@ -213,32 +158,23 @@ export class BodyModel extends AbstractObject implements Paintable {
     }
   }
 
-  private updateDecal() {
-    if (this.bodySkin) {
-      this.bodyMaterial.needsUpdate = true;
-    }
-  }
-
   async changeDecal(decal: Decal, paints: PaintConfig) {
     this.bodySkin.dispose();
     this.bodySkin = new StaticSkin(this.body, decal, paints);
     await this.bodySkin.load();
     this.applyDecal();
-    this.updateDecal();
   }
 
   setPrimaryColor(color: Color) {
     this.bodySkin.setPrimary(color);
-    this.updateDecal();
   }
 
   setAccentColor(color: Color) {
     this.bodySkin.setAccent(color);
-    this.updateDecal();
+    this.chassisSkin.setAccent(color);
   }
 
   setDecalPaintColor(color: Color) {
     this.bodySkin.setPaint(color);
-    this.updateDecal();
   }
 }

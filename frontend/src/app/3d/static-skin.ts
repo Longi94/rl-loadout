@@ -35,6 +35,7 @@ export class StaticSkin implements BodyTexture {
   private primaryLayer: Layer;
   private decalLayer: Layer;
   private decalPaintLayer: Layer;
+  private bodyAccentLayer: Layer;
 
   private primaryPixels: number[];
   private bodyPaintPixels: number[];
@@ -104,10 +105,17 @@ export class StaticSkin implements BodyTexture {
     this.decalPaintLayer = new Layer(decalPaintMask, this.paint);
     this.decalPaintPixels = getMaskPixels(decalPaintMask);
 
+    const bodyAccentMask = getChannel(this.bodyBlankSkin, ImageChannel.G);
+    this.bodyAccentLayer = new Layer(bodyAccentMask, this.accent);
+
     this.texture.addLayer(this.bodyPaintLayer);
     this.texture.addLayer(this.primaryLayer);
     this.texture.addLayer(this.decalLayer);
     this.texture.addLayer(this.decalPaintLayer);
+
+    if (bodyAccentMask.some(value => value > 0)) {
+      this.texture.addLayer(this.bodyAccentLayer);
+    }
 
     this.texture.update();
   }
@@ -127,7 +135,10 @@ export class StaticSkin implements BodyTexture {
   setAccent(color: Color) {
     this.accent = color;
     this.decalLayer.data = color;
-    this.texture.update(this.decalPixels);
+    if (this.bodyAccentLayer != undefined) {
+      this.bodyAccentLayer.data = color;
+    }
+    this.texture.update();
   }
 
   setPaint(color: Color) {
