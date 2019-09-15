@@ -64,7 +64,7 @@ export class LayeredTexture {
         continue;
       }
 
-      layer.getColor(i, this.colorHolder2);
+      this.colorHolder2.set(layer.data);
 
       overBlendColors(this.colorHolder2, this.colorHolder, alpha, this.colorHolder);
     }
@@ -78,9 +78,9 @@ export class LayeredTexture {
 
 export class Layer {
   mask: Uint8ClampedArray | boolean;
-  data: Uint8ClampedArray | Color;
+  data: Color;
 
-  constructor(mask: Uint8ClampedArray | boolean, data: Uint8ClampedArray | Color) {
+  constructor(mask: Uint8ClampedArray | boolean, data: Color) {
     this.mask = mask;
     this.data = data;
   }
@@ -90,19 +90,6 @@ export class Layer {
       return this.mask[i];
     } else {
       return this.mask ? 255 : 0;
-    }
-  }
-
-  getColor(i: number, color: Color) {
-    if (this.data.constructor === Color) {
-      // @ts-ignore
-      color.set(this.data);
-    } else {
-      color.setRGB(
-        this.data[i] / 255,
-        this.data[i + 1] / 255,
-        this.data[i + 2] / 255
-      );
     }
   }
 }
