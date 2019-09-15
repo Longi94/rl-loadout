@@ -8,6 +8,7 @@ import { Layer, LayeredTexture } from './layered-texture';
 import { Body } from '../model/body';
 import { getChannel, getMaskPixels, ImageChannel } from '../utils/image';
 import { PaintConfig } from '../service/loadout.service';
+import { mergeSets } from '../utils/util';
 
 
 export class StaticSkin implements BodyTexture {
@@ -37,10 +38,10 @@ export class StaticSkin implements BodyTexture {
   private decalPaintLayer: Layer;
   private bodyAccentLayer: Layer;
 
-  private primaryPixels: number[];
-  private bodyPaintPixels: number[];
-  private decalPixels: number[];
-  private decalPaintPixels: number[];
+  private primaryPixels: Set<number>;
+  private bodyPaintPixels: Set<number>;
+  private accentPixels: Set<number>;
+  private decalPaintPixels: Set<number>;
 
   constructor(body: Body, decal: Decal, paints: PaintConfig) {
     this.baseUrl = getAssetUrl(decal.base_texture);
@@ -82,24 +83,24 @@ export class StaticSkin implements BodyTexture {
     this.bodyPaintLayer = new Layer(true, this.bodyPaint);
 
     const primaryMask = getChannel(this.bodyBlankSkin, ImageChannel.R);
-    this.bodyPaintPixels = [];
-    this.primaryPixels = [];
+    this.bodyPaintPixels = new Set<number>();
+    this.primaryPixels = new Set<number>();
     for (let i = 0; i < primaryMask.length; i++) {
       if (primaryMask[i] < 150) {
         primaryMask[i] = 0;
       } else {
-        this.primaryPixels.push(i * 4);
+        this.primaryPixels.add(i * 4);
       }
 
       if (primaryMask[i] < 255) {
-        this.bodyPaintPixels.push(i * 4);
+        this.bodyPaintPixels.add(i * 4);
       }
     }
     this.primaryLayer = new Layer(primaryMask, this.primary);
 
     const decalMask = getChannel(this.decalRgbaMap, ImageChannel.A);
     this.decalLayer = new Layer(decalMask, this.accent);
-    this.decalPixels = getMaskPixels(decalMask);
+    this.accentPixels = getMaskPixels(decalMask);
 
     const decalPaintMask = getChannel(this.decalRgbaMap, ImageChannel.G);
     this.decalPaintLayer = new Layer(decalPaintMask, this.paint);
@@ -115,6 +116,7 @@ export class StaticSkin implements BodyTexture {
 
     if (bodyAccentMask.some(value => value > 0)) {
       this.texture.addLayer(this.bodyAccentLayer);
+      this.accentPixels = mergeSets<number>(this.accentPixels, getMaskPixels(bodyAccentMask));
     }
 
     this.texture.update();
@@ -138,7 +140,7 @@ export class StaticSkin implements BodyTexture {
     if (this.bodyAccentLayer != undefined) {
       this.bodyAccentLayer.data = color;
     }
-    this.texture.update();
+    this.texture.update(this.accentPixels);
   }
 
   setPaint(color: Color) {

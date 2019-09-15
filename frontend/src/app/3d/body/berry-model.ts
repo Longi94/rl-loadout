@@ -22,7 +22,7 @@ class BerryBodySkin implements BodyTexture {
   private texture: LayeredTexture;
 
   private primaryLayer: Layer;
-  private primaryPixels: number[];
+  private primaryPixels: Set<number>;
 
   constructor(body: Body, paints: PaintConfig) {
     this.baseUrl = getAssetUrl(body.base_skin);

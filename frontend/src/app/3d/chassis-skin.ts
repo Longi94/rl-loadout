@@ -10,12 +10,12 @@ export class ChassisSkin {
   private tgaLoader = new PromiseLoader(new TgaRgbaLoader());
   private paint: Color;
   private paintLayer: Layer;
-  private paintPixels: number[];
+  private paintPixels: Set<number>;
   texture: LayeredTexture;
 
   private accent: Color;
   private accentLayer: Layer;
-  private accentPixels: number[];
+  private accentPixels: Set<number>;
 
   constructor(private baseUrl: string, private rgbaMapUrl: string, paints: PaintConfig) {
     this.paint = paints.body;
@@ -38,10 +38,10 @@ export class ChassisSkin {
     if (rgbaMapResult != undefined) {
       const alphaChannel = getChannel(rgbaMapResult.data, ImageChannel.R);
 
-      this.paintPixels = [];
+      this.paintPixels = new Set<number>();
       for (let i = 0; i < alphaChannel.length; i++) {
         if (alphaChannel[i] > 0) {
-          this.paintPixels.push(i * 4);
+          this.paintPixels.add(i * 4);
         }
       }
 

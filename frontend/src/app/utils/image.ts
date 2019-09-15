@@ -22,14 +22,14 @@ export function invertChannel(channel: Uint8ClampedArray) {
   }
 }
 
-export function getMaskPixels(mask: Uint8ClampedArray): number[] {
+export function getMaskPixels(mask: Uint8ClampedArray): Set<number> {
   if (mask == undefined) {
     return undefined;
   }
-  const result = [];
+  const result = new Set<number>();
   for (let i = 0; i < mask.length; i++) {
     if (mask[i] > 0) {
-      result.push(i * 4);
+      result.add(i * 4);
     }
   }
   return result;

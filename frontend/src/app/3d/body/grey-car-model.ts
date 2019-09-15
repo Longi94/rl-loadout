@@ -23,7 +23,7 @@ class GreyCarSkin implements BodyTexture {
   private texture: LayeredTexture;
 
   private primaryLayer: Layer;
-  private primaryPixels: number[];
+  private primaryPixels: Set<number>;
 
   constructor(body: Body, paints: PaintConfig) {
     this.baseUrl = getAssetUrl(body.base_skin);
@@ -45,13 +45,13 @@ class GreyCarSkin implements BodyTexture {
     const primaryMask = getChannel(blankSkinMap, ImageChannel.R);
     const bodyMask = getChannel(blankSkinMap, ImageChannel.A);
 
-    this.primaryPixels = [];
+    this.primaryPixels = new Set<number>();
 
     for (let i = 0; i < primaryMask.length; i++) {
       if (primaryMask[i] < 42) {
         primaryMask[i] = 0;
       } else if (bodyMask[i] < 255) {
-        this.primaryPixels.push(i * 4);
+        this.primaryPixels.add(i * 4);
       }
     }
 

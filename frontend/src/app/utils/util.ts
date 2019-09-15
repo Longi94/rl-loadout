@@ -25,3 +25,18 @@ export function copyMessage(val: string) {
   document.execCommand('copy');
   document.body.removeChild(selBox);
 }
+
+export function mergeSets<T>(set1: Set<T>, set2: Set<T>): Set<T> {
+  if (set1 != undefined && set2 != undefined) {
+    return new Set<T>(function* () {
+      yield* set1;
+      yield* set2;
+    }());
+  } else if (set1 != undefined) {
+    return set1;
+  } else if (set2 != undefined) {
+    return set2;
+  } else {
+    return new Set<T>();
+  }
+}

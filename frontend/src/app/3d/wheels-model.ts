@@ -20,7 +20,7 @@ class RimSkin {
 
   texture: LayeredTexture;
   private paintLayer: Layer;
-  private paintPixels: number[];
+  private paintPixels: Set<number>;
 
   constructor(private readonly baseUrl, private readonly rgbaMapUrl, private paint: Color) {
   }

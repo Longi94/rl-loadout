@@ -28,7 +28,7 @@ export class LayeredTexture {
    * Update the texture.
    * @pixel mask the pixel indexes to update (divisible by 4)
    */
-  update(pixel?: number[]) {
+  update(pixel?: Set<number>) {
     if (this.layers.length === 0) {
       return;
     }
