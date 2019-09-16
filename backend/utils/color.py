@@ -301,3 +301,10 @@ def get_primary_color(primary_id: int, custom: int, team: int):
             return DEFAULT_BLUE_TEAM
         else:
             return BLUE_PRIMARY_COLORS[primary_id]
+
+
+def get_accent_color(accent_id: int, custom: int):
+    if custom is not None:
+        return custom
+
+    return ACCENT_COLORS[accent_id]

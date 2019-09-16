@@ -9,7 +9,7 @@ from utils.network import load_pil_image
 log = logging.getLogger(__name__)
 
 
-def generate_body_texture(base_texture_url: str, rgba_map_url: str, primary: int, body_paint: int):
+def generate_body_texture(base_texture_url: str, rgba_map_url: str, primary: int, accent: int, body_paint: int):
     base_texture = load_pil_image(base_texture_url)
     rgba_map = load_pil_image(rgba_map_url)
 
@@ -34,6 +34,12 @@ def generate_body_texture(base_texture_url: str, rgba_map_url: str, primary: int
         primary_img.putalpha(red)
 
         base_texture.paste(primary_img, (0, 0), primary_img)
+
+        green = rgba_map.getchannel('G')
+        accent_img = Image.new('RGBA', base_texture.size, accent)
+        accent_img.putalpha(green)
+
+        base_texture.paste(accent_img, (0, 0), accent_img)
 
     log.info(f'Texture generation took {time.time() - start} seconds.')
 
