@@ -10,4 +10,4 @@ class WheelDao(BaseDao):
         :return: the default OEM wheel
         """
         session = self.Session()
-        return session.query(Wheel).filter(Wheel.name == 'OEM').first()
+        return session.query(Wheel).get(376)
