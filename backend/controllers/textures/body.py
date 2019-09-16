@@ -11,7 +11,7 @@ body_dao = BodyDao()
 
 def get(body_id: int, primary_color: int = None, primary_color_custom: int = None, body_paint: int = None,
         body_paint_custom: int = None, team: int = TEAM_BLUE, accent_color: int = 0,
-        accent_color_custom: int = None):
+        accent_color_custom: int = None, fallback: bool = False):
     """
     Generate a body texture based on the body and provided colors. Custom colors will override any preset colors. If no
     colors are provided, the default blue/orange colors will be used depending on the "team" parameter.
@@ -26,11 +26,16 @@ def get(body_id: int, primary_color: int = None, primary_color_custom: int = Non
     :param body_paint_custom: Custom body paint color of the body in 0xFFFFFF integer format.
     :param team: If this is set, the default blue (0) or the default orange (1) color will be used. This is ignored if
         primary_color is set.
+    :param fallback: If set to true, if the decal is not found, it will fall back to the default skin of the body. If
+        the body is not found, it will fall back to the Octane skin. Otherwise, returns with 404.
     """
     body = body_dao.get(body_id)
 
     if body is None:
-        raise NotFoundException('Body not found')
+        if fallback:
+            body = body_dao.get_default()
+        else:
+            raise NotFoundException('Body not found')
 
     primary_color_value = get_primary_color(primary_color, primary_color_custom, team)
     accent_color_value = get_accent_color(accent_color, accent_color_custom)

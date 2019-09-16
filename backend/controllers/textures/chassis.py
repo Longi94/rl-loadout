@@ -11,7 +11,7 @@ body_dao = BodyDao()
 
 def get(body_id: int, body_paint: int = None, body_paint_custom: int = None, team: int = TEAM_BLUE,
         primary_color: int = None, primary_color_custom: int = None, accent_color: int = 0,
-        accent_color_custom: int = None):
+        accent_color_custom: int = None, fallback: bool = False):
     """
     :param body_id: The ID of the body used in replay files
     :param body_paint: The ID of the paint. See
@@ -22,11 +22,16 @@ def get(body_id: int, body_paint: int = None, body_paint_custom: int = None, tea
     :param accent_color: The ID of accent color of the body.
     :param accent_color_custom: Custom accent color of the body in 0xFFFFFF integer format.
     :param team: Used when the chassis has different textures for the teams (e.g. Jurassic Jeep)
+    :param fallback: If set to true, If the body is not found, it will fall back to the Octane skin. Otherwise, returns
+        with 404.
     """
     body = body_dao.get(body_id)
 
     if body is None:
-        raise NotFoundException('Body not found')
+        if fallback:
+            body = body_dao.get_default()
+        else:
+            raise NotFoundException('Body not found')
 
     primary_color_value = get_primary_color(primary_color, primary_color_custom, team)
     accent_color_value = get_accent_color(accent_color, accent_color_custom)

@@ -21,9 +21,11 @@ def get(id=None):
     return jsonify(bodies), 200
 
 
-def get_by_id(id: int):
+def get_by_id(id: int, fallback: bool = False):
     """
     :param id: ID of the item (in-game item ID).
+    :param fallback: If set to true, If the body is not found, it will fall back to the Octane skin. Otherwise, returns
+        with 404.
     """
     api_key = request.args.get('key', None)
     if api_key is None:
@@ -32,7 +34,10 @@ def get_by_id(id: int):
     body = body_dao.get(id)
 
     if body is None:
-        raise NotFoundException('Body not found')
+        if fallback:
+            body = body_dao.get_default()
+        else:
+            raise NotFoundException('Body not found')
 
     return jsonify(_to_body_response(body, api_key)), 200
 

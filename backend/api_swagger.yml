@@ -42,6 +42,14 @@ paths:
           example: 23
           schema:
             type: integer
+        - name: fallback
+          in: query
+          required: false
+          description: 'If set to true, If the body is not found, it will fall back to the Octane body. Otherwise, returns with 404.'
+          example: true
+          schema:
+            type: boolean
+            default: false
       responses:
         200:
           description: 'Body'
@@ -137,6 +145,14 @@ paths:
             type: integer
             enum: [0, 1]
             default: 0
+        - name: fallback
+          in: query
+          required: false
+          description: 'If set to true, if the decal is not found, it will fall back to the default skin of the body. If the body is not found, it will fall back to the Octane skin. Otherwise, returns with 404.'
+          example: true
+          schema:
+            type: boolean
+            default: false
       responses:
         200:
           description: 'Returns the texture in the chosen format'
@@ -230,6 +246,14 @@ paths:
             type: integer
             enum: [0, 1]
             default: 0
+        - name: fallback
+          in: query
+          required: false
+          description: 'If set to true, If the body is not found, it will fall back to the Octane skin. Otherwise, returns with 404.'
+          example: true
+          schema:
+            type: boolean
+            default: false
       responses:
         200:
           description: 'Returns the texture in the chosen format'
