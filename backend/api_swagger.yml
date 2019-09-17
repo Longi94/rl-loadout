@@ -81,6 +81,14 @@ paths:
           description: 'The ID of the body used in replay files'
           schema:
             type: integer
+        - name: decal_id
+          in: query
+          required: false
+          example: 0
+          description: 'The ID of the decal used in replay files. 0 for no decal.'
+          schema:
+            type: integer
+            default: 0
         - name: primary_color
           in: query
           required: false
@@ -121,7 +129,7 @@ paths:
         - name: body_paint
           in: query
           required: false
-          description: 'The ID of the paint. See https://github.com/Longi94/rl-loadout/blob/master/backend/rocket/paint.py for list of IDs.'
+          description: 'The ID of the body paint. See https://github.com/Longi94/rl-loadout/blob/master/backend/rocket/paint.py for list of IDs.'
           example: 1
           schema:
             type: integer
@@ -131,6 +139,24 @@ paths:
           in: query
           required: false
           description: 'Custom body paint color of the body in 0xFFFFFF integer format.'
+          example: 16777215
+          schema:
+            type: integer
+            maximum: 16777215
+            minimum: 0
+        - name: decal_paint
+          in: query
+          required: false
+          description: 'The ID of the decal paint. See https://github.com/Longi94/rl-loadout/blob/master/backend/rocket/paint.py for list of IDs.'
+          example: 1
+          schema:
+            type: integer
+            maximum: 13
+            minimum: 0
+        - name: decal_paint_custom
+          in: query
+          required: false
+          description: 'Custom decal paint color of the body in 0xFFFFFF integer format.'
           example: 16777215
           schema:
             type: integer

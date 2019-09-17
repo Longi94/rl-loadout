@@ -9,9 +9,12 @@ from utils.network import load_pil_image
 log = logging.getLogger(__name__)
 
 
-def generate_body_texture(base_texture_url: str, rgba_map_url: str, primary: int, accent: int, body_paint: int):
+def generate_body_texture(base_texture_url: str, rgba_map_url: str, decal_base_url: str, decal_rgba_map_url: str,
+                          primary: int, accent: int, body_paint: int, decal_paint: int):
     base_texture = load_pil_image(base_texture_url)
     rgba_map = load_pil_image(rgba_map_url)
+    decal_base = load_pil_image(decal_base_url)
+    decal_rgba = load_pil_image(decal_rgba_map_url)
 
     start = time.time()
 
@@ -35,6 +38,19 @@ def generate_body_texture(base_texture_url: str, rgba_map_url: str, primary: int
 
         base_texture.paste(primary_img, (0, 0), primary_img)
 
+    if decal_rgba is not None:
+        decal_mask = decal_rgba.getchannel('A')
+        decal_img = Image.new('RGBA', base_texture.size, accent)
+        decal_img.putalpha(decal_mask)
+        base_texture.paste(decal_img, (0, 0), decal_img)
+
+        if decal_paint is not None:
+            decal_paint_mask = decal_rgba.getchannel('G')
+            decal_paint_img = Image.new('RGBA', base_texture.size, decal_paint)
+            decal_paint_img.putalpha(decal_paint_mask)
+            base_texture.paste(decal_paint_img, (0, 0), decal_paint_img)
+
+    if rgba_map is not None:
         green = rgba_map.getchannel('G')
         accent_img = Image.new('RGBA', base_texture.size, accent)
         accent_img.putalpha(green)

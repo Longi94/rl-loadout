@@ -308,3 +308,13 @@ def get_accent_color(accent_id: int, custom: int):
         return custom
 
     return ACCENT_COLORS[accent_id]
+
+
+def get_paint_color(paint_id: int, custom: int):
+    if custom is not None:
+        return custom
+
+    if paint_id is None:
+        return None
+
+    return PAINT_COLORS[paint_id]
