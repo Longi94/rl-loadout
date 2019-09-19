@@ -44,3 +44,12 @@ export function opaque(data: Uint8ClampedArray): Uint8ClampedArray {
 
   return newData;
 }
+
+export function applyMaskToChannel(channel: Uint8ClampedArray, mask: Uint8ClampedArray) {
+  if (channel == undefined) {
+    return undefined;
+  }
+  for (let i = 0; i < channel.length; i++) {
+    channel[i] *= (mask[i] / 255);
+  }
+}

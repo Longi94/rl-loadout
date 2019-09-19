@@ -6,7 +6,7 @@ import { PromiseLoader } from '../utils/loader';
 import { TgaRgbaLoader } from '../utils/tga-rgba-loader';
 import { Layer, LayeredTexture } from './layered-texture';
 import { Body } from '../model/body';
-import { getChannel, getMaskPixels, ImageChannel } from '../utils/image';
+import { applyMaskToChannel, getChannel, getMaskPixels, ImageChannel, invertChannel, opaque } from '../utils/image';
 import { PaintConfig } from '../service/loadout.service';
 import { mergeSets } from '../utils/util';
 
@@ -22,9 +22,8 @@ export class StaticSkin implements BodyTexture {
 
   private texture: LayeredTexture;
 
-  private decalBase: Uint8ClampedArray;
+  private base: Uint8ClampedArray;
   private decalRgbaMap: Uint8ClampedArray;
-  private bodyBaseSkin: Uint8ClampedArray;
   private bodyBlankSkin: Uint8ClampedArray;
 
   private primary: Color;
@@ -56,34 +55,32 @@ export class StaticSkin implements BodyTexture {
   }
 
   async load() {
-    const baseTask = this.loader.load(this.baseUrl);
+    const baseTask = this.loader.load(this.baseUrl != undefined ? this.baseUrl : this.bodyBaseSkinUrl);
     const rgbaMapTask = this.loader.load(this.rgbaMapUrl);
-    const bodyBaseSkinTask = this.loader.load(this.bodyBaseSkinUrl);
     const bodyBlankSkinTask = this.loader.load(this.bodyBlankSkinUrl);
 
-    const bodyBaseSkinResult = await bodyBaseSkinTask;
-
-    const width = bodyBaseSkinResult.width;
-    const height = bodyBaseSkinResult.height;
-
     const baseResult = await baseTask;
-    if (baseResult != undefined) {
-      this.decalBase = baseResult.data;
-    }
+
+    const width = baseResult.width;
+    const height = baseResult.height;
+
+    this.base = baseResult.data;
+
     const rgbaMapResult = await rgbaMapTask;
     if (rgbaMapResult != undefined) {
       this.decalRgbaMap = rgbaMapResult.data;
     }
 
-    this.bodyBaseSkin = bodyBaseSkinResult.data;
     this.bodyBlankSkin = (await bodyBlankSkinTask).data;
 
-    this.texture = new LayeredTexture(this.bodyBaseSkin, width, height);
+    this.texture = new LayeredTexture(opaque(this.base), width, height);
 
-    this.bodyPaintLayer = new Layer(true, this.bodyPaint);
+    const bodyPaintMask = getChannel(this.bodyBlankSkin, ImageChannel.R);
+    invertChannel(bodyPaintMask);
+    this.bodyPaintLayer = new Layer(bodyPaintMask, this.bodyPaint);
+    this.bodyPaintPixels = getMaskPixels(bodyPaintMask);
 
-    const primaryMask = getChannel(this.bodyBlankSkin, ImageChannel.R);
-    this.bodyPaintPixels = new Set<number>();
+    const primaryMask = getChannel(this.decalRgbaMap != undefined ? this.decalRgbaMap : this.bodyBlankSkin, ImageChannel.R);
     this.primaryPixels = new Set<number>();
     for (let i = 0; i < primaryMask.length; i++) {
       if (primaryMask[i] < 150) {
@@ -91,14 +88,11 @@ export class StaticSkin implements BodyTexture {
       } else {
         this.primaryPixels.add(i * 4);
       }
-
-      if (primaryMask[i] < 255) {
-        this.bodyPaintPixels.add(i * 4);
-      }
     }
     this.primaryLayer = new Layer(primaryMask, this.primary);
 
     const decalMask = getChannel(this.decalRgbaMap, ImageChannel.A);
+    applyMaskToChannel(decalMask, primaryMask);
     this.decalLayer = new Layer(decalMask, this.accent);
     this.accentPixels = getMaskPixels(decalMask);
 
@@ -151,9 +145,8 @@ export class StaticSkin implements BodyTexture {
 
   dispose() {
     this.texture.dispose();
-    this.decalBase = undefined;
+    this.base = undefined;
     this.decalRgbaMap = undefined;
-    this.bodyBaseSkin = undefined;
     this.bodyBlankSkin = undefined;
   }
 
