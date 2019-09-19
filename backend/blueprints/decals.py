@@ -25,7 +25,7 @@ def add_decal():
     decal = Decal()
     decal.apply_dict(request.json)
 
-    detail = database.get_decal_detail(decal.decal_detail_id)
+    detail = decal_dao.get_detail(decal.decal_detail_id)
     if detail is None:
         raise NotFoundException('Decal detail ID does not exist')
 
