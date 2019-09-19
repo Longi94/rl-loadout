@@ -171,7 +171,9 @@ export class BodyModel extends AbstractObject implements Paintable {
 
   setAccentColor(color: Color) {
     this.bodySkin.setAccent(color);
-    this.chassisSkin.setAccent(color);
+    if (this.chassisSkin != undefined) {
+      this.chassisSkin.setAccent(color);
+    }
   }
 
   setDecalPaintColor(color: Color) {
