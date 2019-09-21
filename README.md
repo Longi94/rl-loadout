@@ -32,7 +32,7 @@ CREATE ROLE rl_loadout WITH
 ```
 * Create a PostgreSQL database called `rl_loadout`. For development purposes it's you can make the new role the owner of the database. Otherwise you'll need to grant priviliges to connect, create database and the general dml operation priviliges.
 ```sql
-CREATE DATABASE asda
+CREATE DATABASE rl_loadout
   WITH 
   OWNER = rl_loadout
   ENCODING = 'UTF8'
