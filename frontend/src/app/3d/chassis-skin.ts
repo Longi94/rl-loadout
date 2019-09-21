@@ -51,7 +51,7 @@ export class ChassisSkin {
 
     const accentMask = getChannel(baseResult.data, ImageChannel.A);
 
-    if (accentMask.some(value => value == 0)) {
+    if (accentMask.some(value => value === 0)) {
       this.accentLayer = new Layer(accentMask, this.accent);
       this.accentPixels = getMaskPixels(accentMask);
       this.texture.addLayer(this.accentLayer);

@@ -28,6 +28,7 @@ export function copyMessage(val: string) {
 
 export function mergeSets<T>(set1: Set<T>, set2: Set<T>): Set<T> {
   if (set1 != undefined && set2 != undefined) {
+    /* tslint:disable:space-before-function-paren */
     return new Set<T>(function* () {
       yield* set1;
       yield* set2;
