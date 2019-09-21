@@ -14,6 +14,7 @@ class Decal(Base, BaseItem):
     body = relationship('Body', back_populates='decals')
 
     def apply_dict(self, item_dict: Dict):
+        super(Decal, self).apply_dict(item_dict)
         self.id = item_dict.get('id', None)
         self.base_texture = item_dict.get('base_texture', None)
         self.rgba_map = item_dict.get('rgba_map', None)

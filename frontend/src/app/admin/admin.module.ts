@@ -8,7 +8,6 @@ import { BodiesComponent } from './components/items/bodies/bodies.component';
 import { ItemListComponent } from './components/item-list/item-list.component';
 import { CreateBodyComponent } from './components/dialog/create-body/create-body.component';
 import { SharedModule } from '../shared/shared.module';
-import { DecalDetailsComponent } from './components/items/decal-details/decal-details.component';
 import { DecalsComponent } from './components/items/decals/decals.component';
 import { WheelsComponent } from './components/items/wheels/wheels.component';
 import { ToppersComponent } from './components/items/toppers/toppers.component';
@@ -17,7 +16,6 @@ import { AntennaSticksComponent } from './components/items/antenna-sticks/antenn
 import { CreateAntennaComponent } from './components/dialog/create-antenna/create-antenna.component';
 import { CreateAntennaStickComponent } from './components/dialog/create-antenna-stick/create-antenna-stick.component';
 import { CreateDecalComponent } from './components/dialog/create-decal/create-decal.component';
-import { CreateDecalDetailComponent } from './components/dialog/create-decal-detail/create-decal-detail.component';
 import { CreateTopperComponent } from './components/dialog/create-topper/create-topper.component';
 import { CreateWheelComponent } from './components/dialog/create-wheel/create-wheel.component';
 import { ApiKeysComponent } from './components/api-keys/api-keys.component';
@@ -33,7 +31,6 @@ import { AdminRoutingModule } from './admin-routing.module';
     BodiesComponent,
     ItemListComponent,
     CreateBodyComponent,
-    DecalDetailsComponent,
     DecalsComponent,
     WheelsComponent,
     ToppersComponent,
@@ -42,7 +39,6 @@ import { AdminRoutingModule } from './admin-routing.module';
     CreateAntennaComponent,
     CreateAntennaStickComponent,
     CreateDecalComponent,
-    CreateDecalDetailComponent,
     CreateTopperComponent,
     CreateWheelComponent,
     ApiKeysComponent,
@@ -60,7 +56,6 @@ import { AdminRoutingModule } from './admin-routing.module';
     CreateAntennaComponent,
     CreateAntennaStickComponent,
     CreateDecalComponent,
-    CreateDecalDetailComponent,
     CreateTopperComponent,
     CreateWheelComponent,
     CreateApiKeyComponent

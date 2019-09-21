@@ -4,7 +4,6 @@ import { BodiesComponent } from './components/items/bodies/bodies.component';
 import { AntennasComponent } from './components/items/antennas/antennas.component';
 import { AntennaSticksComponent } from './components/items/antenna-sticks/antenna-sticks.component';
 import { DecalsComponent } from './components/items/decals/decals.component';
-import { DecalDetailsComponent } from './components/items/decal-details/decal-details.component';
 import { ToppersComponent } from './components/items/toppers/toppers.component';
 import { WheelsComponent } from './components/items/wheels/wheels.component';
 import { ApiKeysComponent } from './components/api-keys/api-keys.component';
@@ -42,11 +41,6 @@ const routes: Routes = [
         path: 'decals',
         pathMatch: 'full',
         component: DecalsComponent
-      },
-      {
-        path: 'decal-details',
-        pathMatch: 'full',
-        component: DecalDetailsComponent
       },
       {
         path: 'toppers',

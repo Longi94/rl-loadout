@@ -19,7 +19,6 @@ export class Decal extends Item {
   rgba_map: string;
   body_id: string;
   body_name: string;
-  decal_detail_id: number;
 
   constructor(id: number, icon: string, name: string, quality: Quality, paintable: boolean, base_texture: string, rgba_map: string) {
     super(id, icon, name, quality, paintable);
@@ -27,7 +26,3 @@ export class Decal extends Item {
     this.rgba_map = rgba_map;
   }
 }
-
-export class DecalDetail extends Item {
-}
-
