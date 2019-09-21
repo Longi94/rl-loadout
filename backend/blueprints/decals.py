@@ -50,7 +50,7 @@ def update(decal_id):
     item = decal_dao.get(decal_id)
 
     if item is None:
-        raise NotFoundException('Decal detail not found')
+        raise NotFoundException('Decal not found')
 
     item.update(request.json)
     return '', 200

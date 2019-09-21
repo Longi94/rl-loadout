@@ -42,7 +42,7 @@ def update(topper_id):
     item = topper_dao.get(topper_id)
 
     if item is None:
-        raise NotFoundException('Decal detail not found')
+        raise NotFoundException('Topper not found')
 
     item.update(request.json)
     return '', 200
