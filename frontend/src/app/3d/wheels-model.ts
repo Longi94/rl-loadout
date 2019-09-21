@@ -51,6 +51,10 @@ class RimSkin {
     this.paintLayer.data = color;
     this.texture.update(this.paintPixels);
   }
+
+  dispose() {
+    this.texture.dispose();
+  }
 }
 
 export class WheelsModel extends AbstractObject implements Paintable {
