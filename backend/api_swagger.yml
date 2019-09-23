@@ -6,7 +6,7 @@ info:
     name: 'Rocket Loadout Discord'
     url: https://discord.gg/c8cArY9
 servers:
-  - url: "{{ server_host }}/api"
+  - url: "{{ server_host }}/api/v1"
 security:
   - ApiKeyAuth: []
 tags:
@@ -19,13 +19,6 @@ paths:
       operationId: controllers.bodies.get
       tags:
         - bodies
-      parameters:
-        - name: id
-          in: query
-          required: false
-          description: 'ID of the item (in-game item ID).'
-          schema:
-            type: integer
       responses:
         200:
           description: 'List of bodies'
@@ -35,10 +28,45 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Body'
+  /bodies/{id}:
+    get:
+      summary: 'Get a body'
+      operationId: controllers.bodies.get_by_id
+      tags:
+        - bodies
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 'ID of the item (in-game item ID).'
+          example: 23
+          schema:
+            type: integer
+        - name: fallback
+          in: query
+          required: false
+          description: 'If set to true, If the body is not found, it will fall back to the Octane body. Otherwise, returns with 404.'
+          example: true
+          schema:
+            type: boolean
+            default: false
+      responses:
+        200:
+          description: 'Body'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Body'
+        404:
+          description: 'Body not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /textures/body:
     get:
       summary: 'Generate a body texture'
-      description: 'Generate a body texture based on the body and provided colors'
+      description: 'Generate a body texture based on the body and provided colors. Custom colors will override any preset colors. If no colors are provided, the default blue/orange colors will be used depending on the "team" parameter.'
       operationId: controllers.textures.body.get
       tags:
         - texture
@@ -53,10 +81,46 @@ paths:
           description: 'The ID of the body used in replay files'
           schema:
             type: integer
+        - name: decal_id
+          in: query
+          required: false
+          example: 0
+          description: 'The ID of the decal used in replay files. 0 for no decal.'
+          schema:
+            type: integer
+            default: 0
         - name: primary_color
           in: query
           required: false
-          description: 'The primary color of the body in 0xFFFFFF integer format. If not provided, the default blue is applied.'
+          description: 'The ID of primary color of the body.'
+          example: 35
+          schema:
+            type: integer
+            maximum: 69
+            minimum: 0
+        - name: primary_color_custom
+          in: query
+          required: false
+          description: 'Custom primary color of the body in 0xFFFFFF integer format.'
+          example: 16777215
+          schema:
+            type: integer
+            maximum: 16777215
+            minimum: 0
+        - name: accent_color
+          in: query
+          required: false
+          description: 'The ID of accent color of the body.'
+          example: 0
+          schema:
+            default: 0
+            type: integer
+            maximum: 104
+            minimum: 0
+        - name: accent_color_custom
+          in: query
+          required: false
+          description: 'Custom accent color of the body in 0xFFFFFF integer format.'
           example: 16777215
           schema:
             type: integer
@@ -65,7 +129,34 @@ paths:
         - name: body_paint
           in: query
           required: false
-          description: 'The color of the paint applied to the body'
+          description: 'The ID of the body paint. See https://github.com/Longi94/rl-loadout/blob/master/backend/rocket/paint.py for list of IDs.'
+          example: 1
+          schema:
+            type: integer
+            maximum: 13
+            minimum: 0
+        - name: body_paint_custom
+          in: query
+          required: false
+          description: 'Custom body paint color of the body in 0xFFFFFF integer format.'
+          example: 16777215
+          schema:
+            type: integer
+            maximum: 16777215
+            minimum: 0
+        - name: decal_paint
+          in: query
+          required: false
+          description: 'The ID of the decal paint. See https://github.com/Longi94/rl-loadout/blob/master/backend/rocket/paint.py for list of IDs.'
+          example: 1
+          schema:
+            type: integer
+            maximum: 13
+            minimum: 0
+        - name: decal_paint_custom
+          in: query
+          required: false
+          description: 'Custom decal paint color of the body in 0xFFFFFF integer format.'
           example: 16777215
           schema:
             type: integer
@@ -79,6 +170,15 @@ paths:
           schema:
             type: integer
             enum: [0, 1]
+            default: 0
+        - name: fallback
+          in: query
+          required: false
+          description: 'If set to true, if the decal is not found, it will fall back to the default skin of the body. If the body is not found, it will fall back to the Octane skin. Otherwise, returns with 404.'
+          example: true
+          schema:
+            type: boolean
+            default: false
       responses:
         200:
           description: 'Returns the texture in the chosen format'
@@ -89,10 +189,14 @@ paths:
                 format: binary
         404:
           description: 'If the texture was not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
   /textures/chassis:
     get:
       summary: 'Generate a chassis texture'
-      description: 'Generate a chassis texture based on the body and provided colors. Only a few bodies need this as most of the chassis is not paintable.'
+      description: 'Generate a chassis texture based on the body and provided colors. Only a few bodies need this as most of the chassis is not paintable. Custom colors will override any preset colors.'
       operationId: controllers.textures.chassis.get
       tags:
         - texture
@@ -104,15 +208,78 @@ paths:
           description: 'The ID of the body used in replay files'
           schema:
             type: integer
-        - name: body_paint
+        - name: primary_color
           in: query
           required: false
-          description: 'The color of the paint applied to the body'
+          description: 'The ID of primary color of the body. Currently only needed for the DeLorean.'
+          example: 35
+          schema:
+            type: integer
+            maximum: 69
+            minimum: 0
+        - name: primary_color_custom
+          in: query
+          required: false
+          description: 'Custom primary color of the body in 0xFFFFFF integer format. Currently only needed for the DeLorean.'
           example: 16777215
           schema:
             type: integer
             maximum: 16777215
             minimum: 0
+        - name: accent_color
+          in: query
+          required: false
+          description: 'The ID of accent color of the body. Some bodies like the Artemis G1 are affected by the accent color'
+          example: 0
+          schema:
+            default: 0
+            type: integer
+            maximum: 104
+            minimum: 0
+        - name: accent_color_custom
+          in: query
+          required: false
+          description: 'Custom accent color of the body in 0xFFFFFF integer format.'
+          example: 16777215
+          schema:
+            type: integer
+            maximum: 16777215
+            minimum: 0
+        - name: body_paint
+          in: query
+          required: false
+          description: 'The ID of the paint. See https://github.com/Longi94/rl-loadout/blob/master/backend/rocket/paint.py for list of IDs.'
+          example: 1
+          schema:
+            type: integer
+            maximum: 13
+            minimum: 0
+        - name: body_paint_custom
+          in: query
+          required: false
+          description: 'Custom body paint color of the body in 0xFFFFFF integer format.'
+          example: 16777215
+          schema:
+            type: integer
+            maximum: 16777215
+            minimum: 0
+        - name: team
+          in: query
+          required: false
+          description: 'Used when the chassis has different textures for the teams (e.g. Jurassic Jeep)'
+          example: 0
+          schema:
+            type: integer
+            enum: [0, 1]
+            default: 0
+        - name: fallback
+          in: query
+          required: false
+          description: 'If set to true, If the body is not found, it will fall back to the Octane skin. Otherwise, returns with 404.'
+          example: true
+          schema:
+            type: boolean
+            default: false
       responses:
         200:
           description: 'Returns the texture in the chosen format'
@@ -123,6 +290,10 @@ paths:
                 format: binary
         404:
           description: 'If the texture was not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
 components:
   securitySchemes:
     ApiKeyAuth:
@@ -131,6 +302,17 @@ components:
       name: key
       x-apikeyInfoFunc: api.verify_api_key
   schemas:
+    Error:
+      type: object
+      properties:
+        details:
+          type: string
+          description: 'Details of the error'
+          example: 'X not found'
+        status:
+          type: number
+          description: 'HTTP status code'
+          example: 404
     Body:
       type: object
       required:

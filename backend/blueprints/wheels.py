@@ -42,7 +42,7 @@ def update(wheel_id):
     item = wheel_dao.get(wheel_id)
 
     if item is None:
-        raise NotFoundException('Decal detail not found')
+        raise NotFoundException('Wheel not found')
 
     item.update(request.json)
     return '', 200

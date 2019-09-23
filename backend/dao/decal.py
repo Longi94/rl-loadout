@@ -1,6 +1,6 @@
 from typing import List
 from .dao import BaseDao
-from entity import Decal, DecalDetail, Body
+from entity import Decal, Body
 
 
 class DecalDao(BaseDao):
@@ -20,18 +20,3 @@ class DecalDao(BaseDao):
                 return []
             return body.decals
         return session.query(Decal)
-
-    def get_all_details(self) -> List[DecalDetail]:
-        session = self.Session()
-        return session.query(DecalDetail)
-
-    def get_detail(self, detail_id) -> DecalDetail:
-        session = self.Session()
-        return session.query(DecalDetail).get(detail_id)
-
-    def delete_detail(self, decal_detail_id: int):
-        session = self.Session()
-        session.query(DecalDetail).filter(DecalDetail.id == decal_detail_id).delete()
-
-    def add_detail(self, decal_detail: DecalDetail):
-        self.Session().add(decal_detail)

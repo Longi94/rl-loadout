@@ -1,47 +1,59 @@
 import { AbstractObject } from './object';
 import { Color, Mesh, MeshStandardMaterial, Scene } from 'three';
 import { Topper } from '../model/topper';
-import { RgbaMapPipeTexture } from './rgba-map-pipe-texture';
-import { overBlendColors } from '../utils/color';
 import { getAssetUrl } from '../utils/network';
 import { disposeIfExists } from '../utils/util';
+import { Paintable } from './paintable';
+import { PaintConfig } from '../service/loadout.service';
+import { PromiseLoader } from '../utils/loader';
+import { TgaRgbaLoader } from '../utils/tga-rgba-loader';
+import { Layer, LayeredTexture } from './layered-texture';
+import { getChannel, getMaskPixels, ImageChannel } from '../utils/image';
 
-class TopperSkin extends RgbaMapPipeTexture {
+class TopperSkin {
 
-  paint: Color;
-  colorHolder = new Color();
-  baseHolder = new Color();
+  private readonly loader: PromiseLoader = new PromiseLoader(new TgaRgbaLoader());
 
-  constructor(baseUrl, rgbaMapUrl, paint) {
-    super(baseUrl, rgbaMapUrl);
+  texture: LayeredTexture;
+  private paintLayer: Layer;
+  private paintPixels: Set<number>;
 
-    if (paint != undefined) {
-      this.paint = new Color(paint);
+  constructor(private readonly baseUrl, private readonly rgbaMapUrl, private paint: Color) {
+  }
+
+  async load() {
+    const baseTask = this.loader.load(this.baseUrl);
+    const rgbaMapTask = this.loader.load(this.rgbaMapUrl);
+
+    const baseResult = await baseTask;
+
+    if (baseResult != undefined) {
+      const rgbaMap = (await rgbaMapTask).data;
+      this.texture = new LayeredTexture(baseResult.data, baseResult.width, baseResult.height);
+
+      const paintMask = getChannel(rgbaMap, ImageChannel.A);
+
+      this.paintLayer = new Layer(paintMask, this.paint);
+      this.paintPixels = getMaskPixels(paintMask);
+
+      this.texture.addLayer(this.paintLayer);
+      this.texture.update();
     }
   }
 
-  getColor(i: number): Color {
-    this.baseHolder.setRGB(
-      this.base[i] / 255,
-      this.base[i + 1] / 255,
-      this.base[i + 2] / 255
-    );
-
-    if (this.paint != undefined && this.rgbaMap[i + 3] > 0) {
-      overBlendColors(this.paint, this.baseHolder, this.rgbaMap[i + 3], this.colorHolder);
-      return this.colorHolder;
-    } else {
-      return this.baseHolder;
-    }
+  setPaint(color: Color) {
+    this.paint = color;
+    this.paintLayer.data = color;
+    this.texture.update(this.paintPixels);
   }
 }
 
-export class TopperModel extends AbstractObject {
+export class TopperModel extends AbstractObject implements Paintable {
 
   material: MeshStandardMaterial;
   skin: TopperSkin;
 
-  constructor(topper: Topper, paints: { [key: string]: string }) {
+  constructor(topper: Topper, paints: PaintConfig) {
     super(getAssetUrl(topper.model));
 
     if (topper.base_texture && topper.rgba_map) {
@@ -67,36 +79,24 @@ export class TopperModel extends AbstractObject {
     });
   }
 
-  load(): Promise<any> {
-    const promises = [super.load()];
+  async load() {
+    const superTask = super.load();
 
     if (this.skin) {
-      promises.push(this.skin.load());
+      await this.skin.load();
     }
 
-    return new Promise<any>((resolve, reject) => Promise.all(promises).then(() => {
-      if (this.skin) {
-        this.material.map = this.skin.texture;
-        this.applyTexture();
-      }
-      resolve();
-    }, reject));
-  }
+    await superTask;
 
-  private applyTexture() {
     if (this.skin) {
-      this.skin.update();
+      this.material.map = this.skin.texture.texture;
       this.material.needsUpdate = true;
     }
   }
 
-  setPaint(color: Color) {
+  setPaintColor(color: Color) {
     if (this.skin) {
-      this.skin.paint = color;
+      this.skin.setPaint(color);
     }
-  }
-
-  refresh() {
-    this.applyTexture();
   }
 }

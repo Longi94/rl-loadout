@@ -1,55 +1,72 @@
 import { AbstractObject } from './object';
-import { Color, Mesh, MeshStandardMaterial, Scene } from 'three';
-import { RgbaMapPipeTexture } from './rgba-map-pipe-texture';
-import { Wheel } from '../model/wheel';
+import { Color, Mesh, MeshStandardMaterial, Object3D, Scene, Vector3 } from 'three';
+import { Wheel, WheelConfig } from '../model/wheel';
 import { getAssetUrl } from '../utils/network';
 import { SkeletonUtils } from 'three/examples/jsm/utils/SkeletonUtils';
-import { overBlendColors } from '../utils/color';
 import { disposeIfExists } from '../utils/util';
+import { Paintable } from './paintable';
+import { PaintConfig } from '../service/loadout.service';
+import { Layer, LayeredTexture } from './layered-texture';
+import { PromiseLoader } from '../utils/loader';
+import { TgaRgbaLoader } from '../utils/tga-rgba-loader';
+import { getChannel, getMaskPixels, ImageChannel, invertChannel } from '../utils/image';
+import { BASE_WHEEL_MESH_RADIUS, BASE_WHEEL_MESH_WIDTH } from './constants';
 
-class RimSkin extends RgbaMapPipeTexture {
+class RimSkin {
 
-  paint: Color;
-  colorHolder = new Color();
-  baseHolder = new Color();
+  private readonly loader: PromiseLoader = new PromiseLoader(new TgaRgbaLoader());
 
-  constructor(baseUrl, rgbaMapUrl, paint) {
-    super(baseUrl, rgbaMapUrl);
+  texture: LayeredTexture;
+  private paintLayer: Layer;
+  private paintPixels: Set<number>;
 
-    if (paint != undefined) {
-      this.paint = new Color(paint);
+  constructor(private readonly baseUrl, private readonly rgbaMapUrl, private paint: Color) {
+  }
+
+  async load() {
+    const baseTask = this.loader.load(this.baseUrl);
+    const rgbaMapTask = this.loader.load(this.rgbaMapUrl);
+
+    const baseResult = await baseTask;
+
+    if (baseResult != undefined) {
+      const rgbaMap = (await rgbaMapTask).data;
+      this.texture = new LayeredTexture(baseResult.data, baseResult.width, baseResult.height);
+
+      const paintMask = getChannel(rgbaMap, ImageChannel.R);
+      invertChannel(paintMask);
+
+      this.paintLayer = new Layer(paintMask, this.paint);
+      this.paintPixels = getMaskPixels(paintMask);
+
+      this.texture.addLayer(this.paintLayer);
+      this.texture.update();
     }
   }
 
-  getColor(i: number): Color {
-    this.baseHolder.setRGB(
-      this.base[i] / 255,
-      this.base[i + 1] / 255,
-      this.base[i + 2] / 255
-    );
+  setPaint(color: Color) {
+    this.paint = color;
+    this.paintLayer.data = color;
+    this.texture.update(this.paintPixels);
+  }
 
-    if (this.paint != undefined) {
-      overBlendColors(this.paint, this.baseHolder, 255 - this.rgbaMap[i], this.colorHolder);
-      return this.colorHolder;
-    } else {
-      return this.baseHolder;
-    }
+  dispose() {
+    this.texture.dispose();
   }
 }
 
-export class WheelsModel extends AbstractObject {
+class WheelModel {
+  model: Object3D;
+  config: WheelConfig;
+}
 
-  wheels = {
-    fr: undefined,
-    fl: undefined,
-    br: undefined,
-    bl: undefined
-  };
+export class WheelsModel extends AbstractObject implements Paintable {
 
+  wheels: WheelModel[] = [];
   rimMaterial: MeshStandardMaterial;
   rimSkin: RimSkin;
 
-  constructor(wheel: Wheel, paints: { [key: string]: string }) {
+  constructor(wheel: Wheel, paints: PaintConfig) {
     super(getAssetUrl(wheel.model));
     if (wheel.rim_base && wheel.rim_rgb_map) {
       this.rimSkin = new RimSkin(
@@ -64,26 +81,22 @@ export class WheelsModel extends AbstractObject {
     super.dispose();
     disposeIfExists(this.rimMaterial);
     disposeIfExists(this.rimSkin);
-    disposeIfExists(this.wheels.fr);
-    disposeIfExists(this.wheels.fl);
-    disposeIfExists(this.wheels.br);
-    disposeIfExists(this.wheels.bl);
+    this.wheels = [];
   }
 
-  load(): Promise<any> {
-    const promises = [super.load()];
+  async load() {
+    const superTask = super.load();
 
     if (this.rimSkin) {
-      promises.push(this.rimSkin.load());
+      await this.rimSkin.load();
     }
 
-    return new Promise((resolve, reject) => Promise.all(promises).then(() => {
-      if (this.rimSkin) {
-        this.rimMaterial.map = this.rimSkin.texture;
-      }
-      this.applyRimSkin();
-      resolve();
-    }, reject));
+    await superTask;
+
+    if (this.rimSkin) {
+      this.rimMaterial.map = this.rimSkin.texture.texture;
+      this.rimMaterial.needsUpdate = true;
+    }
   }
 
   handleModel(scene: Scene) {
@@ -95,57 +108,51 @@ export class WheelsModel extends AbstractObject {
         }
       }
     });
-
-    this.wheels.fr = SkeletonUtils.clone(scene);
-    this.wheels.fl = SkeletonUtils.clone(scene);
-    this.wheels.br = SkeletonUtils.clone(scene);
-    this.wheels.bl = SkeletonUtils.clone(scene);
   }
 
-  applyWheelPositions(config) {
-    for (const key of Object.keys(config)) {
-      this.wheels[key].position.set(
-        config[key].pos.x,
-        config[key].pos.z,
-        config[key].pos.y
-      );
+  applyWheelConfig(config: WheelConfig[]) {
+    this.wheels = [];
+    for (const conf of config) {
+      const widthScale = conf.width / BASE_WHEEL_MESH_WIDTH;
+      const radiusScale = conf.radius / BASE_WHEEL_MESH_RADIUS;
+      const offset = conf.offset;
 
-      if (key.endsWith('r')) {
-        this.wheels[key].rotation.set(0, Math.PI, 0);
-        this.wheels[key].rotation.needsUpdate = true;
+      const wheel = SkeletonUtils.clone(this.scene) as Object3D;
+      const position = new Vector3();
+      position.copy(conf.position);
+
+      if (!conf.right) {
+        wheel.rotation.set(0, Math.PI, 0);
+        position.add(new Vector3(0, 0, -offset));
+      } else {
+        position.add(new Vector3(0, 0, offset));
       }
 
-      this.wheels[key].needsUpdate = true;
-      this.wheels[key].position.needsUpdate = true;
+      wheel.scale.set(radiusScale, radiusScale, widthScale);
+      wheel.position.copy(position);
 
-      const scale = config[key].scale;
-      this.wheels[key].scale.set(scale, scale, scale);
-      this.wheels[key].scale.needsUpdate = true;
+      this.wheels.push({
+        model: wheel,
+        config: conf
+      });
     }
   }
 
   addToScene(scene: Scene) {
-    scene.add(this.wheels.fr, this.wheels.fl, this.wheels.br, this.wheels.bl);
+    for (const wheel of this.wheels) {
+      scene.add(wheel.model);
+    }
   }
 
   removeFromScene(scene: Scene) {
-    scene.remove(this.wheels.fr, this.wheels.fl, this.wheels.br, this.wheels.bl);
-  }
-
-  private applyRimSkin() {
-    if (this.rimMaterial != undefined && this.rimSkin != undefined) {
-      this.rimSkin.update();
-      this.rimMaterial.needsUpdate = true;
+    for (const wheel of this.wheels) {
+      scene.remove(wheel.model);
     }
   }
 
-  setPaint(paint: Color) {
+  setPaintColor(paint: Color) {
     if (this.rimSkin != undefined) {
-      this.rimSkin.paint = paint;
+      this.rimSkin.setPaint(paint);
     }
-  }
-
-  refresh() {
-    this.applyRimSkin();
   }
 }

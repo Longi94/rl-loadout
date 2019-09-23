@@ -19,6 +19,7 @@
 </div>
 
 <mat-menu #debugMenu="matMenu">
+  <button mat-menu-item (click)="router.navigate(['/admin'])">Admin page</button>
   <button mat-menu-item (click)="openTextureViewer()">Texture viewer</button>
   <a mat-menu-item href="https://pinetools.com/rgb-channels-image" target="_blank">RGB splitter</a>
 </mat-menu>

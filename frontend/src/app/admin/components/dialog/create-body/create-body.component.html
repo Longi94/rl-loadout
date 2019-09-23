@@ -66,20 +66,6 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-form-field>
-    <mat-label>Hitbox</mat-label>
-    <mat-select [(ngModel)]="item.hitbox">
-      <mat-option *ngFor="let obj of hitboxes" [value]="obj.value">
-        {{obj.name}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-form-field>
-    <input matInput placeholder="Hitbox X" type="number" [(ngModel)]="item.hitbox_translate_x">
-  </mat-form-field>
-  <mat-form-field>
-    <input matInput placeholder="Hitbox Z" type="number" [(ngModel)]="item.hitbox_translate_z">
-  </mat-form-field>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="cancel()">Cancel</button>

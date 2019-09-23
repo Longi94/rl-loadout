@@ -12,16 +12,14 @@ import {
   WebGLRenderTarget,
   AmbientLight
 } from 'three';
-import { StaticSkin } from '../../../3d/static-skin';
 import { LoadoutService } from '../../../service/loadout.service';
 import { Decal } from '../../../model/decal';
-import { BodyModel } from '../../../3d/body-model';
+import { BodyModel } from '../../../3d/body/body-model';
 import { WheelsModel } from '../../../3d/wheels-model';
 import { Wheel } from '../../../model/wheel';
 import { promiseProgress } from '../../../utils/promise';
 import { LoadoutStoreService } from '../../../service/loadout-store.service';
 import { Body } from '../../../model/body';
-import { getAssetUrl } from '../../../utils/network';
 import { EquirectangularToCubeGenerator } from 'three/examples/jsm/loaders/EquirectangularToCubeGenerator';
 import { PromiseLoader } from '../../../utils/loader';
 import { PMREMGenerator } from 'three/examples/jsm/pmrem/PMREMGenerator';
@@ -37,6 +35,7 @@ import { GUI } from 'dat-gui';
 import * as dat from 'dat.gui';
 import { NotifierService } from 'angular-notifier';
 import * as Stats from 'stats.js';
+import { createBodyModel } from '../../../3d/body/factory';
 
 @Component({
   selector: 'app-canvas',
@@ -66,9 +65,6 @@ export class CanvasComponent implements OnInit {
   private wheels: WheelsModel;
   private topper: TopperModel;
   private antenna: AntennaModel;
-
-  // colors
-  private skin: StaticSkin;
 
   // Loading stuff
   mathRound = Math.round;
@@ -136,14 +132,12 @@ export class CanvasComponent implements OnInit {
     const textureLoader = new PromiseLoader(new TextureLoader());
 
     this.loadoutService.loadDefaults().then(() => {
-      this.body = new BodyModel(this.loadoutService.body, this.loadoutService.paints);
+      this.body = createBodyModel(this.loadoutService.body, this.loadoutService.decal, this.loadoutService.paints);
       this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints);
-      this.skin = new StaticSkin(this.loadoutService.decal, this.loadoutService.paints);
 
       const promises = [
         textureLoader.load('assets/mannfield_equirectangular.jpg'),
         this.body.load(),
-        this.skin.load(),
         this.wheels.load(),
         this.loadoutStore.initAll(this.loadoutService.body.id)
       ];
@@ -152,7 +146,6 @@ export class CanvasComponent implements OnInit {
         this.initProgress = 100 * (progress + 1) / (promises.length + 1);
       }).then(values => {
         this.processBackground(values[0]);
-        this.applySkin();
         this.applyBodyModel();
         this.applyWheelModel();
         this.applyHitbox();
@@ -266,17 +259,15 @@ export class CanvasComponent implements OnInit {
     this.body.removeFromScene(this.scene);
     this.body.dispose();
 
-    this.body = new BodyModel(body, this.loadoutService.paints);
-
-    this.clearSkin(this.loadoutService.decal);
+    this.body = createBodyModel(body, this.loadoutService.decal, this.loadoutService.paints);
 
     Promise.all([
       this.body.load(),
-      this.loadoutStore.loadDecals(body.id),
-      this.skin.load()
+      this.loadoutStore.loadDecals(body.id)
     ]).then(() => {
-      this.applySkin();
-      this.wheels.applyWheelPositions(this.body.getWheelPositions());
+      this.wheels.removeFromScene(this.scene);
+      this.wheels.applyWheelConfig(this.body.wheelConfig);
+      this.wheels.addToScene(this.scene);
 
       if (this.topper) {
         this.topper.applyAnchor(this.body.hatSocket);
@@ -295,25 +286,10 @@ export class CanvasComponent implements OnInit {
 
   private changeDecal(decal: Decal) {
     this.loading.decal = true;
-    this.clearSkin(decal);
-    this.skin.load().then(() => {
-      this.applySkin();
-      this.updateTextureService();
+    this.body.changeDecal(decal, this.loadoutService.paints).then(() => {
       this.loading.decal = false;
+      this.updateTextureService();
     });
-  }
-
-  private clearSkin(newDecal: Decal) {
-    this.skin.clear();
-    this.skin.baseUrl = getAssetUrl(newDecal.base_texture);
-    this.skin.rgbaMapUrl = getAssetUrl(newDecal.rgba_map);
-  }
-
-  private applySkin() {
-    this.skin.blankSkinMap = this.body.blankSkinMap;
-    this.skin.baseSkinMap = this.body.baseSkinMap;
-    this.refreshSkin();
-    this.body.applyBodyTexture(this.skin.texture);
   }
 
   private changeWheel(wheel: Wheel) {
@@ -329,7 +305,7 @@ export class CanvasComponent implements OnInit {
   }
 
   private applyWheelModel() {
-    this.wheels.applyWheelPositions(this.body.getWheelPositions());
+    this.wheels.applyWheelConfig(this.body.wheelConfig);
     this.wheels.setEnvMap(this.envMap);
     this.wheels.addToScene(this.scene);
   }
@@ -341,33 +317,25 @@ export class CanvasComponent implements OnInit {
   }
 
   private changePaint(paint) {
-    const color = paint.color != undefined ? new Color(paint.color) : undefined;
     switch (paint.type) {
       case 'primary':
-        this.skin.primary = color;
-        this.refreshSkin();
+        this.body.setPrimaryColor(paint.color);
         break;
       case 'accent':
-        this.skin.accent = color;
-        this.refreshSkin();
+        this.body.setAccentColor(paint.color);
         break;
       case 'body':
-        this.skin.bodyPaint = color;
-        this.body.setPaint(color);
-        this.refreshSkin();
+        this.body.setPaintColor(paint.color);
         break;
       case 'decal':
-        this.skin.paint = color;
-        this.refreshSkin();
+        this.body.setDecalPaintColor(paint.color);
         break;
       case 'wheel':
-        this.wheels.setPaint(color);
-        this.wheels.refresh();
+        this.wheels.setPaintColor(paint.color);
         break;
       case 'topper':
         if (this.topper) {
-          this.topper.setPaint(color);
-          this.topper.refresh();
+          this.topper.setPaintColor(paint.color);
         }
         break;
       default:
@@ -375,11 +343,6 @@ export class CanvasComponent implements OnInit {
         return;
     }
     this.updateTextureService();
-  }
-
-  private refreshSkin() {
-    this.skin.update();
-    this.body.bodyMaterial.needsUpdate = true;
   }
 
   private updateTextureService() {
@@ -456,7 +419,7 @@ export class CanvasComponent implements OnInit {
   }
 
   private applyHitbox() {
-    this.hitbox.applyBody(this.loadoutService.body);
+    this.hitbox.applyBody(this.body);
   }
 
   private validateBody() {
@@ -472,18 +435,18 @@ export class CanvasComponent implements OnInit {
       this.notifierService.notify('warning', `Topper position of ${body.name} is unknown.`);
     }
 
-    if (getHitboxModel(body.hitbox) == undefined) {
-      console.warn(`The hitbox of body ${body.name} is unknown (${body.hitbox}).`);
+    if (this.body.hitboxConfig == undefined || getHitboxModel(this.body.hitboxConfig.preset) == undefined) {
+      console.warn(`The hitbox of body ${body.name} is unknown.`);
       this.notifierService.notify('warning', `Hitbox of ${body.name} is unknown.`);
+    } else {
+      if (this.body.hitboxConfig.translationX == undefined || this.body.hitboxConfig.translationZ == undefined) {
+        console.warn(`Body ${body.name} missing hitbox translate values.`);
+        this.notifierService.notify('warning', `${body.name} has incomplete hitbox data. Hitbox won't be accurate.`);
+      }
     }
 
-    if (body.hitbox_translate_x == undefined || body.hitbox_translate_z == undefined) {
-      console.warn(`Body ${body.name} missing hitbox translate values.`);
-      this.notifierService.notify('warning', `${body.name} has incomplete hitbox data. Hitbox won't be accurate.`);
-    }
-
-    if (this.body.wheelScale == undefined) {
-      console.warn(`${body.name} has no wheelScale attribute`);
+    if (this.body.wheelSettings == undefined) {
+      console.warn(`${body.name} has no wheelSettings attribute`);
       this.notifierService.notify('warning', `Size of wheels are unknown for ${body.name}.`);
     }
   }

@@ -1,4 +1,6 @@
 import { Color } from 'three';
+import { Body } from '../model/body';
+import { BODY_BERRY_ID, BODY_MAPLE_ID, BODY_SLIME_ID } from './ids';
 
 // https://www.reddit.com/r/RLFashionAdvice/comments/9l1swx/rocket_league_color_palette_with_hex_and_rgb/
 export const BLUE_PRIMARY_COLORS = [
@@ -277,6 +279,12 @@ export const DEFAULT_ACCENT = ACCENT_COLORS[0];
 
 export const BLACK = new Color(0, 0, 0);
 
+export const COLOR_MAPLE_BLUE = '#0000F3';
+export const COLOR_MAPLE_ORANGE = '#800000';
+
+export const COLOR_BERRY_ORANGE = '#B3915F';
+export const COLOR_BERRY_BLUE = '#656336';
+
 export function overBlendColors(foreground: Color, background: Color, foregroundAlpha: number, holder: Color) {
   foregroundAlpha = foregroundAlpha / 255;
   const r = (foreground.r * foregroundAlpha) + (background.r * (1.0 - foregroundAlpha));
@@ -291,22 +299,22 @@ export function overBlendColors(foreground: Color, background: Color, foreground
  *
  * @param backgroundColor color of background in #FFFFFF format
  */
-export function getTextColor(backgroundColor: string) {
-  if (backgroundColor ==  undefined) {
+export function getTextColor(backgroundColor: Color) {
+  if (backgroundColor == undefined) {
     return 'white';
   }
-  const bg = hexToRgb(backgroundColor);
-  const o = Math.round(((bg.r * 299) + (bg.g * 587) + (bg.b * 114)) / 1000);
+  const o = Math.round(((backgroundColor.r * 76245) + (backgroundColor.g * 149685) + (backgroundColor.b * 29070)) / 1000);
   return (o > 125) ? 'black' : 'white';
 }
 
-const HEX_REGEX = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i;
-
-function hexToRgb(hex) {
-  const result = HEX_REGEX.exec(hex);
-  return result ? {
-    r: parseInt(result[1], 16),
-    g: parseInt(result[2], 16),
-    b: parseInt(result[3], 16)
-  } : undefined;
+export function getColorsForBody(body: Body): { [team: string]: string[] } {
+  switch (body.id) {
+    case BODY_MAPLE_ID:
+    case BODY_SLIME_ID:
+      return {blue: [COLOR_MAPLE_BLUE], orange: [COLOR_MAPLE_ORANGE]};
+    case BODY_BERRY_ID:
+      return {blue: [COLOR_BERRY_BLUE], orange: [COLOR_BERRY_ORANGE]};
+    default:
+      return {blue: BLUE_PRIMARY_COLORS, orange: ORANGE_PRIMARY_COLORS};
+  }
 }

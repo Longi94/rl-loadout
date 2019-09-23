@@ -19,7 +19,6 @@ import {
   MatListModule,
   MatCheckboxModule
 } from '@angular/material';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 
 
@@ -28,7 +27,6 @@ import { FormsModule } from '@angular/forms';
   declarations: [],
   imports: [
     CommonModule,
-    BrowserAnimationsModule,
     FormsModule,
     MatButtonModule,
     MatCardModule,
@@ -50,7 +48,6 @@ import { FormsModule } from '@angular/forms';
   ],
   exports: [
     CommonModule,
-    BrowserAnimationsModule,
     FormsModule,
     MatButtonModule,
     MatCardModule,

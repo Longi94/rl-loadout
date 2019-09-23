@@ -6,11 +6,22 @@ import { Body } from '../model/body';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Item } from '../model/item';
-import { DEFAULT_ACCENT, DEFAULT_BLUE_TEAM } from '../utils/color';
+import { COLOR_MAPLE_BLUE, DEFAULT_ACCENT, DEFAULT_BLUE_TEAM } from '../utils/color';
 import { Topper } from '../model/topper';
 import { Antenna } from '../model/antenna';
+import { BODY_MAPLE_ID, BODY_SLIME_ID } from '../utils/ids';
+import { Color } from 'three';
 
 const HOST = `${environment.backend}/internal`;
+
+export class PaintConfig {
+  primary: Color = new Color(DEFAULT_BLUE_TEAM);
+  accent: Color = new Color(DEFAULT_ACCENT);
+  body: Color;
+  decal: Color;
+  wheel: Color;
+  topper: Color;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -25,14 +36,7 @@ export class LoadoutService {
   private decalSubject: Subject<Decal> = new Subject<Decal>();
   decalChanged$: Observable<Decal> = this.decalSubject.asObservable();
 
-  paints = {
-    primary: DEFAULT_BLUE_TEAM,
-    accent: DEFAULT_ACCENT,
-    body: undefined,
-    decal: undefined,
-    wheel: undefined,
-    topper: undefined
-  };
+  paints = new PaintConfig();
   private paintSubject: Subject<any> = new Subject();
   paintChanged$: Observable<any> = this.paintSubject.asObservable();
 
@@ -56,7 +60,8 @@ export class LoadoutService {
     this.decalSubject.next(decal);
   }
 
-  setPaint(type: string, color: string) {
+  setPaint(type: string, colorStr: string) {
+    const color = colorStr == undefined ? undefined : new Color(colorStr);
     this.paints[type] = color;
     this.paintSubject.next({type, color});
   }
@@ -69,6 +74,14 @@ export class LoadoutService {
   selectBody(body: Body) {
     this.body = body;
     this.decal = Decal.NONE;
+
+    switch (body.id) {
+      case BODY_MAPLE_ID:
+      case BODY_SLIME_ID:
+        this.paints.primary = new Color(COLOR_MAPLE_BLUE);
+        break;
+    }
+
     this.bodySubject.next(body);
   }
 

@@ -10,7 +10,7 @@ import {
   Vector3
 } from 'three';
 import { Hitbox } from '../model/hitbox';
-import { Body } from '../model/body';
+import { BodyModel } from './body/body-model';
 
 export class HitboxModel {
 
@@ -34,30 +34,32 @@ export class HitboxModel {
     this.lineSegments = new LineSegments(this.edges, this.lineMaterial);
   }
 
-  applyBody(body: Body) {
-    const config = getHitboxModel(body.hitbox);
-
+  applyBody(body: BodyModel) {
     const pos = new Vector3();
     let scale = new Vector3(1, 1, 1);
     let rot = new Euler();
 
-    if (config != undefined) {
-      pos.add(config.position);
-      scale = config.scale;
-      rot = config.rotation;
+    if (body.hitboxConfig != undefined) {
+      const config = getHitboxModel(body.hitboxConfig.preset);
+
+      if (config != undefined) {
+        pos.add(config.position);
+        scale = config.scale;
+        rot = config.rotation;
+      }
+
+      const translate = new Vector3();
+
+      if (body.hitboxConfig.translationX != undefined) {
+        translate.setX(-body.hitboxConfig.translationX);
+      }
+
+      if (body.hitboxConfig.translationZ != undefined) {
+        translate.setY(-body.hitboxConfig.translationZ);
+      }
+
+      pos.add(translate);
     }
-
-    const translate = new Vector3();
-
-    if (body.hitbox_translate_x != undefined) {
-      translate.setX(-body.hitbox_translate_x);
-    }
-
-    if (body.hitbox_translate_z != undefined) {
-      translate.setY(-body.hitbox_translate_z);
-    }
-
-    pos.add(translate);
 
     this.mesh.scale.copy(scale);
     this.mesh.position.copy(pos);
@@ -116,7 +118,6 @@ export const HIT_BOX_HYBRID: HitboxConfig = {
   position: new Vector3(13.87566, 20.75499),
   rotation: new Euler(0, 0, -degToRad(0.55))
 };
-export const HIT_BOX_BATMOBILE: HitboxConfig = HIT_BOX_PLANK;
 
 export function getHitboxModel(hitbox: Hitbox): HitboxConfig {
   switch (hitbox) {
@@ -130,8 +131,8 @@ export function getHitboxModel(hitbox: Hitbox): HitboxConfig {
       return HIT_BOX_BREAKOUT;
     case Hitbox.HYBRID:
       return HIT_BOX_HYBRID;
-    case Hitbox.BATMOBILE:
-      return HIT_BOX_BATMOBILE;
+    default:
+      return undefined;
   }
 }
 

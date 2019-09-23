@@ -1,12 +1,11 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { Decal, DecalDetail } from '../../../../model/decal';
+import { Decal } from '../../../../model/decal';
 import { Quality } from '../../../../model/quality';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { CloudStorageService } from '../../../../service/cloud-storage.service';
 import { CreateDialog } from '../create-dialog';
 import { Body } from '../../../../model/body';
 import { DecalsService } from '../../../../service/items/decals.service';
-import { DecalDetailsService } from '../../../../service/items/decal-details.service';
 import { BodiesService } from '../../../../service/items/bodies.service';
 
 @Component({
@@ -16,13 +15,11 @@ import { BodiesService } from '../../../../service/items/bodies.service';
 })
 export class CreateDecalComponent extends CreateDialog<Decal> implements OnInit {
 
-  decalDetails: DecalDetail[];
   bodies: Body[];
 
   constructor(dialogRef: MatDialogRef<CreateDecalComponent>,
               cloudService: CloudStorageService,
               decalsService: DecalsService,
-              private decalDetailService: DecalDetailsService,
               private bodiesService: BodiesService,
               snackBar: MatSnackBar,
               @Inject(MAT_DIALOG_DATA) data: Decal) {
@@ -34,7 +31,6 @@ export class CreateDecalComponent extends CreateDialog<Decal> implements OnInit 
 
   ngOnInit() {
     super.ngOnInit();
-    this.decalDetailService.getAll().subscribe(details => this.decalDetails = details);
     this.bodiesService.getAll().subscribe(bodies => this.bodies = bodies);
   }
 

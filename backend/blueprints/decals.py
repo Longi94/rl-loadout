@@ -20,21 +20,16 @@ def get_decals():
 
 @decals_blueprint.route('', methods=['POST'])
 @jwt_required
-@json_required_params(['id', 'rgba_map', 'decal_detail_id'])
+@json_required_params(['name', 'icon', 'quality', 'paintable', 'id', 'rgba_map'])
 def add_decal():
     decal = Decal()
     decal.apply_dict(request.json)
-
-    detail = database.get_decal_detail(decal.decal_detail_id)
-    if detail is None:
-        raise NotFoundException('Decal detail ID does not exist')
 
     if decal.body_id:
         body = body_dao.get(decal.body_id)
         if body is not None:
             decal.body = body
 
-    decal.decal_detail = detail
     decal_dao.add(decal)
     database.commit()
     return jsonify(decal.to_dict())
@@ -55,7 +50,7 @@ def update(decal_id):
     item = decal_dao.get(decal_id)
 
     if item is None:
-        raise NotFoundException('Decal detail not found')
+        raise NotFoundException('Decal not found')
 
     item.update(request.json)
     return '', 200

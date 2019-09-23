@@ -5,6 +5,7 @@ import { Object3D, Scene } from 'three';
 import { PromiseLoader } from '../utils/loader';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+import { PaintConfig } from '../service/loadout.service';
 
 export class AntennaModel extends AbstractObject {
 
@@ -14,7 +15,7 @@ export class AntennaModel extends AbstractObject {
 
   socket: Object3D;
 
-  constructor(antenna: Antenna, paints: { [key: string]: string }) {
+  constructor(antenna: Antenna, paints: PaintConfig) {
     super(getAssetUrl(antenna.stick));
     this.antennaUrl = getAssetUrl(antenna.model);
 
@@ -23,25 +24,21 @@ export class AntennaModel extends AbstractObject {
     this.antennaLoader = new PromiseLoader(gltfLoader);
   }
 
-  load(): Promise<any> {
-    const promises = [
-      this.antennaLoader.load(this.antennaUrl),
-      super.load()
-    ];
+  async load() {
+    const antennaTask = this.antennaLoader.load(this.antennaUrl);
+    await super.load();
+    const gltf = await antennaTask;
 
-    return new Promise<any>((resolve, reject) => Promise.all(promises).then(values => {
-      const antennaScene: Scene = values[0].scene;
-      const antenna: Object3D = antennaScene.children[0];
+    const antennaScene: Scene = gltf.scene;
+    const antenna: Object3D = antennaScene.children[0];
 
-      if (this.socket) {
-        antenna.position.copy(this.socket.position);
-        antenna.rotation.copy(this.socket.rotation);
-      }
+    if (this.socket) {
+      antenna.position.copy(this.socket.position);
+      antenna.rotation.copy(this.socket.rotation);
+    }
 
-      this.scene.add(antenna);
-      antennaScene.dispose();
-      resolve();
-    }, reject));
+    this.scene.add(antenna);
+    antennaScene.dispose();
   }
 
   handleModel(scene: Scene) {

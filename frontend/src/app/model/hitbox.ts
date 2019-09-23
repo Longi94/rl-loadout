@@ -1,3 +1,3 @@
 export enum Hitbox {
-  OCTANE, DOMINUS, PLANK, BREAKOUT, HYBRID, BATMOBILE
+  OCTANE = 'Octane', DOMINUS = 'MuscleCar', PLANK = 'Plank', BREAKOUT = 'LongCar', HYBRID = 'Hybrid'
 }

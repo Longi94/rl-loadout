@@ -9,6 +9,8 @@ class BaseDao(object):
         self.Session = database.Session
 
     def get(self, record_id) -> T:
+        if record_id is None:
+            return None
         session = self.Session()
         return session.query(self.T).get(record_id)
 

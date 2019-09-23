@@ -24,7 +24,7 @@ jobs:
           key: dependency-cache-{{ checksum "frontend/package-lock.json" }}
       - run:
           name: install angular cli
-          command: sudo npm install -g @angular/cli > /dev/null
+          command: sudo npm install -g @angular/cli@8.1.1 > /dev/null
       - run:
           name: install-dependencies
           command: npm install
@@ -51,7 +51,7 @@ jobs:
           key: dependency-cache-{{ checksum "frontend/package-lock.json" }}
       - run:
           name: install angular cli
-          command: sudo npm install -g @angular/cli > /dev/null
+          command: sudo npm install -g @angular/cli@8.1.1 > /dev/null
       - run:
           name: install-dependencies
           command: npm install
