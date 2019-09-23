@@ -1,6 +1,6 @@
 import { AbstractObject } from './object';
 import { Color, Mesh, MeshStandardMaterial, Object3D, Scene, Vector3 } from 'three';
-import { Wheel } from '../model/wheel';
+import { Wheel, WheelConfig } from '../model/wheel';
 import { getAssetUrl } from '../utils/network';
 import { SkeletonUtils } from 'three/examples/jsm/utils/SkeletonUtils';
 import { disposeIfExists } from '../utils/util';
@@ -10,9 +10,7 @@ import { Layer, LayeredTexture } from './layered-texture';
 import { PromiseLoader } from '../utils/loader';
 import { TgaRgbaLoader } from '../utils/tga-rgba-loader';
 import { getChannel, getMaskPixels, ImageChannel, invertChannel } from '../utils/image';
-
-const BASE_RADIUS = 16.313;
-const BASE_WIDTH = 14.5288;
+import { BASE_WHEEL_MESH_RADIUS, BASE_WHEEL_MESH_WIDTH } from './constants';
 
 class RimSkin {
 
@@ -57,15 +55,14 @@ class RimSkin {
   }
 }
 
+class WheelModel {
+  model: Object3D;
+  config: WheelConfig;
+}
+
 export class WheelsModel extends AbstractObject implements Paintable {
 
-  wheels: { [key: string]: Object3D } = {
-    fr: undefined,
-    fl: undefined,
-    br: undefined,
-    bl: undefined
-  };
-
+  wheels: WheelModel[] = [];
   rimMaterial: MeshStandardMaterial;
   rimSkin: RimSkin;
 
@@ -84,10 +81,7 @@ export class WheelsModel extends AbstractObject implements Paintable {
     super.dispose();
     disposeIfExists(this.rimMaterial);
     disposeIfExists(this.rimSkin);
-    disposeIfExists(this.wheels.fr);
-    disposeIfExists(this.wheels.fl);
-    disposeIfExists(this.wheels.br);
-    disposeIfExists(this.wheels.bl);
+    this.wheels = [];
   }
 
   async load() {
@@ -114,68 +108,45 @@ export class WheelsModel extends AbstractObject implements Paintable {
         }
       }
     });
-
-    this.wheels.fr = SkeletonUtils.clone(scene) as Object3D;
-    this.wheels.fl = SkeletonUtils.clone(scene) as Object3D;
-    this.wheels.br = SkeletonUtils.clone(scene) as Object3D;
-    this.wheels.bl = SkeletonUtils.clone(scene) as Object3D;
   }
 
-  applyWheelConfig(config) {
-    let frontWidthScale = 1;
-    let frontRadiusScale = 1;
-    let backWidthScale = 1;
-    let backRadiusScale = 1;
-    let frontOffset = 0;
-    let backOffset = 0;
+  applyWheelConfig(config: WheelConfig[]) {
+    for (const conf of config) {
+      const widthScale = conf.width / BASE_WHEEL_MESH_WIDTH;
+      const radiusScale = conf.width / BASE_WHEEL_MESH_RADIUS;
+      const offset = conf.offset;
 
-    if (config.settings != undefined) {
-      frontWidthScale = config.settings.frontAxle.wheelWidth / BASE_WIDTH;
-      frontRadiusScale = config.settings.frontAxle.wheelMeshRadius / BASE_RADIUS;
-      backWidthScale = config.settings.backAxle.wheelWidth / BASE_WIDTH;
-      backRadiusScale = config.settings.backAxle.wheelMeshRadius / BASE_RADIUS;
-      frontOffset = config.settings.frontAxle.wheelMeshOffsetSide;
-      backOffset = config.settings.backAxle.wheelMeshOffsetSide;
-    }
-
-    for (const key of Object.keys(config.positions)) {
-      const wheel = this.wheels[key];
+      const wheel = SkeletonUtils.clone(this.scene) as Object3D;
       const position = new Vector3();
+      position.copy(conf.position);
 
-      position.copy(config.positions[key].pos);
-
-      if (key.endsWith('l')) {
+      if (!conf.right) {
         wheel.rotation.set(0, Math.PI, 0);
-      }
-
-      if (key.startsWith('f')) {
-        wheel.scale.set(frontRadiusScale, frontRadiusScale, frontWidthScale);
-
-        if (key.endsWith('l')) {
-          position.add(new Vector3(0, 0, -frontOffset));
-        } else {
-          position.add(new Vector3(0, 0, frontOffset));
-        }
+        position.add(new Vector3(0, 0, -offset));
       } else {
-        wheel.scale.set(backRadiusScale, backRadiusScale, backWidthScale);
-
-        if (key.endsWith('l')) {
-          position.add(new Vector3(0, 0, -backOffset));
-        } else {
-          position.add(new Vector3(0, 0, backOffset));
-        }
+        position.add(new Vector3(0, 0, offset));
       }
 
+      wheel.scale.set(radiusScale, radiusScale, widthScale);
       wheel.position.copy(position);
+
+      this.wheels.push({
+        model: wheel,
+        config: conf
+      });
     }
   }
 
   addToScene(scene: Scene) {
-    scene.add(this.wheels.fr, this.wheels.fl, this.wheels.br, this.wheels.bl);
+    for (const wheel of this.wheels) {
+      scene.add(wheel.model);
+    }
   }
 
   removeFromScene(scene: Scene) {
-    scene.remove(this.wheels.fr, this.wheels.fl, this.wheels.br, this.wheels.bl);
+    for (const wheel of this.wheels) {
+      scene.remove(wheel.model);
+    }
   }
 
   setPaintColor(paint: Color) {

@@ -13,6 +13,7 @@ import { PaintConfig } from '../../service/loadout.service';
 import { AxleSettings, WheelSettings } from '../../model/axle-settings';
 import { HitboxConfig } from '../../model/hitbox-config';
 import { ChassisSkin } from '../chassis-skin';
+import { WheelConfig } from '../../model/wheel';
 
 
 export class BodyModel extends AbstractObject implements Paintable {
@@ -30,7 +31,7 @@ export class BodyModel extends AbstractObject implements Paintable {
 
   hitboxConfig: HitboxConfig;
   wheelSettings: WheelSettings;
-  wheelPositions: { [key: string]: any };
+  wheelConfig: WheelConfig[];
 
   hatSocket: Object3D;
   antennaSocket: Object3D;
@@ -116,28 +117,34 @@ export class BodyModel extends AbstractObject implements Paintable {
     this.getWheelPositions();
   }
 
-  getWheelConfig() {
-    return {
-      settings: this.wheelSettings,
-      positions: this.wheelPositions
-    };
-  }
-
   private getWheelPositions() {
-    const config = {};
+    this.wheelConfig = [];
 
     this.skeleton.traverse(object => {
       if (object.name.endsWith('Disc_jnt')) {
-        const wheelType = object.name.substr(0, 2).toLowerCase();
-        const wheelPos = object.localToWorld(new Vector3());
+        const config = new WheelConfig();
 
-        config[wheelType] = {
-          pos: wheelPos
-        };
+        const wheelType = object.name.substr(0, 2).toLowerCase();
+
+        config.position = object.localToWorld(new Vector3());
+        config.front = wheelType[0] === 'f';
+        config.right = wheelType[1] === 'r';
+
+        if (this.wheelSettings != undefined) {
+          if (config.front) {
+            config.offset = this.wheelSettings.frontAxle.wheelMeshOffsetSide;
+            config.width = this.wheelSettings.frontAxle.wheelWidth;
+            config.radius = this.wheelSettings.frontAxle.wheelMeshRadius;
+          } else {
+            config.offset = this.wheelSettings.backAxle.wheelMeshOffsetSide;
+            config.width = this.wheelSettings.backAxle.wheelWidth;
+            config.radius = this.wheelSettings.backAxle.wheelMeshRadius;
+          }
+        }
+
+        this.wheelConfig.push(config);
       }
     });
-
-    this.wheelPositions = config;
   }
 
   /**
