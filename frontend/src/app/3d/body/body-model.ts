@@ -117,7 +117,7 @@ export class BodyModel extends AbstractObject implements Paintable {
     this.getWheelPositions();
   }
 
-  private getWheelPositions() {
+  protected getWheelPositions() {
     this.wheelConfig = [];
 
     this.skeleton.traverse(object => {

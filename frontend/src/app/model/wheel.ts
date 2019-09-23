@@ -17,4 +17,18 @@ export class WheelConfig {
   width: number = BASE_WHEEL_MESH_WIDTH;
   radius: number = BASE_WHEEL_MESH_RADIUS;
   offset = 0;
+
+  clone(): WheelConfig {
+    const newObj = new WheelConfig();
+
+    newObj.right = this.right;
+    newObj.front = this.front;
+    newObj.width = this.width;
+    newObj.radius = this.radius;
+    newObj.offset = this.offset;
+    newObj.position = new Vector3();
+    newObj.position.copy(this.position);
+
+    return newObj;
+  }
 }

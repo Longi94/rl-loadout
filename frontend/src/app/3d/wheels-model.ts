@@ -111,9 +111,10 @@ export class WheelsModel extends AbstractObject implements Paintable {
   }
 
   applyWheelConfig(config: WheelConfig[]) {
+    this.wheels = [];
     for (const conf of config) {
       const widthScale = conf.width / BASE_WHEEL_MESH_WIDTH;
-      const radiusScale = conf.width / BASE_WHEEL_MESH_RADIUS;
+      const radiusScale = conf.radius / BASE_WHEEL_MESH_RADIUS;
       const offset = conf.offset;
 
       const wheel = SkeletonUtils.clone(this.scene) as Object3D;

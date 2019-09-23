@@ -265,7 +265,9 @@ export class CanvasComponent implements OnInit {
       this.body.load(),
       this.loadoutStore.loadDecals(body.id)
     ]).then(() => {
+      this.wheels.removeFromScene(this.scene);
       this.wheels.applyWheelConfig(this.body.wheelConfig);
+      this.wheels.addToScene(this.scene);
 
       if (this.topper) {
         this.topper.applyAnchor(this.body.hatSocket);

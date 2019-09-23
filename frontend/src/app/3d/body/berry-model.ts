@@ -9,6 +9,7 @@ import { TgaRgbaLoader } from '../../utils/tga-rgba-loader';
 import { Layer, LayeredTexture } from '../layered-texture';
 import { getAssetUrl } from '../../utils/network';
 import { getChannel, getMaskPixels, ImageChannel, invertChannel } from '../../utils/image';
+import { WheelConfig } from '../../model/wheel';
 
 class BerryBodySkin implements BodyTexture {
 
@@ -95,5 +96,27 @@ export class BerryModel extends BodyModel {
   }
 
   setDecalPaintColor(color: Color) {
+  }
+
+  protected getWheelPositions() {
+    super.getWheelPositions();
+
+    const confToAdd: WheelConfig[] = [];
+
+    for (const config of this.wheelConfig) {
+      if (!config.front) {
+        const newConfig = config.clone();
+
+        if (newConfig.right) {
+          newConfig.position.setZ(newConfig.position.z + newConfig.width);
+        } else {
+          newConfig.position.setZ(newConfig.position.z - newConfig.width);
+        }
+
+        confToAdd.push(newConfig);
+      }
+    }
+
+    this.wheelConfig = this.wheelConfig.concat(confToAdd);
   }
 }
