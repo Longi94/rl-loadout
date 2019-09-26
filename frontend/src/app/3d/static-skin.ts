@@ -97,6 +97,7 @@ export class StaticSkin implements BodyTexture {
     this.accentPixels = getMaskPixels(decalMask);
 
     const decalPaintMask = getChannel(this.decalRgbaMap, ImageChannel.G);
+    applyMaskToChannel(decalPaintMask, primaryMask);
     this.decalPaintLayer = new Layer(decalPaintMask, this.paint);
     this.decalPaintPixels = getMaskPixels(decalPaintMask);
 
