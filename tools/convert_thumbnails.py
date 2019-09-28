@@ -8,7 +8,7 @@ from subprocess import Popen, PIPE
 
 def umodel_extract(path, file):
     print(f'Extracting {file}...')
-    command = ['umodel', '-game=rocket', f'-path={path}', '-export', file]
+    command = ['umodel', '-game=rocketleague', f'-path={path}', '-export', file]
     print(f'Running {" ".join(command)}')
     p = Popen(command, stdout=PIPE)
     for line in p.stdout:
