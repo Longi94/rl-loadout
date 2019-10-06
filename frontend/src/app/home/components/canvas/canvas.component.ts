@@ -33,7 +33,7 @@ import { GUI } from 'dat-gui';
 import * as dat from 'dat.gui';
 import { NotifierService } from 'angular-notifier';
 import * as Stats from 'stats.js';
-import { createBodyModel, Body, RocketConfig, BodyModel } from "rl-loadout-lib";
+import { createBodyModel, Body, RocketConfig, BodyModel } from "../../../rl-loadout-lib";
 import { environment } from '../../../../environments/environment';
 import * as THREE from 'three';
 
