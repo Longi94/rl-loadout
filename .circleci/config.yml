@@ -16,6 +16,7 @@ jobs:
       - image: circleci/node:10.16-browsers
     steps:
       - checkout
+      - run: git submodule update --init --recursive
       - run:
           name: Setup custom environment variables
           command: |
@@ -24,7 +25,7 @@ jobs:
           key: dependency-cache-{{ checksum "frontend/package-lock.json" }}
       - run:
           name: install angular cli
-          command: sudo npm install -g @angular/cli@8.1.1 > /dev/null
+          command: sudo npm install -g @angular/cli@8.3.8 > /dev/null
       - run:
           name: install-dependencies
           command: npm install
