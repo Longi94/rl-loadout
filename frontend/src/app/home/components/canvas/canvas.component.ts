@@ -14,12 +14,10 @@ import {
 } from 'three';
 import { LoadoutService } from '../../../service/loadout.service';
 import { Decal } from '../../../model/decal';
-import { BodyModel } from '../../../3d/body/body-model';
 import { WheelsModel } from '../../../3d/wheels-model';
 import { Wheel } from '../../../model/wheel';
 import { promiseProgress } from '../../../utils/promise';
 import { LoadoutStoreService } from '../../../service/loadout-store.service';
-import { Body } from '../../../model/body';
 import { EquirectangularToCubeGenerator } from 'three/examples/jsm/loaders/EquirectangularToCubeGenerator';
 import { PromiseLoader } from '../../../utils/loader';
 import { PMREMGenerator } from 'three/examples/jsm/pmrem/PMREMGenerator';
@@ -35,7 +33,14 @@ import { GUI } from 'dat-gui';
 import * as dat from 'dat.gui';
 import { NotifierService } from 'angular-notifier';
 import * as Stats from 'stats.js';
-import { createBodyModel } from '../../../3d/body/factory';
+import { createBodyModel, Body, RocketConfig, BodyModel } from "rl-loadout-lib";
+import { environment } from '../../../../environments/environment';
+import * as THREE from 'three';
+
+const ROCKET_CONFIG: RocketConfig = {
+  backendHost: environment.backend,
+  assetHost: environment.assetHost
+};
 
 @Component({
   selector: 'app-canvas',
@@ -120,7 +125,7 @@ export class CanvasComponent implements OnInit {
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enablePan = false;
-    this.controls.minDistance = 100;
+    //this.controls.minDistance = 100;
     this.controls.maxDistance = 300;
     this.controls.update();
 
@@ -132,7 +137,7 @@ export class CanvasComponent implements OnInit {
     const textureLoader = new PromiseLoader(new TextureLoader());
 
     this.loadoutService.loadDefaults().then(() => {
-      this.body = createBodyModel(this.loadoutService.body, this.loadoutService.decal, this.loadoutService.paints);
+      this.body = createBodyModel(this.loadoutService.body, this.loadoutService.decal, this.loadoutService.paints, ROCKET_CONFIG);
       this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints);
 
       const promises = [
@@ -259,7 +264,7 @@ export class CanvasComponent implements OnInit {
     this.body.removeFromScene(this.scene);
     this.body.dispose();
 
-    this.body = createBodyModel(body, this.loadoutService.decal, this.loadoutService.paints);
+    this.body = createBodyModel(body, this.loadoutService.decal, this.loadoutService.paints, ROCKET_CONFIG);
 
     Promise.all([
       this.body.load(),
@@ -286,7 +291,7 @@ export class CanvasComponent implements OnInit {
 
   private changeDecal(decal: Decal) {
     this.loading.decal = true;
-    this.body.changeDecal(decal, this.loadoutService.paints).then(() => {
+    this.body.changeDecal(decal, this.loadoutService.paints, ROCKET_CONFIG).then(() => {
       this.loading.decal = false;
       this.updateTextureService();
     });
@@ -419,7 +424,7 @@ export class CanvasComponent implements OnInit {
   }
 
   private applyHitbox() {
-    this.hitbox.applyBody(this.body);
+    //this.hitbox.applyBody(this.body);
   }
 
   private validateBody() {
