@@ -35,11 +35,17 @@ import { NotifierService } from 'angular-notifier';
 import * as Stats from 'stats.js';
 import { createBodyModel, Body, RocketConfig, BodyModel } from "../../../rl-loadout-lib";
 import { environment } from '../../../../environments/environment';
-import * as THREE from 'three';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+
+const dracoLoader = new DRACOLoader();
+dracoLoader.setPath('/assets/draco/');
+const gltfLoader = new GLTFLoader();
+gltfLoader.setDRACOLoader(dracoLoader);
 
 const ROCKET_CONFIG: RocketConfig = {
   backendHost: environment.backend,
-  assetHost: environment.assetHost
+  assetHost: environment.assetHost,
+  gltfLoader: gltfLoader
 };
 
 @Component({
@@ -107,9 +113,6 @@ export class CanvasComponent implements OnInit {
   }
 
   ngOnInit() {
-    DRACOLoader.setDecoderPath('/assets/draco/');
-    DRACOLoader.getDecoderModule().then();
-
     const width = this.canvasContainer.nativeElement.offsetWidth;
     const height = this.canvasContainer.nativeElement.offsetHeight;
     this.camera = new PerspectiveCamera(70, width / height, 0.01, 400);
