@@ -1,3 +1,0 @@
-[submodule "lib"]
-	path = lib
-	url = git@github.com:Longi94/rl-loadout-lib.git
