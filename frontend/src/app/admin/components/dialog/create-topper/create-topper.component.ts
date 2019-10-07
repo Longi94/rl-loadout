@@ -1,6 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { Topper } from '../../../../model/topper';
-import { Quality } from '../../../../model/quality';
+import { Topper, Quality } from '../../../../rl-loadout-lib';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { CloudStorageService } from '../../../../service/cloud-storage.service';
 import { CreateDialog } from '../create-dialog';

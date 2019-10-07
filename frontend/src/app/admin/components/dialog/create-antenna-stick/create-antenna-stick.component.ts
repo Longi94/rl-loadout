@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { CloudStorageService } from '../../../../service/cloud-storage.service';
-import { AntennaStick } from '../../../../model/antenna';
+import { AntennaStick } from '../../../../rl-loadout-lib';
 import { CreateDialog } from '../create-dialog';
 import { AntennaSticksService } from '../../../../service/items/antenna-sticks.service';
 

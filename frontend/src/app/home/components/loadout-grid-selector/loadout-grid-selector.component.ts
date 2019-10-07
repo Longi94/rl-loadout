@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Item } from '../../../model/item';
-import { Quality } from '../../../model/quality';
+import { Item, Quality } from '../../../rl-loadout-lib';
 import { environment } from '../../../../environments/environment';
 
 @Component({

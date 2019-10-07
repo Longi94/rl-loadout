@@ -9,8 +9,7 @@ import {
   Scene,
   Vector3
 } from 'three';
-import { Hitbox } from '../model/hitbox';
-import { BodyModel } from './body/body-model';
+import { Hitbox, BodyModel } from '../rl-loadout-lib';
 
 export class HitboxModel {
 

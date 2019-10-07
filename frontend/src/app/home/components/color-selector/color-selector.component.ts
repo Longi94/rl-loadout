@@ -5,7 +5,7 @@ import {
   getColorsForBody,
   getTextColor,
   PAINT_COLORS
-} from '../../../utils/color';
+} from '../../../rl-loadout-lib';
 import { Color } from 'three';
 
 @Component({

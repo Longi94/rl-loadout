@@ -1,15 +1,20 @@
 import { Injectable } from '@angular/core';
-import { Decal } from '../model/decal';
+import {
+  Antenna,
+  Body,
+  Decal,
+  Item,
+  Topper,
+  Wheel,
+  COLOR_MAPLE_BLUE,
+  DEFAULT_ACCENT,
+  DEFAULT_BLUE_TEAM,
+  BODY_MAPLE_ID,
+  BODY_SLIME_ID
+} from '../rl-loadout-lib';
 import { Observable, Subject } from 'rxjs';
-import { Wheel } from '../model/wheel';
-import { Body } from '../model/body';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { Item } from '../model/item';
-import { COLOR_MAPLE_BLUE, DEFAULT_ACCENT, DEFAULT_BLUE_TEAM } from '../utils/color';
-import { Topper } from '../model/topper';
-import { Antenna } from '../model/antenna';
-import { BODY_MAPLE_ID, BODY_SLIME_ID } from '../utils/ids';
 import { Color } from 'three';
 
 const HOST = `${environment.backend}/internal`;

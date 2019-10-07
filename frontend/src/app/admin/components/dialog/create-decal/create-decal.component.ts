@@ -1,10 +1,8 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { Decal } from '../../../../model/decal';
-import { Quality } from '../../../../model/quality';
+import { Body, Decal, Quality } from '../../../../rl-loadout-lib';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { CloudStorageService } from '../../../../service/cloud-storage.service';
 import { CreateDialog } from '../create-dialog';
-import { Body } from '../../../../model/body';
 import { DecalsService } from '../../../../service/items/decals.service';
 import { BodiesService } from '../../../../service/items/bodies.service';
 

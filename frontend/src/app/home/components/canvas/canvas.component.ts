@@ -13,32 +13,37 @@ import {
   AmbientLight
 } from 'three';
 import { LoadoutService } from '../../../service/loadout.service';
-import { Decal } from '../../../model/decal';
-import { WheelsModel } from '../../../3d/wheels-model';
-import { Wheel } from '../../../model/wheel';
 import { promiseProgress } from '../../../utils/promise';
 import { LoadoutStoreService } from '../../../service/loadout-store.service';
 import { EquirectangularToCubeGenerator } from 'three/examples/jsm/loaders/EquirectangularToCubeGenerator';
-import { PromiseLoader } from '../../../utils/loader';
 import { PMREMGenerator } from 'three/examples/jsm/pmrem/PMREMGenerator';
 import { PMREMCubeUVPacker } from 'three/examples/jsm/pmrem/PMREMCubeUVPacker';
 import { TextureService } from '../../../service/texture.service';
-import { Topper } from '../../../model/topper';
-import { TopperModel } from '../../../3d/topper-model';
-import { AntennaModel } from '../../../3d/antenna-model';
-import { Antenna } from '../../../model/antenna';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { getHitboxModel, HitboxModel } from '../../../3d/hitbox-model';
 import { GUI } from 'dat-gui';
 import * as dat from 'dat.gui';
 import { NotifierService } from 'angular-notifier';
 import * as Stats from 'stats.js';
-import { createBodyModel, Body, RocketConfig, BodyModel } from "../../../rl-loadout-lib";
+import {
+  createBodyModel,
+  Body,
+  Wheel,
+  Decal,
+  Topper,
+  Antenna,
+  RocketConfig,
+  BodyModel,
+  WheelsModel,
+  TopperModel,
+  AntennaModel,
+  PromiseLoader
+} from '../../../rl-loadout-lib';
 import { environment } from '../../../../environments/environment';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 
 const dracoLoader = new DRACOLoader();
-dracoLoader.setPath('/assets/draco/');
+dracoLoader.setDecoderPath('/assets/draco/');
 const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);
 
@@ -128,7 +133,7 @@ export class CanvasComponent implements OnInit {
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.enablePan = false;
-    //this.controls.minDistance = 100;
+    this.controls.minDistance = 100;
     this.controls.maxDistance = 300;
     this.controls.update();
 
@@ -141,7 +146,7 @@ export class CanvasComponent implements OnInit {
 
     this.loadoutService.loadDefaults().then(() => {
       this.body = createBodyModel(this.loadoutService.body, this.loadoutService.decal, this.loadoutService.paints, ROCKET_CONFIG);
-      this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints);
+      this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints, ROCKET_CONFIG);
 
       const promises = [
         textureLoader.load('assets/mannfield_equirectangular.jpg'),
@@ -304,7 +309,7 @@ export class CanvasComponent implements OnInit {
     this.loading.wheel = true;
     this.wheels.removeFromScene(this.scene);
     this.wheels.dispose();
-    this.wheels = new WheelsModel(wheel, this.loadoutService.paints);
+    this.wheels = new WheelsModel(wheel, this.loadoutService.paints, ROCKET_CONFIG);
     this.wheels.load().then(() => {
       this.applyWheelModel();
       this.updateTextureService();
@@ -385,7 +390,7 @@ export class CanvasComponent implements OnInit {
     }
 
     this.loading.topper = true;
-    this.topper = new TopperModel(topper, this.loadoutService.paints);
+    this.topper = new TopperModel(topper, this.loadoutService.paints, ROCKET_CONFIG);
     this.topper.load().then(() => {
       this.applyTopperModel();
       this.updateTextureService();
@@ -411,7 +416,7 @@ export class CanvasComponent implements OnInit {
     }
 
     this.loading.antenna = true;
-    this.antenna = new AntennaModel(antenna, this.loadoutService.paints);
+    this.antenna = new AntennaModel(antenna, this.loadoutService.paints, ROCKET_CONFIG);
     this.antenna.load().then(() => {
       this.applyAntennaModel();
       this.updateTextureService();
@@ -427,7 +432,7 @@ export class CanvasComponent implements OnInit {
   }
 
   private applyHitbox() {
-    //this.hitbox.applyBody(this.body);
+    this.hitbox.applyBody(this.body);
   }
 
   private validateBody() {

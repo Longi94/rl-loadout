@@ -1,6 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { Wheel } from '../../../../model/wheel';
-import { Quality } from '../../../../model/quality';
+import { Wheel, Quality } from '../../../../rl-loadout-lib';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { CloudStorageService } from '../../../../service/cloud-storage.service';
 import { CreateDialog } from '../create-dialog';
