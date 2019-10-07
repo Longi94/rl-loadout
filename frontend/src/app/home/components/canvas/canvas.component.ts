@@ -278,9 +278,7 @@ export class CanvasComponent implements OnInit {
       this.body.load(),
       this.loadoutStore.loadDecals(body.id)
     ]).then(() => {
-      this.wheels.removeFromScene(this.scene);
-      this.wheels.applyWheelConfig(this.body.wheelConfig);
-      this.wheels.addToScene(this.scene);
+      this.body.addWheelsModel(this.wheels);
 
       if (this.topper) {
         this.topper.applyAnchor(this.body.hatSocket);
@@ -307,7 +305,7 @@ export class CanvasComponent implements OnInit {
 
   private changeWheel(wheel: Wheel) {
     this.loading.wheel = true;
-    this.wheels.removeFromScene(this.scene);
+    this.body.clearWheelsModel();
     this.wheels.dispose();
     this.wheels = new WheelsModel(wheel, this.loadoutService.paints, ROCKET_CONFIG);
     this.wheels.load().then(() => {
@@ -318,9 +316,8 @@ export class CanvasComponent implements OnInit {
   }
 
   private applyWheelModel() {
-    this.wheels.applyWheelConfig(this.body.wheelConfig);
     this.wheels.setEnvMap(this.envMap);
-    this.wheels.addToScene(this.scene);
+    this.body.addWheelsModel(this.wheels);
   }
 
   private applyBodyModel() {
