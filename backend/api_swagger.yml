@@ -9,6 +9,7 @@ servers:
   - url: "{{ server_host }}/api/v1"
 tags:
   - name: bodies
+  - name: wheels
 paths:
   /bodies:
     get:
@@ -48,6 +49,48 @@ paths:
                 $ref: '#/components/schemas/Body'
         404:
           description: 'Body not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /wheels:
+    get:
+      summary: 'Get a list of wheels'
+      operationId: controllers.wheels.get
+      tags:
+        - wheels
+      responses:
+        200:
+          description: 'List of wheels'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Wheel'
+  /wheels/{id}:
+    get:
+      summary: 'Get a wheel'
+      operationId: controllers.wheels.get_by_id
+      tags:
+        - wheels
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 'ID of the item (in-game item ID).'
+          example: 376
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Wheel'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wheel'
+        404:
+          description: 'Wheel not found'
           content:
             application/json:
               schema:
@@ -127,3 +170,22 @@ components:
               type: string
               description: 'Normal map of the chassis. This normally null. Only not null if the normal map has a RGBA map inside it, mainly for body paints.'
               example:
+    Wheel:
+      allOf:
+        - $ref: '#/components/schemas/Item'
+        - type: object
+          required:
+            - model
+          properties:
+            model:
+              type: string
+              description: 'Path to the GLTF model file of the wheel.'
+              example: 'models/WHEEL_Star_SM.glb'
+            rim_base:
+              type: string
+              description: 'Path to the base texture of the rim.'
+              example: 'textures/OEM_D.tga'
+            rim_rgb_map:
+              type: string
+              description: 'Path to the rgba map of the rim.'
+              example: 'textures/OEM_RGB.tga'

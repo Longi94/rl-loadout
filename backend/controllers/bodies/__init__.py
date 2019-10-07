@@ -1,10 +1,8 @@
 from flask import jsonify
-from config import config
 from dao import BodyDao
 from utils.network.exc import NotFoundException
 
 body_dao = BodyDao()
-asset_host = config.get('assets', 'host')
 
 
 def get():
