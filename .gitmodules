@@ -1,3 +1,0 @@
-[submodule "frontend/src/app/rl-loadout-lib"]
-	path = frontend/src/app/rl-loadout-lib
-	url = git@github.com:Longi94/rl-loadout-lib.git
