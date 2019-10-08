@@ -42,6 +42,10 @@ class TopperSkin {
     }
   }
 
+  dispose() {
+    disposeIfExists(this.texture);
+  }
+
   setPaint(color: Color) {
     this.paint = color;
     this.paintLayer.data = color;

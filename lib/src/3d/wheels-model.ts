@@ -52,7 +52,7 @@ class RimSkin {
   }
 
   dispose() {
-    this.texture.dispose();
+    disposeIfExists(this.texture);
   }
 }
 

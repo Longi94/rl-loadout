@@ -16,6 +16,8 @@ import { ChassisSkin } from '../chassis-skin';
 import { WheelConfig } from '../../model/wheel';
 import { RocketConfig } from '../../model/rocket-config';
 import { WheelsModel } from '../wheels-model';
+import { TopperModel } from '../topper-model';
+import { AntennaModel } from '../antenna-model';
 
 
 export class BodyModel extends AbstractObject implements Paintable {
@@ -39,6 +41,8 @@ export class BodyModel extends AbstractObject implements Paintable {
   antennaSocket: Object3D;
 
   wheelsModel: WheelsModel;
+  topperModel: TopperModel;
+  antennaModel: AntennaModel;
 
   constructor(body: Body, decal: Decal, paints: PaintConfig, rocketConfig: RocketConfig) {
     super(getAssetUrl(body.model, rocketConfig), rocketConfig.gltfLoader);
@@ -159,8 +163,36 @@ export class BodyModel extends AbstractObject implements Paintable {
   }
 
   clearWheelsModel() {
-    this.wheelsModel.removeFromScene(this.scene);
-    this.wheelsModel = undefined;
+    if (this.wheelsModel != undefined) {
+      this.wheelsModel.removeFromScene(this.scene);
+      this.wheelsModel = undefined;
+    }
+  }
+
+  addTopperModel(topperModel: TopperModel) {
+    this.topperModel = topperModel;
+    this.topperModel.applyAnchor(this.hatSocket);
+    this.topperModel.addToScene(this.scene);
+  }
+
+  clearTopperModel() {
+    if (this.topperModel != undefined) {
+      this.topperModel.removeFromScene(this.scene);
+      this.topperModel = undefined;
+    }
+  }
+
+  addAntennaModel(antennaModel: AntennaModel) {
+    this.antennaModel = antennaModel;
+    this.antennaModel.applyAnchor(this.antennaSocket);
+    this.antennaModel.addToScene(this.scene);
+  }
+
+  clearAntennaModel() {
+    if (this.antennaModel != undefined) {
+      this.antennaModel.removeFromScene(this.scene);
+      this.antennaModel = undefined;
+    }
   }
 
   /**

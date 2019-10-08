@@ -281,11 +281,11 @@ export class CanvasComponent implements OnInit {
       this.body.addWheelsModel(this.wheels);
 
       if (this.topper) {
-        this.topper.applyAnchor(this.body.hatSocket);
+        this.body.addTopperModel(this.topper);
       }
 
       if (this.antenna) {
-        this.antenna.applyAnchor(this.body.antennaSocket);
+        this.body.addAntennaModel(this.antenna);
       }
 
       this.applyBodyModel();
@@ -377,7 +377,7 @@ export class CanvasComponent implements OnInit {
 
   private changeTopper(topper: Topper) {
     if (this.topper) {
-      this.topper.removeFromScene(this.scene);
+      this.body.clearTopperModel();
       this.topper.dispose();
       this.topper = undefined;
     }
@@ -389,21 +389,16 @@ export class CanvasComponent implements OnInit {
     this.loading.topper = true;
     this.topper = new TopperModel(topper, this.loadoutService.paints, ROCKET_CONFIG);
     this.topper.load().then(() => {
-      this.applyTopperModel();
+      this.body.addTopperModel(this.topper);
+      this.topper.setEnvMap(this.envMap);
       this.updateTextureService();
       this.loading.topper = false;
     });
   }
 
-  private applyTopperModel() {
-    this.topper.setEnvMap(this.envMap);
-    this.topper.applyAnchor(this.body.hatSocket);
-    this.topper.addToScene(this.scene);
-  }
-
   private changeAntenna(antenna: Antenna) {
     if (this.antenna) {
-      this.antenna.removeFromScene(this.scene);
+      this.body.clearAntennaModel();
       this.antenna.dispose();
       this.antenna = undefined;
     }
@@ -415,17 +410,12 @@ export class CanvasComponent implements OnInit {
     this.loading.antenna = true;
     this.antenna = new AntennaModel(antenna, this.loadoutService.paints, ROCKET_CONFIG);
     this.antenna.load().then(() => {
-      this.applyAntennaModel();
+      this.body.addAntennaModel(this.antenna);
+      this.antenna.setEnvMap(this.envMap);
+      this.validateAntenna();
       this.updateTextureService();
       this.loading.antenna = false;
     });
-  }
-
-  private applyAntennaModel() {
-    this.antenna.setEnvMap(this.envMap);
-    this.antenna.applyAnchor(this.body.antennaSocket);
-    this.antenna.addToScene(this.scene);
-    this.validateAntenna();
   }
 
   private applyHitbox() {

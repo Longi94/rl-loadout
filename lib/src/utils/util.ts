@@ -3,7 +3,7 @@
  * @param object nullable object that must have a dispose method
  */
 export function disposeIfExists(object: any) {
-  if (object != undefined) {
+  if (object != undefined && object.dispose != undefined) {
     object.dispose();
   }
 }
