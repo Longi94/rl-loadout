@@ -6,5 +6,6 @@ const DEFAULT_HOST = 'https://rocket-loadout.com';
 export class RocketConfig {
   backendHost: string = DEFAULT_HOST;
   assetHost: string = DEFAULT_BUCKET;
-  gltfLoader: GLTFLoader = new GLTFLoader();
+  gltfLoader?: GLTFLoader = new GLTFLoader();
+  dracoDecoderPath?: string;
 }

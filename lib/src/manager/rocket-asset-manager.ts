@@ -5,13 +5,24 @@ import { Decal } from '../model/decal';
 import { PaintConfig } from '../model/paint-config';
 import { WheelsModel } from '../3d/wheels-model';
 import { RocketConfig } from '../model/rocket-config';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 
 export class RocketAssetManager {
   private readonly rlService: RocketLoadoutService;
 
   constructor(private readonly config?: RocketConfig) {
-    if (config == undefined) {
+    if (this.config == undefined) {
       this.config = new RocketConfig();
+    }
+
+    if (this.config.gltfLoader == undefined) {
+      this.config.gltfLoader = new GLTFLoader();
+    }
+
+    if (this.config.dracoDecoderPath != undefined) {
+      const dracoLoader = new DRACOLoader();
+      dracoLoader.setDecoderPath(this.config.dracoDecoderPath);
+      this.config.gltfLoader.setDRACOLoader(dracoLoader);
     }
 
     this.rlService = new RocketLoadoutService(config.backendHost);
