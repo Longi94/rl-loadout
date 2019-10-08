@@ -25,6 +25,7 @@
     "three": "^0.108.0"
   },
   "devDependencies": {
+    "codelyzer": "^5.1.2",
     "tslint": "^5.20.0",
     "typescript": "~3.5.3"
   }
