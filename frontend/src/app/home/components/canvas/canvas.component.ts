@@ -50,7 +50,7 @@ gltfLoader.setDRACOLoader(dracoLoader);
 const ROCKET_CONFIG: RocketConfig = {
   backendHost: environment.backend,
   assetHost: environment.assetHost,
-  gltfLoader: gltfLoader
+  gltfLoader
 };
 
 @Component({
