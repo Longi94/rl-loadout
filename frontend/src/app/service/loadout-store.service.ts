@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Body, Wheel, Decal, Item, Topper, Antenna } from '../rl-loadout-lib';
+import { Body, Wheel, Decal, Item, Topper, Antenna } from 'rl-loadout-lib';
 import { NotifierService } from 'angular-notifier';
 
 const HOST = `${environment.backend}/internal`;

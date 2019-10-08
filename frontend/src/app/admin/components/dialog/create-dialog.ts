@@ -1,5 +1,5 @@
 import { OnInit } from '@angular/core';
-import { Quality } from '../../../rl-loadout-lib';
+import { Quality } from 'rl-loadout-lib';
 import { CloudObject, CloudStorageService } from '../../../service/cloud-storage.service';
 import { MatDialogRef, MatSnackBar } from '@angular/material';
 import { AbstractItemService } from '../../../service/abstract-item-service';

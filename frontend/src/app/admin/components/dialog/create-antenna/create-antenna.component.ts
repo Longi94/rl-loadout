@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { Quality, Antenna, AntennaStick } from '../../../../rl-loadout-lib';
+import { Quality, Antenna, AntennaStick } from 'rl-loadout-lib';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { CloudStorageService } from '../../../../service/cloud-storage.service';
 import { CreateDialog } from '../create-dialog';

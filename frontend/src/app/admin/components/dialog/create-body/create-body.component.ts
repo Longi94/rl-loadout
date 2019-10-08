@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import { Body, Quality } from '../../../../rl-loadout-lib';
+import { Body, Quality } from 'rl-loadout-lib';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { CloudStorageService } from '../../../../service/cloud-storage.service';
 import { CreateDialog } from '../create-dialog';

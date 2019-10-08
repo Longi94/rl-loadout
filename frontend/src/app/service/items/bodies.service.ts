@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AbstractItemService } from '../abstract-item-service';
-import { Body } from '../../rl-loadout-lib';
+import { Body } from 'rl-loadout-lib';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({

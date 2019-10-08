@@ -38,7 +38,7 @@ import {
   TopperModel,
   AntennaModel,
   PromiseLoader
-} from '../../../rl-loadout-lib';
+} from 'rl-loadout-lib';
 import { environment } from '../../../../environments/environment';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 

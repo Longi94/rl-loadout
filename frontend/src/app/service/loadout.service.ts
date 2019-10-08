@@ -11,7 +11,7 @@ import {
   DEFAULT_BLUE_TEAM,
   BODY_MAPLE_ID,
   BODY_SLIME_ID
-} from '../rl-loadout-lib';
+} from 'rl-loadout-lib';
 import { Observable, Subject } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
