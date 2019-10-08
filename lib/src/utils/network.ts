@@ -8,7 +8,7 @@ export async function doRequest<T>(request: RequestInfo | string): Promise<T> {
         throw {
             status: response.status,
             body: json
-        }
+        };
     }
 
     return json as T;
