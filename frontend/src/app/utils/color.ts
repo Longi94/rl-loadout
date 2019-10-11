@@ -1,4 +1,4 @@
-import { Color } from "three";
+import { Color } from 'three';
 
 /**
  * Get the text color for the background to make it readable.
