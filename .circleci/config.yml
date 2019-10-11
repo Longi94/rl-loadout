@@ -71,7 +71,7 @@ jobs:
       - save_cache:
           key: dependency-cache-{{ checksum "frontend/package-lock.json" }}
           paths:
-            - ./node_modules
+            - ./frontend/node_modules
       - save_cache:
           key: dependency-cache-{{ checksum "lib/package-lock.json" }}
           paths:
