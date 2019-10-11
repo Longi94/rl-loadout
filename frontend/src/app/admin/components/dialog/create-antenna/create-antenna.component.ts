@@ -23,7 +23,7 @@ export class CreateAntennaComponent extends CreateDialog<Antenna> implements OnI
               @Inject(MAT_DIALOG_DATA) data: Antenna) {
     super(dialogRef, cloudService, snackBar, data, antennasService);
     this.item = new Antenna(
-      undefined, undefined, '', Quality.COMMON, false, undefined, undefined, undefined, undefined
+      undefined, undefined, '', Quality.COMMON, false
     );
   }
 

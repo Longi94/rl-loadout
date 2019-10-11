@@ -129,8 +129,6 @@ export class CanvasComponent implements OnInit {
 
       this.progress.percent = 100 * (this.progress.current - this.progress.start) /
         (this.progress.total - this.progress.start);
-
-      console.log(this.progress);
     };
 
     const width = this.canvasContainer.nativeElement.offsetWidth;
@@ -157,30 +155,25 @@ export class CanvasComponent implements OnInit {
 
     this.animate();
 
-    const textureLoader = new PromiseLoader(new TextureLoader());
+    const textureLoader = new PromiseLoader(new TextureLoader(DefaultLoadingManager));
 
-    this.loadoutService.loadDefaults().then(() => {
-      this.body = createBodyModel(this.loadoutService.body, this.loadoutService.decal, this.loadoutService.paints, ROCKET_CONFIG);
-      this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints, ROCKET_CONFIG);
+    this.body = createBodyModel(this.loadoutService.body, this.loadoutService.decal, this.loadoutService.paints, ROCKET_CONFIG);
+    this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints, ROCKET_CONFIG);
 
-      const promises = [
-        textureLoader.load('assets/mannfield_equirectangular.jpg'),
-        this.body.load(),
-        this.wheels.load(),
-        this.loadoutStore.initAll(this.loadoutService.body.id)
-      ];
+    const promises = [
+      textureLoader.load('assets/mannfield_equirectangular.jpg'),
+      this.body.load(),
+      this.wheels.load(),
+      this.loadoutStore.initAll(this.loadoutService.body.id)
+    ];
 
-      Promise.all(promises).then(values => {
-        this.processBackground(values[0]);
-        this.applyBodyModel();
-        this.applyWheelModel();
-        this.applyHitbox();
-        this.updateTextureService();
-        this.initializing = false;
-      }).catch(error => {
-        console.error(error);
-        this.notifierService.notify('error', 'Failed to initialize.');
-      });
+    Promise.all(promises).then(values => {
+      this.processBackground(values[0]);
+      this.applyBodyModel();
+      this.applyWheelModel();
+      this.applyHitbox();
+      this.updateTextureService();
+      this.initializing = false;
     }).catch(error => {
       console.error(error);
       this.notifierService.notify('error', 'Failed to initialize.');

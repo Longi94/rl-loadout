@@ -23,7 +23,7 @@ export class CreateDecalComponent extends CreateDialog<Decal> implements OnInit 
               @Inject(MAT_DIALOG_DATA) data: Decal) {
     super(dialogRef, cloudService, snackBar, data, decalsService);
     this.item = new Decal(
-      undefined, undefined, '', Quality.COMMON, false, undefined, undefined
+      undefined, undefined, '', Quality.COMMON, false
     );
   }
 

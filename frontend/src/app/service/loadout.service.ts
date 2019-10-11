@@ -33,7 +33,7 @@ export class PaintConfig {
 })
 export class LoadoutService {
 
-  body: Body;
+  body: Body = Body.DEFAULT;
   private bodySubject: Subject<Body> = new Subject<Body>();
   bodyChanged$: Observable<Body> = this.bodySubject.asObservable();
 
@@ -45,7 +45,7 @@ export class LoadoutService {
   private paintSubject: Subject<any> = new Subject();
   paintChanged$: Observable<any> = this.paintSubject.asObservable();
 
-  wheel: Wheel;
+  wheel: Wheel = Wheel.DEFAULT;
   private wheelSubject: Subject<Wheel> = new Subject<Wheel>();
   wheelChanged$: Observable<Wheel> = this.wheelSubject.asObservable();
 
@@ -98,15 +98,5 @@ export class LoadoutService {
   selectAntenna(antenna: Antenna) {
     this.antenna = antenna;
     this.antennaSubject.next(antenna);
-  }
-
-  loadDefaults(): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
-      this.httpClient.get<{ [type: string]: Item }>(`${HOST}/defaults`).subscribe(defaults => {
-        this.body = defaults.body as Body;
-        this.wheel = defaults.wheel as Wheel;
-        resolve();
-      }, reject);
-    });
   }
 }
