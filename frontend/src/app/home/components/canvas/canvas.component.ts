@@ -13,29 +13,45 @@ import {
   AmbientLight
 } from 'three';
 import { LoadoutService } from '../../../service/loadout.service';
-import { Decal } from '../../../model/decal';
-import { BodyModel } from '../../../3d/body/body-model';
-import { WheelsModel } from '../../../3d/wheels-model';
-import { Wheel } from '../../../model/wheel';
 import { promiseProgress } from '../../../utils/promise';
 import { LoadoutStoreService } from '../../../service/loadout-store.service';
-import { Body } from '../../../model/body';
 import { EquirectangularToCubeGenerator } from 'three/examples/jsm/loaders/EquirectangularToCubeGenerator';
-import { PromiseLoader } from '../../../utils/loader';
 import { PMREMGenerator } from 'three/examples/jsm/pmrem/PMREMGenerator';
 import { PMREMCubeUVPacker } from 'three/examples/jsm/pmrem/PMREMCubeUVPacker';
 import { TextureService } from '../../../service/texture.service';
-import { Topper } from '../../../model/topper';
-import { TopperModel } from '../../../3d/topper-model';
-import { AntennaModel } from '../../../3d/antenna-model';
-import { Antenna } from '../../../model/antenna';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
 import { getHitboxModel, HitboxModel } from '../../../3d/hitbox-model';
 import { GUI } from 'dat-gui';
 import * as dat from 'dat.gui';
 import { NotifierService } from 'angular-notifier';
 import * as Stats from 'stats.js';
-import { createBodyModel } from '../../../3d/body/factory';
+import {
+  createBodyModel,
+  Body,
+  Wheel,
+  Decal,
+  Topper,
+  Antenna,
+  RocketConfig,
+  BodyModel,
+  WheelsModel,
+  TopperModel,
+  AntennaModel,
+  PromiseLoader
+} from 'rl-loadout-lib';
+import { environment } from '../../../../environments/environment';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('/assets/draco/');
+const gltfLoader = new GLTFLoader();
+gltfLoader.setDRACOLoader(dracoLoader);
+
+const ROCKET_CONFIG: RocketConfig = {
+  backendHost: environment.backend,
+  assetHost: environment.assetHost,
+  gltfLoader
+};
 
 @Component({
   selector: 'app-canvas',
@@ -102,9 +118,6 @@ export class CanvasComponent implements OnInit {
   }
 
   ngOnInit() {
-    DRACOLoader.setDecoderPath('/assets/draco/');
-    DRACOLoader.getDecoderModule().then();
-
     const width = this.canvasContainer.nativeElement.offsetWidth;
     const height = this.canvasContainer.nativeElement.offsetHeight;
     this.camera = new PerspectiveCamera(70, width / height, 0.01, 400);
@@ -132,8 +145,8 @@ export class CanvasComponent implements OnInit {
     const textureLoader = new PromiseLoader(new TextureLoader());
 
     this.loadoutService.loadDefaults().then(() => {
-      this.body = createBodyModel(this.loadoutService.body, this.loadoutService.decal, this.loadoutService.paints);
-      this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints);
+      this.body = createBodyModel(this.loadoutService.body, this.loadoutService.decal, this.loadoutService.paints, ROCKET_CONFIG);
+      this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints, ROCKET_CONFIG);
 
       const promises = [
         textureLoader.load('assets/mannfield_equirectangular.jpg'),
@@ -259,22 +272,20 @@ export class CanvasComponent implements OnInit {
     this.body.removeFromScene(this.scene);
     this.body.dispose();
 
-    this.body = createBodyModel(body, this.loadoutService.decal, this.loadoutService.paints);
+    this.body = createBodyModel(body, this.loadoutService.decal, this.loadoutService.paints, ROCKET_CONFIG);
 
     Promise.all([
       this.body.load(),
       this.loadoutStore.loadDecals(body.id)
     ]).then(() => {
-      this.wheels.removeFromScene(this.scene);
-      this.wheels.applyWheelConfig(this.body.wheelConfig);
-      this.wheels.addToScene(this.scene);
+      this.body.addWheelsModel(this.wheels);
 
       if (this.topper) {
-        this.topper.applyAnchor(this.body.hatSocket);
+        this.body.addTopperModel(this.topper);
       }
 
       if (this.antenna) {
-        this.antenna.applyAnchor(this.body.antennaSocket);
+        this.body.addAntennaModel(this.antenna);
       }
 
       this.applyBodyModel();
@@ -286,7 +297,7 @@ export class CanvasComponent implements OnInit {
 
   private changeDecal(decal: Decal) {
     this.loading.decal = true;
-    this.body.changeDecal(decal, this.loadoutService.paints).then(() => {
+    this.body.changeDecal(decal, this.loadoutService.paints, ROCKET_CONFIG).then(() => {
       this.loading.decal = false;
       this.updateTextureService();
     });
@@ -294,9 +305,9 @@ export class CanvasComponent implements OnInit {
 
   private changeWheel(wheel: Wheel) {
     this.loading.wheel = true;
-    this.wheels.removeFromScene(this.scene);
+    this.body.clearWheelsModel();
     this.wheels.dispose();
-    this.wheels = new WheelsModel(wheel, this.loadoutService.paints);
+    this.wheels = new WheelsModel(wheel, this.loadoutService.paints, ROCKET_CONFIG);
     this.wheels.load().then(() => {
       this.applyWheelModel();
       this.updateTextureService();
@@ -305,9 +316,8 @@ export class CanvasComponent implements OnInit {
   }
 
   private applyWheelModel() {
-    this.wheels.applyWheelConfig(this.body.wheelConfig);
     this.wheels.setEnvMap(this.envMap);
-    this.wheels.addToScene(this.scene);
+    this.body.addWheelsModel(this.wheels);
   }
 
   private applyBodyModel() {
@@ -367,7 +377,7 @@ export class CanvasComponent implements OnInit {
 
   private changeTopper(topper: Topper) {
     if (this.topper) {
-      this.topper.removeFromScene(this.scene);
+      this.body.clearTopperModel();
       this.topper.dispose();
       this.topper = undefined;
     }
@@ -377,23 +387,18 @@ export class CanvasComponent implements OnInit {
     }
 
     this.loading.topper = true;
-    this.topper = new TopperModel(topper, this.loadoutService.paints);
+    this.topper = new TopperModel(topper, this.loadoutService.paints, ROCKET_CONFIG);
     this.topper.load().then(() => {
-      this.applyTopperModel();
+      this.body.addTopperModel(this.topper);
+      this.topper.setEnvMap(this.envMap);
       this.updateTextureService();
       this.loading.topper = false;
     });
   }
 
-  private applyTopperModel() {
-    this.topper.setEnvMap(this.envMap);
-    this.topper.applyAnchor(this.body.hatSocket);
-    this.topper.addToScene(this.scene);
-  }
-
   private changeAntenna(antenna: Antenna) {
     if (this.antenna) {
-      this.antenna.removeFromScene(this.scene);
+      this.body.clearAntennaModel();
       this.antenna.dispose();
       this.antenna = undefined;
     }
@@ -403,19 +408,14 @@ export class CanvasComponent implements OnInit {
     }
 
     this.loading.antenna = true;
-    this.antenna = new AntennaModel(antenna, this.loadoutService.paints);
+    this.antenna = new AntennaModel(antenna, this.loadoutService.paints, ROCKET_CONFIG);
     this.antenna.load().then(() => {
-      this.applyAntennaModel();
+      this.body.addAntennaModel(this.antenna);
+      this.antenna.setEnvMap(this.envMap);
+      this.validateAntenna();
       this.updateTextureService();
       this.loading.antenna = false;
     });
-  }
-
-  private applyAntennaModel() {
-    this.antenna.setEnvMap(this.envMap);
-    this.antenna.applyAnchor(this.body.antennaSocket);
-    this.antenna.addToScene(this.scene);
-    this.validateAntenna();
   }
 
   private applyHitbox() {

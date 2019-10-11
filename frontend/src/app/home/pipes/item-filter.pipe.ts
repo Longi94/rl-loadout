@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Item } from '../../model/item';
+import { Item } from 'rl-loadout-lib';
 
 @Pipe({
   name: 'itemFilter',

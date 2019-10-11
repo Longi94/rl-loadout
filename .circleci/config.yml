@@ -16,6 +16,7 @@ jobs:
       - image: circleci/node:10.16-browsers
     steps:
       - checkout
+      - run: git submodule update --init --recursive
       - run:
           name: Setup custom environment variables
           command: |
@@ -24,7 +25,7 @@ jobs:
           key: dependency-cache-{{ checksum "frontend/package-lock.json" }}
       - run:
           name: install angular cli
-          command: sudo npm install -g @angular/cli@8.1.1 > /dev/null
+          command: sudo npm install -g @angular/cli@8.3.8 > /dev/null
       - run:
           name: install-dependencies
           command: npm install
@@ -32,7 +33,7 @@ jobs:
       - save_cache:
           key: dependency-cache-{{ checksum "frontend/package-lock.json" }}
           paths:
-            - ./node_modules
+            - ./frontend/node_modules
       - run:
           name: angular-lint
           command: ng lint
@@ -43,12 +44,15 @@ jobs:
       - image: circleci/node:10.16-browsers
     steps:
       - checkout
+      - run: git submodule update --init --recursive
       - run:
           name: Setup custom environment variables
           command: |
             echo 'export NG_CLI_ANALYTICS=ci' >> $BASH_ENV
       - restore_cache:
           key: dependency-cache-{{ checksum "frontend/package-lock.json" }}
+      - restore_cache:
+          key: dependency-cache-{{ checksum "lib/package-lock.json" }}
       - run:
           name: install angular cli
           command: sudo npm install -g @angular/cli@8.1.1 > /dev/null
@@ -56,10 +60,22 @@ jobs:
           name: install-dependencies
           command: npm install
           working_directory: frontend
+      - run:
+          name: compile rl-loadout-lib
+          command: npm install
+          working_directory: lib
+      - run:
+          name: install rl-loadout-lib
+          command: npm install ./../lib
+          working_directory: frontend
       - save_cache:
           key: dependency-cache-{{ checksum "frontend/package-lock.json" }}
           paths:
-            - ./node_modules
+            - ./frontend/node_modules
+      - save_cache:
+          key: dependency-cache-{{ checksum "lib/package-lock.json" }}
+          paths:
+            - ./lib/node_modules
       - run:
           name: angular-build
           command: ng build --prod

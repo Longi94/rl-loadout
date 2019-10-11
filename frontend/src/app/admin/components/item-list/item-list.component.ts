@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Item } from '../../../model/item';
+import { Item } from 'rl-loadout-lib';
 import { environment } from '../../../../environments/environment';
 import { confirmMaterial } from '../../../shared/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material';

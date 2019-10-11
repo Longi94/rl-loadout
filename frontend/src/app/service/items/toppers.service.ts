@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { AbstractItemService } from '../abstract-item-service';
-import { Topper } from '../../model/topper';
+import { Topper } from 'rl-loadout-lib';
 
 @Injectable({
   providedIn: 'root'

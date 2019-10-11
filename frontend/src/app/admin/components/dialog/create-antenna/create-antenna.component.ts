@@ -1,8 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { Quality } from '../../../../model/quality';
+import { Quality, Antenna, AntennaStick } from 'rl-loadout-lib';
 import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
 import { CloudStorageService } from '../../../../service/cloud-storage.service';
-import { Antenna, AntennaStick } from '../../../../model/antenna';
 import { CreateDialog } from '../create-dialog';
 import { AntennasService } from '../../../../service/items/antennas.service';
 import { AntennaSticksService } from '../../../../service/items/antenna-sticks.service';

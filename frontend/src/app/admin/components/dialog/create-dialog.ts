@@ -1,8 +1,7 @@
 import { OnInit } from '@angular/core';
-import { Quality } from '../../../model/quality';
+import { Quality } from 'rl-loadout-lib';
 import { CloudObject, CloudStorageService } from '../../../service/cloud-storage.service';
 import { MatDialogRef, MatSnackBar } from '@angular/material';
-import { Hitbox } from '../../../model/hitbox';
 import { AbstractItemService } from '../../../service/abstract-item-service';
 import { handleErrorSnackbar } from '../../../utils/network';
 

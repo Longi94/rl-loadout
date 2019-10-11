@@ -7,11 +7,12 @@ info:
     url: https://discord.gg/c8cArY9
 servers:
   - url: "{{ server_host }}/api/v1"
-security:
-  - ApiKeyAuth: []
 tags:
   - name: bodies
-  - name: texture
+  - name: wheels
+  - name: decals
+  - name: toppers
+  - name: antennas
 paths:
   /bodies:
     get:
@@ -42,14 +43,6 @@ paths:
           example: 23
           schema:
             type: integer
-        - name: fallback
-          in: query
-          required: false
-          description: 'If set to true, If the body is not found, it will fall back to the Octane body. Otherwise, returns with 404.'
-          example: true
-          schema:
-            type: boolean
-            default: false
       responses:
         200:
           description: 'Body'
@@ -63,233 +56,170 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /textures/body:
+  /wheels:
     get:
-      summary: 'Generate a body texture'
-      description: 'Generate a body texture based on the body and provided colors. Custom colors will override any preset colors. If no colors are provided, the default blue/orange colors will be used depending on the "team" parameter.'
-      operationId: controllers.textures.body.get
+      summary: 'Get a list of wheels'
+      operationId: controllers.wheels.get
       tags:
-        - texture
-      externalDocs:
-        description: 'Documentation on the GLTF files.'
-        url: https://github.com/Longi94/rl-loadout/wiki/GLTF-files
-      parameters:
-        - name: body_id
-          in: query
-          required: true
-          example: 23
-          description: 'The ID of the body used in replay files'
-          schema:
-            type: integer
-        - name: decal_id
-          in: query
-          required: false
-          example: 0
-          description: 'The ID of the decal used in replay files. 0 for no decal.'
-          schema:
-            type: integer
-            default: 0
-        - name: primary_color
-          in: query
-          required: false
-          description: 'The ID of primary color of the body.'
-          example: 35
-          schema:
-            type: integer
-            maximum: 69
-            minimum: 0
-        - name: primary_color_custom
-          in: query
-          required: false
-          description: 'Custom primary color of the body in 0xFFFFFF integer format.'
-          example: 16777215
-          schema:
-            type: integer
-            maximum: 16777215
-            minimum: 0
-        - name: accent_color
-          in: query
-          required: false
-          description: 'The ID of accent color of the body.'
-          example: 0
-          schema:
-            default: 0
-            type: integer
-            maximum: 104
-            minimum: 0
-        - name: accent_color_custom
-          in: query
-          required: false
-          description: 'Custom accent color of the body in 0xFFFFFF integer format.'
-          example: 16777215
-          schema:
-            type: integer
-            maximum: 16777215
-            minimum: 0
-        - name: body_paint
-          in: query
-          required: false
-          description: 'The ID of the body paint. See https://github.com/Longi94/rl-loadout/blob/master/backend/rocket/paint.py for list of IDs.'
-          example: 1
-          schema:
-            type: integer
-            maximum: 13
-            minimum: 0
-        - name: body_paint_custom
-          in: query
-          required: false
-          description: 'Custom body paint color of the body in 0xFFFFFF integer format.'
-          example: 16777215
-          schema:
-            type: integer
-            maximum: 16777215
-            minimum: 0
-        - name: decal_paint
-          in: query
-          required: false
-          description: 'The ID of the decal paint. See https://github.com/Longi94/rl-loadout/blob/master/backend/rocket/paint.py for list of IDs.'
-          example: 1
-          schema:
-            type: integer
-            maximum: 13
-            minimum: 0
-        - name: decal_paint_custom
-          in: query
-          required: false
-          description: 'Custom decal paint color of the body in 0xFFFFFF integer format.'
-          example: 16777215
-          schema:
-            type: integer
-            maximum: 16777215
-            minimum: 0
-        - name: team
-          in: query
-          required: false
-          description: 'If this is set, the default blue (0) or the default orange (1) color will be used. This is ignored if primary_color is set.'
-          example: 0
-          schema:
-            type: integer
-            enum: [0, 1]
-            default: 0
-        - name: fallback
-          in: query
-          required: false
-          description: 'If set to true, if the decal is not found, it will fall back to the default skin of the body. If the body is not found, it will fall back to the Octane skin. Otherwise, returns with 404.'
-          example: true
-          schema:
-            type: boolean
-            default: false
+        - wheels
       responses:
         200:
-          description: 'Returns the texture in the chosen format'
+          description: 'List of wheels'
           content:
-            image/jpeg:
+            application/json:
               schema:
-                type: string
-                format: binary
+                type: array
+                items:
+                  $ref: '#/components/schemas/Wheel'
+  /wheels/{id}:
+    get:
+      summary: 'Get a wheel'
+      operationId: controllers.wheels.get_by_id
+      tags:
+        - wheels
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 'ID of the item (in-game item ID).'
+          example: 376
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Wheel'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wheel'
         404:
-          description: 'If the texture was not found'
+          description: 'Wheel not found'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Error'
-  /textures/chassis:
+  /decals:
     get:
-      summary: 'Generate a chassis texture'
-      description: 'Generate a chassis texture based on the body and provided colors. Only a few bodies need this as most of the chassis is not paintable. Custom colors will override any preset colors.'
-      operationId: controllers.textures.chassis.get
+      summary: 'Get a list of decals'
+      operationId: controllers.decals.get
       tags:
-        - texture
-      parameters:
-        - name: body_id
-          in: query
-          required: true
-          example: 23
-          description: 'The ID of the body used in replay files'
-          schema:
-            type: integer
-        - name: primary_color
-          in: query
-          required: false
-          description: 'The ID of primary color of the body. Currently only needed for the DeLorean.'
-          example: 35
-          schema:
-            type: integer
-            maximum: 69
-            minimum: 0
-        - name: primary_color_custom
-          in: query
-          required: false
-          description: 'Custom primary color of the body in 0xFFFFFF integer format. Currently only needed for the DeLorean.'
-          example: 16777215
-          schema:
-            type: integer
-            maximum: 16777215
-            minimum: 0
-        - name: accent_color
-          in: query
-          required: false
-          description: 'The ID of accent color of the body. Some bodies like the Artemis G1 are affected by the accent color'
-          example: 0
-          schema:
-            default: 0
-            type: integer
-            maximum: 104
-            minimum: 0
-        - name: accent_color_custom
-          in: query
-          required: false
-          description: 'Custom accent color of the body in 0xFFFFFF integer format.'
-          example: 16777215
-          schema:
-            type: integer
-            maximum: 16777215
-            minimum: 0
-        - name: body_paint
-          in: query
-          required: false
-          description: 'The ID of the paint. See https://github.com/Longi94/rl-loadout/blob/master/backend/rocket/paint.py for list of IDs.'
-          example: 1
-          schema:
-            type: integer
-            maximum: 13
-            minimum: 0
-        - name: body_paint_custom
-          in: query
-          required: false
-          description: 'Custom body paint color of the body in 0xFFFFFF integer format.'
-          example: 16777215
-          schema:
-            type: integer
-            maximum: 16777215
-            minimum: 0
-        - name: team
-          in: query
-          required: false
-          description: 'Used when the chassis has different textures for the teams (e.g. Jurassic Jeep)'
-          example: 0
-          schema:
-            type: integer
-            enum: [0, 1]
-            default: 0
-        - name: fallback
-          in: query
-          required: false
-          description: 'If set to true, If the body is not found, it will fall back to the Octane skin. Otherwise, returns with 404.'
-          example: true
-          schema:
-            type: boolean
-            default: false
+        - decals
       responses:
         200:
-          description: 'Returns the texture in the chosen format'
+          description: 'List of decals'
           content:
-            image/jpeg:
+            application/json:
               schema:
-                type: string
-                format: binary
+                type: array
+                items:
+                  $ref: '#/components/schemas/Decal'
+  /decals/{id}:
+    get:
+      summary: 'Get a decal'
+      operationId: controllers.decals.get_by_id
+      tags:
+        - decals
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 'ID of the item (in-game item ID).'
+          example: 302
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Decal'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Decal'
         404:
-          description: 'If the texture was not found'
+          description: 'Decal not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /toppers:
+    get:
+      summary: 'Get a list of toppers'
+      operationId: controllers.toppers.get
+      tags:
+        - toppers
+      responses:
+        200:
+          description: 'List of toppers'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Topper'
+  /toppers/{id}:
+    get:
+      summary: 'Get a topper'
+      operationId: controllers.toppers.get_by_id
+      tags:
+        - toppers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 'ID of the item (in-game item ID).'
+          example: 225
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Topper'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topper'
+        404:
+          description: 'Topper not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /antennas:
+    get:
+      summary: 'Get a list of antennas'
+      operationId: controllers.antennas.get
+      tags:
+        - antennas
+      responses:
+        200:
+          description: 'List of antennas'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Antenna'
+  /antennas/{id}:
+    get:
+      summary: 'Get a antenna'
+      operationId: controllers.antennas.get_by_id
+      tags:
+        - antennas
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 'ID of the item (in-game item ID).'
+          example: 391
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Antenna'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Antenna'
+        404:
+          description: 'Antenna not found'
           content:
             application/json:
               schema:
@@ -313,34 +243,137 @@ components:
           type: number
           description: 'HTTP status code'
           example: 404
-    Body:
+    Item:
       type: object
       required:
-        - model
+        - id
         - name
+        - quality
+        - icon
         - paintable
       properties:
         id:
           type: integer
-          description: 'ID of the item used in replay files.'
+          description: 'ID of the item'
           example: 23
-        model:
-          type: string
-          description: 'URL to the GLTF model of the body'
-          example: https://storage.googleapis.com/rl-loadout/models/Body_Octane_SF.glb
         name:
           type: string
-          description: 'Name of the body'
-          example: Octane
+          description: 'Name of the item.'
+          example: 'Octane'
+        quality:
+          type: integer
+          description: 'Quality of the item. See https://github.com/Longi94/rl-loadout/blob/master/backend/rocket/quality.py'
+          example: 0
+        icon:
+          type: string
+          description: 'Path to the image icon of the item.'
+          example: 'icons/Body_Octane_Thumbnail.jpg'
         paintable:
           type: boolean
-          description: 'Indicates whether the body has painted variants in the game or not.'
+          description: 'Whether is item normally can have painted attribute or not in the game.'
           example: true
-        body_texture:
-          type: string
-          description: 'Path to the default (blue) body texture'
-          example: '/api/textures/body?key=123&body_id=0'
-        chassis_texture:
-          type: string
-          description: 'Path to the default chassis texture. This is null if the chassis of the body is not paintable, in the case the chassis in the model is already textured.'
-          example: '/api/textures/chassis?key=123&body_id=0'
+    Body:
+      allOf:
+        - $ref: '#/components/schemas/Item'
+        - type: object
+          required:
+            - model
+          properties:
+            model:
+              type: string
+              description: 'Path to the GLTF model file of the body.'
+              example: 'models/Body_Octane_SF.glb'
+            blank_skin:
+              type: string
+              description: 'Path to the RGBA blank skin map of the body.'
+              example: 'textures/Pepe_Body_BlankSkin_RGB.tga'
+            base_skin:
+              type: string
+              description: 'Path to the base texture of the body.'
+              example: 'textures/Pepe_Body_D.tga'
+            chassis_base:
+              type: string
+              description: 'Path to the base texture of the chassis. Null if this is included in the model.'
+              example: null
+            chassis_n:
+              type: string
+              description: 'Normal map of the chassis. This normally null. Only not null if the normal map has a RGBA map inside it, mainly for body paints.'
+              example:
+    Wheel:
+      allOf:
+        - $ref: '#/components/schemas/Item'
+        - type: object
+          required:
+            - model
+          properties:
+            model:
+              type: string
+              description: 'Path to the GLTF model file of the wheel.'
+              example: 'models/WHEEL_Star_SM.glb'
+            rim_base:
+              type: string
+              description: 'Path to the base texture of the rim.'
+              example: 'textures/OEM_D.tga'
+            rim_rgb_map:
+              type: string
+              description: 'Path to the RGBA map of the rim.'
+              example: 'textures/OEM_RGB.tga'
+    Decal:
+      allOf:
+        - $ref: '#/components/schemas/Item'
+        - type: object
+          properties:
+            base_texture:
+              type: string
+              description: 'Path to the base texture.'
+              example: null
+            rgba_map:
+              type: string
+              description: 'Path to the RGBA map.'
+              example: 'textures/Pepe_Body_Flames_RGB.tga'
+            body_id:
+              type: integer
+              description: 'ID of the body this decal can be applied to. Null if universal.'
+              example: 23
+    Topper:
+      allOf:
+        - $ref: '#/components/schemas/Item'
+        - type: object
+          required:
+            - model
+          properties:
+            model:
+              type: string
+              description: 'Path to the GLTF model file of the topper.'
+              example: 'models/Hat_Beanie_SF.glb'
+            base_texture:
+              type: string
+              description: 'Path to the base texture of the topper. Null if the texture is in the gltf file.'
+              example: null
+            rgba_map:
+              type: string
+              description: 'Path to the RGBA map of the topper if paintable.'
+              example: null
+    Antenna:
+      allOf:
+        - $ref: '#/components/schemas/Item'
+        - type: object
+          required:
+            - model
+          properties:
+            model:
+              type: string
+              description: 'Path to the GLTF model file of the antenna head.'
+              example: 'models/Antenna_Bread_SF.glb'
+            base_texture:
+              type: string
+              description: 'Path to the base texture of the antenna head. Null if the texture is in the gltf file.'
+              example: null
+            rgba_map:
+              type: string
+              description: 'Path to the RGBA map of the antenna head if paintable.'
+              example: null
+            stick:
+              type: string
+              description: 'Path to the GLTF model file of the antenna stick'
+              example: 'models/Antenna_SK.glb'

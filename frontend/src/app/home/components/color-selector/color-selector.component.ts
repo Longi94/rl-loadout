@@ -1,12 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadoutService } from '../../../service/loadout.service';
-import {
-  ACCENT_COLORS,
-  getColorsForBody,
-  getTextColor,
-  PAINT_COLORS
-} from '../../../utils/color';
+import { ACCENT_COLORS, getColorsForBody, PAINT_COLORS } from 'rl-loadout-lib';
 import { Color } from 'three';
+import { getTextColor } from '../../../utils/color';
 
 @Component({
   selector: 'app-color-selector',
