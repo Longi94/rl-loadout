@@ -10,6 +10,9 @@ servers:
 tags:
   - name: bodies
   - name: wheels
+  - name: decals
+  - name: toppers
+  - name: antennas
 paths:
   /bodies:
     get:
@@ -91,6 +94,132 @@ paths:
                 $ref: '#/components/schemas/Wheel'
         404:
           description: 'Wheel not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /decals:
+    get:
+      summary: 'Get a list of decals'
+      operationId: controllers.decals.get
+      tags:
+        - decals
+      responses:
+        200:
+          description: 'List of decals'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Decal'
+  /decals/{id}:
+    get:
+      summary: 'Get a decal'
+      operationId: controllers.decals.get_by_id
+      tags:
+        - decals
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 'ID of the item (in-game item ID).'
+          example: 302
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Decal'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Decal'
+        404:
+          description: 'Decal not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /toppers:
+    get:
+      summary: 'Get a list of toppers'
+      operationId: controllers.toppers.get
+      tags:
+        - toppers
+      responses:
+        200:
+          description: 'List of toppers'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Topper'
+  /toppers/{id}:
+    get:
+      summary: 'Get a topper'
+      operationId: controllers.toppers.get_by_id
+      tags:
+        - toppers
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 'ID of the item (in-game item ID).'
+          example: 225
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Topper'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Topper'
+        404:
+          description: 'Topper not found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /antennas:
+    get:
+      summary: 'Get a list of antennas'
+      operationId: controllers.antennas.get
+      tags:
+        - antennas
+      responses:
+        200:
+          description: 'List of antennas'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Antenna'
+  /antennas/{id}:
+    get:
+      summary: 'Get a antenna'
+      operationId: controllers.antennas.get_by_id
+      tags:
+        - antennas
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: 'ID of the item (in-game item ID).'
+          example: 391
+          schema:
+            type: integer
+      responses:
+        200:
+          description: 'Antenna'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Antenna'
+        404:
+          description: 'Antenna not found'
           content:
             application/json:
               schema:
@@ -187,5 +316,64 @@ components:
               example: 'textures/OEM_D.tga'
             rim_rgb_map:
               type: string
-              description: 'Path to the rgba map of the rim.'
+              description: 'Path to the RGBA map of the rim.'
               example: 'textures/OEM_RGB.tga'
+    Decal:
+      allOf:
+        - $ref: '#/components/schemas/Item'
+        - type: object
+          properties:
+            base_texture:
+              type: string
+              description: 'Path to the base texture.'
+              example: null
+            rgba_map:
+              type: string
+              description: 'Path to the RGBA map.'
+              example: 'textures/Pepe_Body_Flames_RGB.tga'
+            body_id:
+              type: integer
+              description: 'ID of the body this decal can be applied to. Null if universal.'
+              example: 23
+    Topper:
+      allOf:
+        - $ref: '#/components/schemas/Item'
+        - type: object
+          required:
+            - model
+          properties:
+            model:
+              type: string
+              description: 'Path to the GLTF model file of the topper.'
+              example: 'models/Hat_Beanie_SF.glb'
+            base_texture:
+              type: string
+              description: 'Path to the base texture of the topper. Null if the texture is in the gltf file.'
+              example: null
+            rgba_map:
+              type: string
+              description: 'Path to the RGBA map of the topper if paintable.'
+              example: null
+    Antenna:
+      allOf:
+        - $ref: '#/components/schemas/Item'
+        - type: object
+          required:
+            - model
+          properties:
+            model:
+              type: string
+              description: 'Path to the GLTF model file of the antenna head.'
+              example: 'models/Antenna_Bread_SF.glb'
+            base_texture:
+              type: string
+              description: 'Path to the base texture of the antenna head. Null if the texture is in the gltf file.'
+              example: null
+            rgba_map:
+              type: string
+              description: 'Path to the RGBA map of the antenna head if paintable.'
+              example: null
+            stick:
+              type: string
+              description: 'Path to the GLTF model file of the antenna stick'
+              example: 'models/Antenna_SK.glb'

@@ -7,7 +7,6 @@ from .item import BaseItem
 
 class Decal(Base, BaseItem):
     __tablename__ = 'decal'
-    id = Column(Integer, primary_key=True)
     base_texture = Column(String(255), nullable=True)
     rgba_map = Column(String(255), nullable=False)
     body_id = Column(Integer, ForeignKey('body.id'), nullable=True)
@@ -15,7 +14,6 @@ class Decal(Base, BaseItem):
 
     def apply_dict(self, item_dict: Dict):
         super(Decal, self).apply_dict(item_dict)
-        self.id = item_dict.get('id', None)
         self.base_texture = item_dict.get('base_texture', None)
         self.rgba_map = item_dict.get('rgba_map', None)
         self.body_id = item_dict.get('body_id', None)
