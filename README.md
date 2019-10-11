@@ -1,4 +1,4 @@
-# Rocket Loadout (https://rocket-loadout.com) [<img src="https://img.shields.io/discord/609050910731010048.svg?colorB=7581dc&logo=discord&logoColor=white">](https://discord.gg/c8cArY9)
+# Rocket Loadout (https://rocket-loadout.com) [![Releases](https://img.shields.io/github/v/release/Longi94/rl-loadout)](https://github.com/Longi94/rl-loadout/releases) [<img src="https://img.shields.io/discord/609050910731010048.svg?colorB=7581dc&logo=discord&logoColor=white">](https://discord.gg/c8cArY9)
 
 | master | develop |
 | --- | --- |
