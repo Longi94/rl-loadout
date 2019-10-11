@@ -27,13 +27,13 @@ canvas {
   align-items: center;
 }
 
-.full-overlay > span {
+.full-overlay > span, .loading-overlay > span {
   font-size: 20px;
   margin-bottom: 16px;
 }
 
-.full-overlay > mat-progress-bar {
-  max-width: 500px;
+.full-overlay > mat-progress-bar, .loading-overlay > mat-progress-bar {
+  max-width: 300px;
 }
 
 .loading-overlay {

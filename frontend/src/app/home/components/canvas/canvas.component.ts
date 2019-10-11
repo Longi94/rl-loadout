@@ -10,10 +10,9 @@ import {
   TextureLoader,
   Texture,
   WebGLRenderTarget,
-  AmbientLight
+  AmbientLight, DefaultLoadingManager
 } from 'three';
 import { LoadoutService } from '../../../service/loadout.service';
-import { promiseProgress } from '../../../utils/promise';
 import { LoadoutStoreService } from '../../../service/loadout-store.service';
 import { EquirectangularToCubeGenerator } from 'three/examples/jsm/loaders/EquirectangularToCubeGenerator';
 import { PMREMGenerator } from 'three/examples/jsm/pmrem/PMREMGenerator';
@@ -50,6 +49,7 @@ gltfLoader.setDRACOLoader(dracoLoader);
 const ROCKET_CONFIG: RocketConfig = {
   backendHost: environment.backend,
   assetHost: environment.assetHost,
+  loadingManager: DefaultLoadingManager,
   gltfLoader
 };
 
@@ -85,7 +85,12 @@ export class CanvasComponent implements OnInit {
   // Loading stuff
   mathRound = Math.round;
   initializing = true;
-  initProgress = 0;
+  progress = {
+    percent: 0,
+    start: 0,
+    total: 0,
+    current: 0
+  };
   loading = {
     body: false,
     decal: false,
@@ -118,6 +123,16 @@ export class CanvasComponent implements OnInit {
   }
 
   ngOnInit() {
+    DefaultLoadingManager.onProgress = (item, loaded, total) => {
+      this.progress.total = total;
+      this.progress.current = loaded;
+
+      this.progress.percent = 100 * (this.progress.current - this.progress.start) /
+        (this.progress.total - this.progress.start);
+
+      console.log(this.progress);
+    };
+
     const width = this.canvasContainer.nativeElement.offsetWidth;
     const height = this.canvasContainer.nativeElement.offsetHeight;
     this.camera = new PerspectiveCamera(70, width / height, 0.01, 400);
@@ -155,9 +170,7 @@ export class CanvasComponent implements OnInit {
         this.loadoutStore.initAll(this.loadoutService.body.id)
       ];
 
-      promiseProgress(promises, progress => {
-        this.initProgress = 100 * (progress + 1) / (promises.length + 1);
-      }).then(values => {
+      Promise.all(promises).then(values => {
         this.processBackground(values[0]);
         this.applyBodyModel();
         this.applyWheelModel();
@@ -172,6 +185,11 @@ export class CanvasComponent implements OnInit {
       console.error(error);
       this.notifierService.notify('error', 'Failed to initialize.');
     });
+  }
+
+  private resetProgress() {
+    this.progress.start = this.progress.current;
+    this.progress.percent = 0;
   }
 
   private addControls() {
@@ -274,6 +292,8 @@ export class CanvasComponent implements OnInit {
 
     this.body = createBodyModel(body, this.loadoutService.decal, this.loadoutService.paints, ROCKET_CONFIG);
 
+    this.resetProgress();
+
     Promise.all([
       this.body.load(),
       this.loadoutStore.loadDecals(body.id)
@@ -297,6 +317,7 @@ export class CanvasComponent implements OnInit {
 
   private changeDecal(decal: Decal) {
     this.loading.decal = true;
+    this.resetProgress();
     this.body.changeDecal(decal, this.loadoutService.paints, ROCKET_CONFIG).then(() => {
       this.loading.decal = false;
       this.updateTextureService();
@@ -307,6 +328,7 @@ export class CanvasComponent implements OnInit {
     this.loading.wheel = true;
     this.body.clearWheelsModel();
     this.wheels.dispose();
+    this.resetProgress();
     this.wheels = new WheelsModel(wheel, this.loadoutService.paints, ROCKET_CONFIG);
     this.wheels.load().then(() => {
       this.applyWheelModel();
@@ -388,6 +410,7 @@ export class CanvasComponent implements OnInit {
 
     this.loading.topper = true;
     this.topper = new TopperModel(topper, this.loadoutService.paints, ROCKET_CONFIG);
+    this.resetProgress();
     this.topper.load().then(() => {
       this.body.addTopperModel(this.topper);
       this.topper.setEnvMap(this.envMap);
@@ -409,6 +432,7 @@ export class CanvasComponent implements OnInit {
 
     this.loading.antenna = true;
     this.antenna = new AntennaModel(antenna, this.loadoutService.paints, ROCKET_CONFIG);
+    this.resetProgress();
     this.antenna.load().then(() => {
       this.body.addAntennaModel(this.antenna);
       this.antenna.setEnvMap(this.envMap);
