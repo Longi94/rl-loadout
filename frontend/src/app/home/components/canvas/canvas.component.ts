@@ -1,16 +1,17 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import {
+  AmbientLight,
+  Color,
+  DefaultLoadingManager,
+  MeshStandardMaterial,
   PerspectiveCamera,
   Scene,
-  WebGLRenderer,
-  MeshStandardMaterial,
-  Color,
   SpotLight,
-  TextureLoader,
   Texture,
-  WebGLRenderTarget,
-  AmbientLight, DefaultLoadingManager
+  TextureLoader,
+  WebGLRenderer,
+  WebGLRenderTarget
 } from 'three';
 import { LoadoutService } from '../../../service/loadout.service';
 import { LoadoutStoreService } from '../../../service/loadout-store.service';
@@ -25,18 +26,19 @@ import * as dat from 'dat.gui';
 import { NotifierService } from 'angular-notifier';
 import * as Stats from 'stats.js';
 import {
-  createBodyModel,
-  Body,
-  Wheel,
-  Decal,
-  Topper,
   Antenna,
-  RocketConfig,
-  BodyModel,
-  WheelsModel,
-  TopperModel,
   AntennaModel,
-  PromiseLoader
+  Body,
+  BodyModel,
+  createBodyModel,
+  Decal,
+  PromiseLoader,
+  RocketConfig,
+  TextureFormat,
+  Topper,
+  TopperModel,
+  Wheel,
+  WheelsModel
 } from 'rl-loadout-lib';
 import { environment } from '../../../../environments/environment';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -46,12 +48,13 @@ dracoLoader.setDecoderPath('/assets/draco/');
 const gltfLoader = new GLTFLoader();
 gltfLoader.setDRACOLoader(dracoLoader);
 
-const ROCKET_CONFIG: RocketConfig = {
+const ROCKET_CONFIG = new RocketConfig({
   backendHost: environment.backend,
   assetHost: environment.assetHost,
   loadingManager: DefaultLoadingManager,
+  textureFormat: TextureFormat.PNG,
   gltfLoader
-};
+});
 
 @Component({
   selector: 'app-canvas',
