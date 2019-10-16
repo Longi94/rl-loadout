@@ -11,10 +11,11 @@ url = f'https://www.googleapis.com/storage/v1/b/{args.bucket}/o'
 
 objects = requests.get(url).json()['items']
 objects = list(
-    filter(lambda x: x['name'].startswith('models/') and x['name'].endswith('.glb') and len(x['name']) > 7, objects))
+    filter(lambda x: x['name'].startswith('textures/') and x['name'].endswith('.tga') and
+                     not x['name'].endswith('_small.tga') and len(x['name']) > 9, objects))
 
-if not os.path.exists('models'):
-    os.makedirs('models')
+if not os.path.exists('textures'):
+    os.makedirs('textures')
 
 for obj in objects:
     print(f'Downloading {obj["name"]}...')

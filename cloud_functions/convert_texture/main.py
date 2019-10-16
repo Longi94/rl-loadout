@@ -32,7 +32,7 @@ def convert(event, context):
         new_blob.upload_from_file(output, content_type='image/png')
 
     small_size = (image.size[0] / 2, image.size[1] / 2)
-    image.thumbnail(small_size, Image.CUBIC)
+    image.thumbnail(small_size, Image.LANCZOS)
 
     with io.BytesIO() as output:
         new_name = event['name'].replace('.tga', '_small.png')
