@@ -12,7 +12,7 @@ url = f'https://www.googleapis.com/storage/v1/b/{args.bucket}/o'
 objects = requests.get(url).json()['items']
 objects = list(
     filter(lambda x: x['name'].startswith('textures/') and x['name'].endswith('.tga') and
-                     not x['name'].endswith('_small.tga') and len(x['name']) > 9, objects))
+                     not x['name'].endswith('_S.tga') and len(x['name']) > 9, objects))
 
 if not os.path.exists('textures'):
     os.makedirs('textures')

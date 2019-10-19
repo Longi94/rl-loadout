@@ -15,5 +15,5 @@ for file in filter(lambda x: x.endswith('.tga'), os.listdir(args.dir)):
 
     image.save(os.path.join('converted', file.replace('.tga', '.png')))
     image.thumbnail((image.size[0] / 2, image.size[1] / 2), Image.LANCZOS)
-    image.save(os.path.join('converted', file.replace('.tga', '_small.tga')))
-    image.save(os.path.join('converted', file.replace('.tga', '_small.png')))
+    image.save(os.path.join('converted', file.replace('.tga', '_S.tga')))
+    image.save(os.path.join('converted', file.replace('.tga', '_S.png')))

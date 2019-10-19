@@ -13,7 +13,7 @@ def convert(event, context):
     """
 
     if not event['name'].startswith('textures/') or not event['name'].endswith('.tga') or\
-            event['name'].endswith('_small.tga'):
+            event['name'].endswith('_S.tga'):
         return
 
     print(f"Converting file: {event['name']}")
@@ -35,7 +35,7 @@ def convert(event, context):
     image.thumbnail(small_size, Image.LANCZOS)
 
     with io.BytesIO() as output:
-        new_name = event['name'].replace('.tga', '_small.png')
+        new_name = event['name'].replace('.tga', '_S.png')
         print(f'Uploading {new_name}')
         image.save(output, format="PNG")
         output.seek(0)
@@ -43,7 +43,7 @@ def convert(event, context):
         new_blob.upload_from_file(output, content_type='image/png')
 
     with io.BytesIO() as output:
-        new_name = event['name'].replace('.tga', '_small.tga')
+        new_name = event['name'].replace('.tga', '_S.tga')
         print(f'Uploading {new_name}')
         image.save(output, format="TGA")
         output.seek(0)
