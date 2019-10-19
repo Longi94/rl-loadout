@@ -2,6 +2,7 @@ import requests
 import argparse
 import os
 import urllib.request
+from multiprocessing.pool import ThreadPool
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--bucket', '-b', type=str, required=True)
@@ -17,6 +18,12 @@ objects = list(
 if not os.path.exists('textures'):
     os.makedirs('textures')
 
-for obj in objects:
+
+def download(obj):
     print(f'Downloading {obj["name"]}...')
     urllib.request.urlretrieve(obj['mediaLink'], obj['name'])
+    print(f'Downloaded {obj["name"]}')
+
+
+with ThreadPool(10) as p:
+    p.map(download, objects)
