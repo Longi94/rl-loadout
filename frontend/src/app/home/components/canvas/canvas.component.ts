@@ -102,6 +102,12 @@ export class CanvasComponent implements OnInit {
     antenna: false
   };
 
+  private wheelsConfig = {
+    visible: true,
+    yaw: 0.00001,
+    roll: 0.00001
+  };
+
   // hitbox
   private hitboxConfig = {enabled: false};
   private hitbox: HitboxModel = new HitboxModel();
@@ -199,6 +205,18 @@ export class CanvasComponent implements OnInit {
       } else {
         this.hitbox.removeFromScene(this.scene);
       }
+    });
+
+    // wheels
+    const wheelsFolder = gui.addFolder('wheels');
+    wheelsFolder.add(this.wheelsConfig, 'visible').onChange(value => {
+      this.wheels.visible(value);
+    });
+    wheelsFolder.add(this.wheelsConfig, 'roll', 0, Math.PI * 2).onChange(value => {
+      this.wheels.setRoll(value);
+    });
+    wheelsFolder.add(this.wheelsConfig, 'yaw', -Math.PI / 2, Math.PI / 2).onChange(value => {
+      this.body.setFrontWheelYaw(value);
     });
 
     // performance
