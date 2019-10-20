@@ -355,12 +355,14 @@ export class CanvasComponent implements OnInit {
   private applyWheelModel() {
     this.wheels.setEnvMap(this.envMap);
     this.body.addWheelsModel(this.wheels);
+    this.wheels.setRoll(this.wheelsConfig.roll);
   }
 
   private applyBodyModel() {
     this.validateBody();
     this.body.setEnvMap(this.envMap);
     this.body.addToScene(this.scene);
+    this.body.setFrontWheelYaw(this.wheelsConfig.yaw);
   }
 
   private changePaint(paint) {
