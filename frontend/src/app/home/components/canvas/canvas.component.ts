@@ -38,7 +38,8 @@ import {
   Topper,
   TopperModel,
   Wheel,
-  WheelsModel
+  WheelsModel,
+  MAX_WHEEL_YAW
 } from 'rl-loadout-lib';
 import { environment } from '../../../../environments/environment';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
@@ -215,7 +216,7 @@ export class CanvasComponent implements OnInit {
     wheelsFolder.add(this.wheelsConfig, 'roll', 0, Math.PI * 2).onChange(value => {
       this.wheels.setRoll(value);
     });
-    wheelsFolder.add(this.wheelsConfig, 'yaw', -Math.PI / 2, Math.PI / 2).onChange(value => {
+    wheelsFolder.add(this.wheelsConfig, 'yaw', -MAX_WHEEL_YAW, MAX_WHEEL_YAW).onChange(value => {
       this.body.setFrontWheelYaw(value);
     });
 
