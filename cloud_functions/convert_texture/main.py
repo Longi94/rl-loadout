@@ -12,8 +12,7 @@ def convert(event, context):
          context (google.cloud.functions.Context): Metadata for the event.
     """
 
-    if not event['name'].startswith('textures/') or not event['name'].endswith('.tga') or\
-            event['name'].endswith('_S.tga'):
+    if not event['name'].endswith('.tga') or event['name'].endswith('_S.tga'):
         return
 
     print(f"Converting file: {event['name']}")
