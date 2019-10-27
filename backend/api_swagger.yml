@@ -299,6 +299,10 @@ components:
               type: string
               description: 'Normal map of the chassis. This normally null. Only not null if the normal map has a RGBA map inside it, mainly for body paints.'
               example:
+            chassis_paintable:
+              type: boolean
+              description: 'True if the chassis part of the model can be painted.'
+              example: false
     Wheel:
       allOf:
         - $ref: '#/components/schemas/Item'
