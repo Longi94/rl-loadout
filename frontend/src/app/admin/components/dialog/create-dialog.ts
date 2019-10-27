@@ -1,7 +1,7 @@
 import { OnInit } from '@angular/core';
 import { Quality } from 'rl-loadout-lib';
-import { CloudObject, CloudStorageService } from '../../../service/cloud-storage.service';
-import { MatDialogRef, MatSnackBar } from '@angular/material';
+import { CloudStorageService, Objects } from '../../../service/cloud-storage.service';
+import { MatDialogRef, MatSelectChange, MatSnackBar } from '@angular/material';
 import { AbstractItemService } from '../../../service/abstract-item-service';
 import { handleErrorSnackbar } from '../../../utils/network';
 
@@ -19,11 +19,9 @@ export abstract class CreateDialog<T> implements OnInit {
     {value: Quality.PREMIUM, name: 'Premium'}
   ];
 
-  objects: { [key: string]: CloudObject[] } = {
-    icons: [],
-    textures: [],
-    models: []
-  };
+  objects: Objects = new Objects();
+  objectKeys = Object.keys;
+  selectedObjects: string[] = [];
 
   item: T;
   isNew = true;
@@ -59,5 +57,9 @@ export abstract class CreateDialog<T> implements OnInit {
 
   cancel() {
     this.dialogRef.close();
+  }
+
+  selectProduct($event: MatSelectChange, type: string) {
+    this.selectedObjects = this.objects[type][$event.value];
   }
 }

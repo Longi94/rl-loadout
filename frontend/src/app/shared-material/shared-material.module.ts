@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
+  MatAutocompleteModule,
   MatButtonModule,
   MatRippleModule,
   MatTooltipModule,
@@ -22,12 +23,12 @@ import {
 import { FormsModule } from '@angular/forms';
 
 
-
 @NgModule({
   declarations: [],
   imports: [
     CommonModule,
     FormsModule,
+    MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
     MatRippleModule,
@@ -49,6 +50,7 @@ import { FormsModule } from '@angular/forms';
   exports: [
     CommonModule,
     FormsModule,
+    MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
     MatRippleModule,
@@ -68,4 +70,5 @@ import { FormsModule } from '@angular/forms';
     MatCheckboxModule
   ]
 })
-export class SharedMaterialModule { }
+export class SharedMaterialModule {
+}

@@ -4,6 +4,14 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 
+export class Objects {
+  body: { [name: string]: string[] } = {};
+  wheel: { [name: string]: string[] } = {};
+  decal: { [name: string]: string[] } = {};
+  topper: { [name: string]: string[] } = {};
+  antenna: { [name: string]: string[] } = {};
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -13,20 +21,32 @@ export class CloudStorageService {
   constructor(private httpClient: HttpClient) {
   }
 
-  getObjects(): Observable<any> {
+  getObjects(): Observable<Objects> {
     return this.httpClient.get<ObjectsResponse>(this.url).pipe(
       map(value => {
-        const items = value.items;
+        const objs = new Objects();
 
-        const icons = items.filter(item => item.name.startsWith('icons/') && item.name.length > 6);
-        const textures = items.filter(item => item.name.startsWith('textures/') && item.name.length > 9);
-        const models = items.filter(item => item.name.startsWith('models/') && item.name.length > 7);
+        for (const item of value.items) {
+          if (item.name.endsWith('.png') || item.name.endsWith('_S.tga')) {
+            continue;
+          }
 
-        icons.sort(sortByDate);
-        textures.sort(sortByDate);
-        models.sort(sortByDate);
+          const segments = item.name.split('/');
 
-        return {icons, textures, models};
+          if (segments.length < 3) {
+            continue;
+          }
+
+          if (objs[segments[0]][segments[1]] == undefined) {
+            objs[segments[0]][segments[1]] = [];
+          }
+
+          if (segments[2].length > 0) {
+            objs[segments[0]][segments[1]].push(item.name);
+          }
+        }
+
+        return objs;
       })
     );
   }
