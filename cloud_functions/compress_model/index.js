@@ -19,7 +19,7 @@ const gltfOptions = {
  * @param {!Object} context Metadata for the event.
  */
 exports.compress = async (event, context) => {
-    if (event.name.endsWith('.draco.glb')) {
+    if (!event.name.endsWith('.glb') || event.name.endsWith('.draco.glb')) {
         return;
     }
 
