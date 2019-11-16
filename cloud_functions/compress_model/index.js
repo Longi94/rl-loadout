@@ -9,7 +9,8 @@ const storage = new Storage();
 const gltfOptions = {
     dracoOptions: {
         compressionLevel: 7
-    }
+    },
+    keepUnusedElements: true
 };
 
 /**
