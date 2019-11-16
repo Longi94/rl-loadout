@@ -32,7 +32,7 @@ export class CreateBodyComponent extends CreateDialog<Body> {
       this.item.icon = icon;
     }
 
-    const model = this.selectedObjects.find(value => value.endsWith('.glb'));
+    const model = this.selectedObjects.find(value => !value.endsWith('draco.glb') && value.endsWith('.glb'));
     if (model != undefined) {
       this.item.model = model;
     }
