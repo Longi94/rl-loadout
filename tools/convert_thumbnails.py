@@ -19,7 +19,7 @@ parser.add_argument('-d', '--directory', type=str, required=True)
 parser.add_argument('-o', '--output', type=str, required=True)
 args = parser.parse_args()
 
-os.makedirs(args.output)
+os.makedirs(args.output, exist_ok=True)
 
 for directory in os.listdir(args.directory):
     directory = os.path.join(args.directory, directory)
