@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
 
@@ -21,11 +20,23 @@ export class CloudStorageService {
   constructor(private httpClient: HttpClient) {
   }
 
-  getObjects(): Observable<Objects> {
-    return this.httpClient.get<ObjectsResponse>(this.url).pipe(
-      map(value => {
-        const objs = new Objects();
+  async getObjects(): Promise<Objects> {
+    const objs = new Objects();
 
+    let pageToken: string = await this.getObjectsPage(objs);
+
+    while (pageToken != undefined) {
+      pageToken = await this.getObjectsPage(objs, pageToken);
+    }
+
+    return objs;
+  }
+
+  private async getObjectsPage(objs: Objects, pageToken?: string): Promise<string> {
+    const url = this.url + (pageToken != undefined ? `?pageToken=${pageToken}` : '');
+
+    return this.httpClient.get<ObjectsResponse>(url).pipe(
+      map(value => {
         for (const item of value.items) {
           if (!item.name.endsWith('.jpg') &&
             (!item.name.endsWith('.glb') || item.name.endsWith('.draco.glb')) &&
@@ -48,9 +59,9 @@ export class CloudStorageService {
           }
         }
 
-        return objs;
+        return value.nextPageToken;
       })
-    );
+    ).toPromise();
   }
 }
 
@@ -61,6 +72,7 @@ function sortByDate(a, b) {
 class ObjectsResponse {
   kind: string;
   items: CloudObject[];
+  nextPageToken: string;
 }
 
 export class CloudObject {

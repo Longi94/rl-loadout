@@ -34,7 +34,7 @@ export abstract class CreateDialog<T> implements OnInit {
   }
 
   ngOnInit() {
-    this.cloudService.getObjects().subscribe(value => this.objects = value);
+    this.cloudService.getObjects().then(value => this.objects = value);
     this.isNew = this.data == undefined;
 
     if (!this.isNew) {
