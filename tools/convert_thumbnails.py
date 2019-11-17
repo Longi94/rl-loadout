@@ -6,6 +6,8 @@ from PIL import Image
 
 
 def convert_to_jpeg(file, output):
+    if os.path.exists(output):
+        return
     print(f'Converting {file}...')
     im = Image.open(file)
     rgb_im = im.convert('RGB')
