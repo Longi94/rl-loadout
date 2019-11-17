@@ -27,7 +27,9 @@ export class CloudStorageService {
         const objs = new Objects();
 
         for (const item of value.items) {
-          if (item.name.endsWith('.png') || item.name.endsWith('_S.tga')) {
+          if (!item.name.endsWith('.jpg') &&
+            (!item.name.endsWith('.glb') || item.name.endsWith('.draco.glb')) &&
+            (!item.name.endsWith('.tga') || item.name.endsWith('_S.tga'))) {
             continue;
           }
 
