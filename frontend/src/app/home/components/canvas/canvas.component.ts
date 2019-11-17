@@ -54,6 +54,7 @@ const ROCKET_CONFIG = new RocketConfig({
   assetHost: environment.assetHost,
   loadingManager: DefaultLoadingManager,
   textureFormat: TextureFormat.PNG,
+  useCompressedModels: true,
   gltfLoader
 });
 
