@@ -60,7 +60,7 @@ export class ItemListComponent implements OnInit {
 
   openCreateDialog() {
     const dialogRef = this.dialog.open(this.createDialog, {
-      width: '500px',
+      width: '700px',
       disableClose: true
     });
 
@@ -73,7 +73,7 @@ export class ItemListComponent implements OnInit {
 
   openEditDialog(item: Item) {
     const dialogRef = this.dialog.open(this.createDialog, {
-      width: '500px',
+      width: '700px',
       disableClose: true,
       data: Object.assign({}, item)
     });
