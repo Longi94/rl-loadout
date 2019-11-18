@@ -12,6 +12,8 @@ import { WheelsService } from '../../../../service/items/wheels.service';
 })
 export class CreateWheelComponent extends CreateDialog<Wheel> {
 
+  productType = 'wheel';
+
   constructor(dialogRef: MatDialogRef<CreateWheelComponent>,
               cloudService: CloudStorageService,
               wheelsService: WheelsService,

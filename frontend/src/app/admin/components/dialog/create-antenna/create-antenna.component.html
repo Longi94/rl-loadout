@@ -14,6 +14,10 @@
   <mat-form-field>
     <mat-label>Quality</mat-label>
     <mat-select [(ngModel)]="item.quality">
+      <mat-option>
+        <ngx-mat-select-search ngModel (ngModelChange)="filterProducts($event)"
+                               placeholderLabel="Search"></ngx-mat-select-search>
+      </mat-option>
       <mat-option *ngFor="let obj of qualities" [value]="obj.value">
         {{obj.name}}
       </mat-option>
@@ -21,8 +25,8 @@
   </mat-form-field>
   <mat-form-field>
     <mat-label>Product</mat-label>
-    <mat-select (selectionChange)="selectProduct($event, 'antenna')">
-      <mat-option *ngFor="let obj of objectKeys(objects.antenna)" [value]="obj">
+    <mat-select (selectionChange)="selectProduct($event)">
+      <mat-option *ngFor="let obj of filteredProducts" [value]="obj">
         {{obj}}
       </mat-option>
     </mat-select>

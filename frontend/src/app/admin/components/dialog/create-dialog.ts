@@ -20,7 +20,8 @@ export abstract class CreateDialog<T> implements OnInit {
   ];
 
   objects: Objects = new Objects();
-  objectKeys = Object.keys;
+  productType: string;
+  filteredProducts: string[] = [];
   selectedObjects: string[] = [];
 
   item: T;
@@ -34,7 +35,10 @@ export abstract class CreateDialog<T> implements OnInit {
   }
 
   ngOnInit() {
-    this.cloudService.getObjects().then(value => this.objects = value);
+    this.cloudService.getObjects().then(value => {
+      this.objects = value;
+      this.filteredProducts = Object.keys(this.objects[this.productType]);
+    });
     this.isNew = this.data == undefined;
 
     if (!this.isNew) {
@@ -59,7 +63,11 @@ export abstract class CreateDialog<T> implements OnInit {
     this.dialogRef.close();
   }
 
-  selectProduct($event: MatSelectChange, type: string) {
-    this.selectedObjects = this.objects[type][$event.value];
+  selectProduct($event: MatSelectChange) {
+    this.selectedObjects = this.objects[this.productType][$event.value];
+  }
+
+  filterProducts($event: string) {
+    this.filteredProducts = Object.keys(this.objects[this.productType]).filter(value => value.toLowerCase().includes($event.toLowerCase()));
   }
 }

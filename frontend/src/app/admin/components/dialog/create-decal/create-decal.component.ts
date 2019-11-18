@@ -13,6 +13,8 @@ import { BodiesService } from '../../../../service/items/bodies.service';
 })
 export class CreateDecalComponent extends CreateDialog<Decal> implements OnInit {
 
+  productType = 'decal';
+
   bodies: Body[];
 
   constructor(dialogRef: MatDialogRef<CreateDecalComponent>,

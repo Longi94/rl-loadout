@@ -13,6 +13,8 @@ import { AntennaSticksService } from '../../../../service/items/antenna-sticks.s
 })
 export class CreateAntennaComponent extends CreateDialog<Antenna> implements OnInit {
 
+  productType = 'antenna';
+
   sticks: AntennaStick[];
 
   constructor(dialogRef: MatDialogRef<CreateAntennaComponent>,

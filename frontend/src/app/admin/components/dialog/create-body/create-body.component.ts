@@ -12,6 +12,8 @@ import { BodiesService } from '../../../../service/items/bodies.service';
 })
 export class CreateBodyComponent extends CreateDialog<Body> {
 
+  productType = 'body';
+
   constructor(dialogRef: MatDialogRef<CreateBodyComponent>,
               cloudService: CloudStorageService,
               bodiesService: BodiesService,
@@ -23,9 +25,8 @@ export class CreateBodyComponent extends CreateDialog<Body> {
     );
   }
 
-
-  selectProduct($event: MatSelectChange, type: string) {
-    super.selectProduct($event, type);
+  selectProduct($event: MatSelectChange) {
+    super.selectProduct($event);
 
     const icon = this.selectedObjects.find(value => value.endsWith('.jpg'));
     if (icon != undefined) {

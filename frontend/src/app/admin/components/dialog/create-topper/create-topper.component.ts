@@ -12,6 +12,8 @@ import { ToppersService } from '../../../../service/items/toppers.service';
 })
 export class CreateTopperComponent extends CreateDialog<Topper> {
 
+  productType = 'topper';
+
   constructor(dialogRef: MatDialogRef<CreateTopperComponent>,
               cloudService: CloudStorageService,
               toppersService: ToppersService,
