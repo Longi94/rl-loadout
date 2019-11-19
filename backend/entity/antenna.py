@@ -10,6 +10,7 @@ class Antenna(Base, BaseItem):
     model = Column(String(255), nullable=False)
     base_texture = Column(String(255), nullable=True)
     rgba_map = Column(String(255), nullable=True)
+    normal_map = Column(String(255), nullable=True)
     stick_id = Column(Integer, ForeignKey('antenna_stick.id'), nullable=False)
     stick = relationship('AntennaStick')
 
@@ -18,6 +19,7 @@ class Antenna(Base, BaseItem):
         self.model = item_dict.get('model', None)
         self.base_texture = item_dict.get('base_texture', None)
         self.rgba_map = item_dict.get('rgba_map', None)
+        self.normal_map = item_dict.get('normal_map', None)
         self.stick_id = item_dict.get('stick_id', None)
 
     def to_dict(self) -> Dict:
@@ -26,6 +28,7 @@ class Antenna(Base, BaseItem):
         d['model'] = self.model
         d['base_texture'] = self.base_texture
         d['rgba_map'] = self.rgba_map
+        d['normal_map'] = self.normal_map
         d['stick'] = self.stick.model
 
         return d
@@ -38,6 +41,8 @@ class Antenna(Base, BaseItem):
             self.base_texture = item_dict['base_texture']
         if 'rgba_map' in item_dict:
             self.rgba_map = item_dict['rgba_map']
+        if 'normal_map' in item_dict:
+            self.rgba_map = item_dict['normal_map']
         if 'stick_id' in item_dict:
             self.stick_id = item_dict['stick_id']
 

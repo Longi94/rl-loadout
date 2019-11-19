@@ -384,16 +384,20 @@ components:
             model:
               type: string
               description: 'Path to the GLTF model file of the antenna head.'
-              example: 'models/Antenna_Bread_SF.glb'
+              example: 'antenna/Antenna_Bread/Antenna_Bread_SF.glb'
             base_texture:
               type: string
               description: 'Path to the base texture of the antenna head. Null if the texture is in the gltf file.'
-              example: null
+                example: 'antenna/Antenna_Bread/AT_Bread_D.tga'
             rgba_map:
               type: string
               description: 'Path to the RGBA map of the antenna head if paintable.'
               example: null
+            normal_map:
+              type: string
+              description: 'Path to the normal map of the antenna.'
+              example: 'antenna/Antenna_Bread/AT_Bread_N.tga'
             stick:
               type: string
               description: 'Path to the GLTF model file of the antenna stick'
-              example: 'models/Antenna_SK.glb'
+              example: 'antenna/sticks/Antenna_SK.glb'

@@ -45,6 +45,9 @@
     <input matInput placeholder="RGBA map" [(ngModel)]="item.rgba_map" [matAutocomplete]="auto">
   </mat-form-field>
   <mat-form-field>
+    <input matInput placeholder="Normal map" [(ngModel)]="item.normal_map" [matAutocomplete]="auto">
+  </mat-form-field>
+  <mat-form-field>
     <mat-label>Stick</mat-label>
     <mat-select [(ngModel)]="item.stick_id">
       <mat-option *ngFor="let stick of sticks" [value]="stick.id">
