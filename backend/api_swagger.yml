@@ -365,11 +365,15 @@ components:
             base_texture:
               type: string
               description: 'Path to the base texture of the topper. Null if the texture is in the gltf file.'
-              example: null
+              example: 'topper/Hat_Fez/Hat_Fez_Diffuse.tga'
             rgba_map:
               type: string
               description: 'Path to the RGBA map of the topper if paintable.'
-              example: null
+              example: 'topper/Hat_Fez/Hat_Fez_CUSTOM.tga'
+            normal_map:
+              type: string
+              description: 'Path to the normal map of the topper.'
+              example: 'topper/Hat_Fez/Hat_Fez_Normal.tga'
     Antenna:
       allOf:
         - $ref: '#/components/schemas/Item'

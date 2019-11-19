@@ -44,6 +44,9 @@
   <mat-form-field>
     <input matInput placeholder="RGBA map" [(ngModel)]="item.rgba_map" [matAutocomplete]="auto">
   </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Normal map" [(ngModel)]="item.normal_map" [matAutocomplete]="auto">
+  </mat-form-field>
 </div>
 <div mat-dialog-actions>
   <button mat-button (click)="cancel()">Cancel</button>
