@@ -1,6 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { TextureService } from '../../../../service/texture.service';
-import { DataTexture } from 'three';
 import { MatSnackBar } from '@angular/material';
 
 @Component({
@@ -50,7 +49,7 @@ export class TextureViewerComponent implements OnInit {
     this.canvasHeight = this.canvasWidth * (height / width);
 
     // @ts-ignore
-    if (texture['isDataTexture']) {
+    if (texture.isDataTexture) {
       const imageData = new ImageData(new Uint8ClampedArray(texture.image.data), width, height);
       this.context.putImageData(imageData, 0, 0);
     } else {
