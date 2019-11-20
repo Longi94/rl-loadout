@@ -21,11 +21,11 @@
   </mat-form-field>
   <mat-form-field>
     <mat-label>Product</mat-label>
-    <mat-option>
-      <ngx-mat-select-search ngModel (ngModelChange)="filterProducts($event)"
-                             placeholderLabel="Search"></ngx-mat-select-search>
-    </mat-option>
     <mat-select (selectionChange)="selectProduct($event)">
+      <mat-option>
+        <ngx-mat-select-search ngModel (ngModelChange)="filterProducts($event)"
+                               placeholderLabel="Search"></ngx-mat-select-search>
+      </mat-option>
       <mat-option *ngFor="let obj of filteredProducts" [value]="obj">
         {{obj}}
       </mat-option>
