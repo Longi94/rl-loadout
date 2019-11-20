@@ -34,7 +34,18 @@ export class ItemListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.itemService.getAll().subscribe(items => this.items = items);
+    this.itemService.getAll().subscribe(items => {
+      this.items = items;
+      this.items.sort((a, b) => {
+        if (a[this.line1] > b[this.line1]) {
+          return 1;
+        } else if (a[this.line1] < b[this.line1]) {
+          return -1;
+        } else {
+          return 0;
+        }
+      });
+    });
   }
 
   deleteItem(item: Item) {
@@ -49,7 +60,7 @@ export class ItemListComponent implements OnInit {
 
   openCreateDialog() {
     const dialogRef = this.dialog.open(this.createDialog, {
-      width: '500px',
+      width: '700px',
       disableClose: true
     });
 
@@ -62,7 +73,7 @@ export class ItemListComponent implements OnInit {
 
   openEditDialog(item: Item) {
     const dialogRef = this.dialog.open(this.createDialog, {
-      width: '500px',
+      width: '700px',
       disableClose: true,
       data: Object.assign({}, item)
     });

@@ -4,11 +4,12 @@
   </div>
   <canvas #canvas></canvas>
   <div class="loading-overlay" [style.display]="isLoading() ? null : 'none'">
-    <mat-spinner></mat-spinner>
+    <span>Loading {{mathRound(progress.percent * 100) / 100}}%</span>
+    <mat-progress-bar mode="determinate" [value]="progress.percent" color="primary"></mat-progress-bar>
   </div>
 </div>
 
 <div class="full-overlay" [style.display]="initializing ? null : 'none'">
-  <span>Loading {{mathRound(initProgress * 100) / 100}}%</span>
-  <mat-progress-bar mode="determinate" [value]="initProgress" color="primary"></mat-progress-bar>
+  <span>Loading {{mathRound(progress.percent * 100) / 100}}%</span>
+  <mat-progress-bar mode="determinate" [value]="progress.percent" color="primary"></mat-progress-bar>
 </div>

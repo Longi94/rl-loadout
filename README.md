@@ -1,8 +1,18 @@
-# Rocket Loadout (https://rocket-loadout.com) [<img src="https://img.shields.io/discord/609050910731010048.svg?colorB=7581dc&logo=discord&logoColor=white">](https://discord.gg/c8cArY9)
+# Rocket Loadout (https://rocket-loadout.com)
 
-| master | develop |
-| --- | --- |
-| [![CircleCI](https://circleci.com/gh/Longi94/rl-loadout/tree/master.svg?style=svg&circle-token=d3d0f0f0eabe4e72d5fcd7ffdc9843ad815edd80)](https://circleci.com/gh/Longi94/rl-loadout/tree/master) | [![CircleCI](https://circleci.com/gh/Longi94/rl-loadout/tree/develop.svg?style=svg&circle-token=d3d0f0f0eabe4e72d5fcd7ffdc9843ad815edd80)](https://circleci.com/gh/Longi94/rl-loadout/tree/develop) |
+[![CircleCI][circleci]][circleci-url]
+[![Release][release]][release-url]
+[![Language Grade][lgtm]][lgtm-url]
+[![Discord][discord]][discord-url]
+
+[circleci]: https://circleci.com/gh/Longi94/rl-loadout/tree/master.svg?style=svg
+[circleci-url]: https://circleci.com/gh/Longi94/rl-loadout/tree/master
+[release]: https://img.shields.io/github/v/tag/Longi94/rl-loadout?label=release
+[release-url]: https://github.com/Longi94/rl-loadout/releases
+[lgtm]: https://img.shields.io/lgtm/grade/javascript/github/Longi94/rl-loadout.svg?label=code%20quality
+[lgtm-url]: https://lgtm.com/projects/g/Longi94/rl-loadout/
+[discord]: https://img.shields.io/discord/609050910731010048.svg?colorB=7581dc&logo=discord&logoColor=white
+[discord-url]: https://discord.gg/c8cArY9
 
 Create Rocket League car designs on the web. Powered by [three.js](https://threejs.org/). Angular 8 frontend, Python flask backend and PostgreSQL database.
 

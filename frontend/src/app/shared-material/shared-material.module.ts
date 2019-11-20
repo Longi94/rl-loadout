@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
+  MatAutocompleteModule,
   MatButtonModule,
   MatRippleModule,
   MatTooltipModule,
@@ -20,7 +21,7 @@ import {
   MatCheckboxModule
 } from '@angular/material';
 import { FormsModule } from '@angular/forms';
-
+import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     FormsModule,
+    MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
     MatRippleModule,
@@ -44,11 +46,13 @@ import { FormsModule } from '@angular/forms';
     MatInputModule,
     MatSelectModule,
     MatListModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    NgxMatSelectSearchModule
   ],
   exports: [
     CommonModule,
     FormsModule,
+    MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
     MatRippleModule,
@@ -65,7 +69,9 @@ import { FormsModule } from '@angular/forms';
     MatInputModule,
     MatSelectModule,
     MatListModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    NgxMatSelectSearchModule
   ]
 })
-export class SharedMaterialModule { }
+export class SharedMaterialModule {
+}

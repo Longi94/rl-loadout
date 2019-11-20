@@ -1,0 +1,8 @@
+{
+  "name": "compress-model",
+  "version": "0.0.1",
+  "dependencies": {
+    "@google-cloud/storage": "^4.0.1",
+    "gltf-pipeline": "^2.1.4"
+  }
+}

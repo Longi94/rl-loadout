@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { Body, Quality } from 'rl-loadout-lib';
-import { MAT_DIALOG_DATA, MatDialogRef, MatSnackBar } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialogRef, MatSelectChange, MatSnackBar } from '@angular/material';
 import { CloudStorageService } from '../../../../service/cloud-storage.service';
 import { CreateDialog } from '../create-dialog';
 import { BodiesService } from '../../../../service/items/bodies.service';
@@ -11,6 +11,8 @@ import { BodiesService } from '../../../../service/items/bodies.service';
   styleUrls: ['./create-body.component.scss']
 })
 export class CreateBodyComponent extends CreateDialog<Body> {
+
+  productType = 'body';
 
   constructor(dialogRef: MatDialogRef<CreateBodyComponent>,
               cloudService: CloudStorageService,
@@ -23,4 +25,17 @@ export class CreateBodyComponent extends CreateDialog<Body> {
     );
   }
 
+  selectProduct($event: MatSelectChange) {
+    super.selectProduct($event);
+
+    const icon = this.selectedObjects.find(value => value.endsWith('.jpg'));
+    if (icon != undefined) {
+      this.item.icon = icon;
+    }
+
+    const model = this.selectedObjects.find(value => !value.endsWith('draco.glb') && value.endsWith('.glb'));
+    if (model != undefined) {
+      this.item.model = model;
+    }
+  }
 }

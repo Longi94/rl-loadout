@@ -1,8 +1,15 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { map } from 'rxjs/operators';
+
+export class Objects {
+  body: { [name: string]: string[] } = {};
+  wheel: { [name: string]: string[] } = {};
+  decal: { [name: string]: string[] } = {};
+  topper: { [name: string]: string[] } = {};
+  antenna: { [name: string]: string[] } = {};
+}
 
 @Injectable({
   providedIn: 'root'
@@ -13,22 +20,48 @@ export class CloudStorageService {
   constructor(private httpClient: HttpClient) {
   }
 
-  getObjects(): Observable<any> {
-    return this.httpClient.get<ObjectsResponse>(this.url).pipe(
+  async getObjects(): Promise<Objects> {
+    const objs = new Objects();
+
+    let pageToken: string = await this.getObjectsPage(objs);
+
+    while (pageToken != undefined) {
+      pageToken = await this.getObjectsPage(objs, pageToken);
+    }
+
+    return objs;
+  }
+
+  private async getObjectsPage(objs: Objects, pageToken?: string): Promise<string> {
+    const url = this.url + (pageToken != undefined ? `?pageToken=${pageToken}` : '');
+
+    return this.httpClient.get<ObjectsResponse>(url).pipe(
       map(value => {
-        const items = value.items;
+        for (const item of value.items) {
+          if (!item.name.endsWith('.jpg') &&
+            (!item.name.endsWith('.glb') || item.name.endsWith('.draco.glb')) &&
+            (!item.name.endsWith('.tga') || item.name.endsWith('_S.tga'))) {
+            continue;
+          }
 
-        const icons = items.filter(item => item.name.startsWith('icons/') && item.name.length > 6);
-        const textures = items.filter(item => item.name.startsWith('textures/') && item.name.length > 9);
-        const models = items.filter(item => item.name.startsWith('models/') && item.name.length > 7);
+          const segments = item.name.split('/');
 
-        icons.sort(sortByDate);
-        textures.sort(sortByDate);
-        models.sort(sortByDate);
+          if (segments.length < 3) {
+            continue;
+          }
 
-        return {icons, textures, models};
+          if (objs[segments[0]][segments[1]] == undefined) {
+            objs[segments[0]][segments[1]] = [];
+          }
+
+          if (segments[2].length > 0) {
+            objs[segments[0]][segments[1]].push(item.name);
+          }
+        }
+
+        return value.nextPageToken;
       })
-    );
+    ).toPromise();
   }
 }
 
@@ -39,6 +72,7 @@ function sortByDate(a, b) {
 class ObjectsResponse {
   kind: string;
   items: CloudObject[];
+  nextPageToken: string;
 }
 
 export class CloudObject {
