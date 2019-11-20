@@ -58,13 +58,6 @@ cd backend
 python server.py
 ```
 
-The frontend will query the default body and wheels, you'll need at least these records in the db for everything to work.
-
-```sql
-INSERT INTO public.body (name, quality, icon, paintable, model, blank_skin, base_skin) VALUES ('Octane', 0, 'icons/Body_Octane_Thumbnail.jpg', true, 'models/Body_Octane_SF.glb', 'textures/Pepe_Body_BlankSkin_RGB.tga', 'textures/Pepe_Body_D.tga');
-INSERT INTO public.wheel (name, quality, icon, paintable, model, rim_base, rim_rgb_map) VALUES ('OEM', 0, 'icons/Wheel_Star_Thumbnail.jpg', true, 'models/WHEEL_Star_SM.glb', 'textures/OEM_D.tga', 'textures/OEM_RGB.tga');
-```
-
 ### Frontend
 
 Serve the angular frontend.
@@ -77,7 +70,3 @@ ng serve
 ### Assets
 
 Some models, textures and icons files are available in the Google Cloud Storage bucket called `rl-loadout-dev` (https://storage.googleapis.com/rl-loadout-dev). The bucket is public readable but not writable. If you want to upload some files you may ask for priviliges to the bucket or provide your own file hosting and overwrite the `assetHost` property of the angular environment file.
-
-## Contribution
-
-Pull requests should be made against the `develop` branch, unless it's a hotfix. The `master` branch is for releases only as there is a CD.
