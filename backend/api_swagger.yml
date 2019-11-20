@@ -388,7 +388,7 @@ components:
             base_texture:
               type: string
               description: 'Path to the base texture of the antenna head. Null if the texture is in the gltf file.'
-                example: 'antenna/Antenna_Bread/AT_Bread_D.tga'
+              example: 'antenna/Antenna_Bread/AT_Bread_D.tga'
             rgba_map:
               type: string
               description: 'Path to the RGBA map of the antenna head if paintable.'
