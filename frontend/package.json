@@ -27,6 +27,7 @@
     "dat.gui": "^0.7.6",
     "ngx-color-picker": "^8.2.0",
     "ngx-mat-select-search": "^2.0.0",
+    "pngjs": "^3.4.0",
     "rl-loadout-lib": "file:../lib",
     "rxjs": "~6.5.3",
     "stats.js": "^0.17.0",
