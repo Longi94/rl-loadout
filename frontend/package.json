@@ -30,7 +30,7 @@
     "rl-loadout-lib": "file:../lib",
     "rxjs": "~6.5.3",
     "stats.js": "^0.17.0",
-    "three": "^0.108.0",
+    "three": "^0.110.0",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
   },

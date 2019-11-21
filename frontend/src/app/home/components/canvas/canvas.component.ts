@@ -11,11 +11,11 @@ import {
   Texture,
   TextureLoader,
   WebGLRenderer,
-  WebGLRenderTarget
+  WebGLRenderTarget,
+  WebGLRenderTargetCube
 } from 'three';
 import { LoadoutService } from '../../../service/loadout.service';
 import { LoadoutStoreService } from '../../../service/loadout-store.service';
-import { EquirectangularToCubeGenerator } from 'three/examples/jsm/loaders/EquirectangularToCubeGenerator';
 import { PMREMGenerator } from 'three/examples/jsm/pmrem/PMREMGenerator';
 import { PMREMCubeUVPacker } from 'three/examples/jsm/pmrem/PMREMCubeUVPacker';
 import { TextureService } from '../../../service/texture.service';
@@ -263,13 +263,11 @@ export class CanvasComponent implements OnInit {
   }
 
   private processBackground(backgroundTexture: Texture) {
-    const generator = new EquirectangularToCubeGenerator(backgroundTexture);
-    const cubeMapTexture = generator.update(this.renderer);
+    // @ts-ignore
+    this.scene.background = new WebGLRenderTargetCube(1024, 1024).fromEquirectangularTexture(this.renderer, backgroundTexture);
 
     // @ts-ignore
-    this.scene.background = generator.renderTarget;
-
-    const pmremGenerator = new PMREMGenerator(cubeMapTexture);
+    const pmremGenerator = new PMREMGenerator(this.scene.background.texture);
     pmremGenerator.update(this.renderer);
     const pmremCubeUVPacker = new PMREMCubeUVPacker(pmremGenerator.cubeLods);
     pmremCubeUVPacker.update(this.renderer);
