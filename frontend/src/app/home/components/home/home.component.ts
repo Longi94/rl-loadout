@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { AboutDialogComponent } from '../about-dialog/about-dialog.component';
 import { environment } from '../../../../environments/environment';
 import { TextureViewerComponent } from '../debug/texture-viewer/texture-viewer.component';

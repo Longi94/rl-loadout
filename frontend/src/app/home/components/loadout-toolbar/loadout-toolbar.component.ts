@@ -1,5 +1,5 @@
 import { Component, ComponentFactoryResolver, ComponentRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { LoadoutGridSelectorComponent } from '../loadout-grid-selector/loadout-grid-selector.component';
 import { Decal, Wheel, Body, Topper, Antenna } from 'rl-loadout-lib';
 import { LoadoutService } from '../../../service/loadout.service';

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiKeysService } from '../../../../service/api-keys.service';
-import { MatDialogRef, MatSnackBar } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { ApiKey } from '../../../../model/api-key';
 import { handleErrorSnackbar } from '../../../../utils/network';
 

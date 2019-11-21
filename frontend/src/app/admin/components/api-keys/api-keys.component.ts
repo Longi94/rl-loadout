@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiKeysService } from '../../../service/api-keys.service';
 import { ApiKey } from '../../../model/api-key';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { CreateApiKeyComponent } from './create-api-key/create-api-key.component';
 import { confirmMaterial } from '../../../shared/confirm-dialog/confirm-dialog.component';
 import { copyMessage } from '../../../utils/util';

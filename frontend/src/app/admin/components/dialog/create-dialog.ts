@@ -1,7 +1,9 @@
 import { OnInit } from '@angular/core';
 import { Quality } from 'rl-loadout-lib';
 import { CloudStorageService, Objects } from '../../../service/cloud-storage.service';
-import { MatDialogRef, MatSelectChange, MatSnackBar } from '@angular/material';
+import { MatDialogRef } from '@angular/material/dialog';
+import { MatSelectChange } from '@angular/material/select';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AbstractItemService } from '../../../service/abstract-item-service';
 import { handleErrorSnackbar } from '../../../utils/network';
 

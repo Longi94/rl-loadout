@@ -2,7 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { Item } from 'rl-loadout-lib';
 import { environment } from '../../../../environments/environment';
 import { confirmMaterial } from '../../../shared/confirm-dialog/confirm-dialog.component';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { AbstractItemService } from '../../../service/abstract-item-service';
 
 @Component({
