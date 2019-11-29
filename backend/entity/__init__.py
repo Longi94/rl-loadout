@@ -6,3 +6,4 @@ from .topper import Topper
 from .user import User
 from .wheel import Wheel
 from .api_key import ApiKey
+from .product import Product
