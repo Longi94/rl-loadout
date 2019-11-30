@@ -20,15 +20,15 @@ def status():
 @api_blueprint.route('/all', methods=['GET'])
 def get_all():
     result = {
-        'bodies': [item.to_dict() for item in body_dao.get_all()],
-        'wheels': [item.to_dict() for item in wheel_dao.get_all()],
-        'toppers': [item.to_dict() for item in topper_dao.get_all()],
-        'antennas': [item.to_dict() for item in antenna_dao.get_all()]
+        'bodies': [item.Body.product_joined_to_dict(item.Product) for item in body_dao.get_all_join_product()],
+        'wheels': [item.Wheel.product_joined_to_dict(item.Product) for item in wheel_dao.get_all_join_product()],
+        'toppers': [item.Topper.product_joined_to_dict(item.Product) for item in topper_dao.get_all_join_product()],
+        'antennas': [item.Antenna.product_joined_to_dict(item.Product) for item in antenna_dao.get_all_join_product()]
     }
 
     body_id = request.args.get('body', default=None)
 
     if body_id is not None:
-        result['decals'] = [item.to_dict() for item in decal_dao.get_all_for_body(body_id)]
+        result['decals'] = [item.Decal.product_joined_to_dict(item.Product) for item in decal_dao.get_all_for_body(body_id)]
 
     return jsonify(result)
