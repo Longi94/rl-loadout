@@ -10,6 +10,7 @@ import { ApiKeysComponent } from './components/api-keys/api-keys.component';
 import { AuthGuardService as AuthGuard } from '../auth/auth-guard.service';
 import { MainComponent } from './components/main/main.component';
 import { LoginComponent } from './components/login/login.component';
+import { ProductUploadComponent } from './components/product-upload/product-upload.component';
 
 const routes: Routes = [
   {
@@ -57,6 +58,11 @@ const routes: Routes = [
         pathMatch: 'full',
         component: ApiKeysComponent
       },
+      {
+        path: 'product-upload',
+        pathMatch: 'full',
+        component: ProductUploadComponent
+      }
     ]
   }
 ];
