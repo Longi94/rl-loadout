@@ -12,8 +12,8 @@ wheel_dao = WheelDao()
 
 @wheels_blueprint.route('', methods=['GET'])
 def get_wheels():
-    wheels = wheel_dao.get_all()
-    return jsonify([item.to_dict() for item in wheels])
+    wheels = wheel_dao.get_all_join_product()
+    return jsonify([item.Wheel.product_joined_to_dict(item.Product) for item in wheels])
 
 
 @wheels_blueprint.route('', methods=['POST'])

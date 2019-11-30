@@ -20,20 +20,14 @@ class Decal(Base, BaseItem):
 
     def to_dict(self) -> Dict:
         """Return object data in easily serializable format"""
-        body_name = None
-        if self.body:
-            body_name = self.body.name
-
         return {
             'id': self.id,
-            'name': self.name,
             'quality': self.quality,
             'icon': self.icon,
             'paintable': self.paintable,
             'base_texture': self.base_texture,
             'rgba_map': self.rgba_map,
-            'body_id': self.body_id,
-            'body_name': body_name
+            'body_id': self.body_id
         }
 
     def update(self, item_dict: Dict):

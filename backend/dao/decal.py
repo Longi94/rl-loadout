@@ -1,12 +1,12 @@
 from typing import List
-from .dao import BaseDao
-from entity import Decal, Body
+from .item import BaseItemDao
+from entity import Decal, Body, Product
 
 
-class DecalDao(BaseDao):
+class DecalDao(BaseItemDao):
     T = Decal
 
-    def get_all_for_body(self, body_id: int) -> List[Decal]:
+    def get_all_for_body(self, body_id: int) -> List:
         """
         Find decals that are applicable to a body
 
@@ -18,5 +18,5 @@ class DecalDao(BaseDao):
             body = session.query(Body).get(body_id)
             if body is None:
                 return []
-            return body.decals
-        return session.query(Decal)
+            return session.query(Decal, Product).join(Product).filter(Decal.body_id == body_id)
+        return session.query(Decal, Product).join(Product)

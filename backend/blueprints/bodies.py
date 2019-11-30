@@ -12,13 +12,13 @@ body_dao = BodyDao()
 
 @bodies_blueprint.route('', methods=['GET'])
 def get_bodies():
-    bodies = body_dao.get_all()
-    return jsonify([body.to_dict() for body in bodies])
+    bodies = body_dao.get_all_join_product()
+    return jsonify([body.Body.product_joined_to_dict(body.Product) for body in bodies])
 
 
 @bodies_blueprint.route('', methods=['POST'])
 @jwt_required
-@json_required_params(['id', 'name', 'icon', 'quality', 'paintable', 'model'])
+@json_required_params(['id', 'icon', 'quality', 'paintable', 'model'])
 def add_body():
     body = Body()
     body.apply_dict(request.json)

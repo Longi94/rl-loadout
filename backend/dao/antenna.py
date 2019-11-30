@@ -1,9 +1,9 @@
 from typing import List
-from .dao import BaseDao
+from .item import BaseItemDao
 from entity import Antenna, AntennaStick
 
 
-class AntennaDao(BaseDao):
+class AntennaDao(BaseItemDao):
     T = Antenna
 
     def get_sticks(self) -> List[AntennaStick]:

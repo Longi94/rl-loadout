@@ -12,8 +12,8 @@ antenna_dao = AntennaDao()
 
 @antennas_blueprint.route('', methods=['GET'])
 def get_antennas():
-    antennas = antenna_dao.get_all()
-    return jsonify([item.to_dict() for item in antennas])
+    antennas = antenna_dao.get_all_join_product()
+    return jsonify([item.Antenna.product_joined_to_dict(item.Product) for item in antennas])
 
 
 @antennas_blueprint.route('', methods=['POST'])

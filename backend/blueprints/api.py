@@ -17,21 +17,6 @@ def status():
     })
 
 
-@api_blueprint.route('/defaults', methods=['GET'])
-def get_defaults():
-    result = {}
-
-    body = body_dao.get_default()
-    if body is not None:
-        result['body'] = body.to_dict()
-
-    wheel = wheel_dao.get_default()
-    if wheel is not None:
-        result['wheel'] = wheel.to_dict()
-
-    return jsonify(result)
-
-
 @api_blueprint.route('/all', methods=['GET'])
 def get_all():
     result = {

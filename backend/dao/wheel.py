@@ -1,8 +1,8 @@
-from .dao import BaseDao
+from .item import BaseItemDao
 from entity import Wheel
 
 
-class WheelDao(BaseDao):
+class WheelDao(BaseItemDao):
     T = Wheel
 
     def get_default(self) -> Wheel:

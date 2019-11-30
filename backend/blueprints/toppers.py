@@ -12,8 +12,8 @@ topper_dao = TopperDao()
 
 @toppers_blueprint.route('', methods=['GET'])
 def get_toppers():
-    toppers = topper_dao.get_all()
-    return jsonify([item.to_dict() for item in toppers])
+    toppers = topper_dao.get_all_join_product()
+    return jsonify([item.Topper.product_joined_to_dict(item.Product) for item in toppers])
 
 
 @toppers_blueprint.route('', methods=['POST'])
