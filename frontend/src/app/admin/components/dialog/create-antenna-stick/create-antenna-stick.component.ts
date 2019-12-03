@@ -5,6 +5,7 @@ import { CloudStorageService } from '../../../../service/cloud-storage.service';
 import { AntennaStick } from 'rl-loadout-lib';
 import { CreateDialog } from '../create-dialog';
 import { AntennaSticksService } from '../../../../service/items/antenna-sticks.service';
+import { ProductService } from '../../../../service/product.service';
 
 @Component({
   selector: 'app-create-antenna-stick',
@@ -17,8 +18,9 @@ export class CreateAntennaStickComponent extends CreateDialog<AntennaStick> {
               cloudService: CloudStorageService,
               antennaSticksService: AntennaSticksService,
               snackBar: MatSnackBar,
+              productService: ProductService,
               @Inject(MAT_DIALOG_DATA) data: AntennaStick) {
-    super(dialogRef, cloudService, snackBar, data, antennaSticksService);
+    super(dialogRef, cloudService, snackBar, data, productService, antennaSticksService);
     this.item = new AntennaStick();
   }
 

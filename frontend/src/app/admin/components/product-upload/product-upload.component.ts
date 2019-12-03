@@ -8,8 +8,8 @@ import { ProductService } from '../../../service/product.service';
 })
 export class ProductUploadComponent implements OnInit {
 
-  isLoading: boolean = false;
-  message: string = '';
+  isLoading = false;
+  message = '';
 
   constructor(private productService: ProductService) {
   }

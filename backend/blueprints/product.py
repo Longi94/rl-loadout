@@ -1,9 +1,10 @@
 import pandas as pd
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 from dao import ProductDao
 from entity import Product
 from database import database
+from utils.network.exc import NotFoundException, BadRequestException
 
 products_blueprint = Blueprint('product', __name__, url_prefix='/internal/products')
 product_dao = ProductDao()
@@ -31,3 +32,26 @@ def upload():
     database.commit()
 
     return '', 200
+
+
+@products_blueprint.route('', methods=['GET'])
+@jwt_required
+def get_all():
+    products = product_dao.get_all()
+    return jsonify([product.to_dict() for product in products])
+
+
+@products_blueprint.route('/<product_id>', methods=['GET'])
+@jwt_required
+def get(product_id):
+    try:
+        product_id = int(product_id)
+    except ValueError:
+        raise BadRequestException('product id must be an integer')
+
+    product = product_dao.get(product_id)
+
+    if product is None:
+        raise NotFoundException('Product not found')
+
+    return jsonify(product.to_dict())

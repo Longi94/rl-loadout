@@ -6,6 +6,7 @@ import { CloudStorageService } from '../../../../service/cloud-storage.service';
 import { CreateDialog } from '../create-dialog';
 import { DecalsService } from '../../../../service/items/decals.service';
 import { BodiesService } from '../../../../service/items/bodies.service';
+import { ProductService } from '../../../../service/product.service';
 
 @Component({
   selector: 'app-create-decal',
@@ -23,8 +24,9 @@ export class CreateDecalComponent extends CreateDialog<Decal> implements OnInit 
               decalsService: DecalsService,
               private bodiesService: BodiesService,
               snackBar: MatSnackBar,
+              productService: ProductService,
               @Inject(MAT_DIALOG_DATA) data: Decal) {
-    super(dialogRef, cloudService, snackBar, data, decalsService);
+    super(dialogRef, cloudService, snackBar, data, productService, decalsService);
     this.item = new Decal(
       undefined, undefined, '', Quality.COMMON, false
     );

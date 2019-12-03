@@ -2,10 +2,12 @@ import { OnInit } from '@angular/core';
 import { Quality } from 'rl-loadout-lib';
 import { CloudStorageService, Objects } from '../../../service/cloud-storage.service';
 import { MatDialogRef } from '@angular/material/dialog';
-import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AbstractItemService } from '../../../service/abstract-item-service';
 import { handleErrorSnackbar } from '../../../utils/network';
+import { ProductService } from '../../../service/product.service';
+import { Product } from '../../../model/product';
+import { Item } from 'rl-loadout-lib';
 
 export abstract class CreateDialog<T> implements OnInit {
 
@@ -25,14 +27,18 @@ export abstract class CreateDialog<T> implements OnInit {
   productType: string;
   filteredProducts: string[] = [];
   selectedObjects: string[] = [];
+  selectedProduct: string;
 
   item: T;
   isNew = true;
+
+  productTimer: number;
 
   protected constructor(protected dialogRef: MatDialogRef<any>,
                         private cloudService: CloudStorageService,
                         private snackBar: MatSnackBar,
                         private data: T,
+                        private productService: ProductService,
                         protected itemService: AbstractItemService<T>) {
   }
 
@@ -65,11 +71,51 @@ export abstract class CreateDialog<T> implements OnInit {
     this.dialogRef.close();
   }
 
-  selectProduct($event: MatSelectChange) {
-    this.selectedObjects = this.objects[this.productType][$event.value];
+  selectProduct($event: string) {
+    this.selectedObjects = this.objects[this.productType][$event];
+
+    if (this.selectedObjects == undefined) {
+      return;
+    }
+
+    if (this.item instanceof Item) {
+      const icon = this.selectedObjects.find(value => value.endsWith('.jpg'));
+      if (icon != undefined) {
+        this.item.icon = icon;
+      }
+    }
   }
 
   filterProducts($event: string) {
     this.filteredProducts = Object.keys(this.objects[this.productType]).filter(value => value.toLowerCase().includes($event.toLowerCase()));
+  }
+
+  onIdUpdate(id: number) {
+    if (id != undefined && !isNaN(id)) {
+      if (this.productTimer != undefined) {
+        window.clearTimeout(this.productTimer);
+      }
+
+      this.productTimer = window.setTimeout(() => {
+        this.productService.get(id).subscribe(product => {
+          this.productTimer = undefined;
+          this.onProduct(product);
+        }, error => {
+          console.error(error);
+          this.selectedProduct = undefined;
+          if (this.item instanceof Item) {
+            this.item.name = undefined;
+          }
+        });
+      }, 500);
+    }
+  }
+
+  onProduct(product: Product) {
+    this.selectedProduct = product.product_name;
+    this.selectProduct(this.selectedProduct);
+    if (this.item instanceof Item) {
+      this.item.name = product.name;
+    }
   }
 }
