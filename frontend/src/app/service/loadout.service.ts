@@ -3,7 +3,6 @@ import {
   Antenna,
   Body,
   Decal,
-  Item,
   Topper,
   Wheel,
   COLOR_MAPLE_BLUE,
@@ -13,11 +12,7 @@ import {
   BODY_SLIME_ID
 } from 'rl-loadout-lib';
 import { Observable, Subject } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../environments/environment';
 import { Color } from 'three';
-
-const HOST = `${environment.backend}/internal`;
 
 export class PaintConfig {
   primary: Color = new Color(DEFAULT_BLUE_TEAM);
@@ -57,7 +52,7 @@ export class LoadoutService {
   private antennaSubject: Subject<Antenna> = new Subject<Antenna>();
   antennaChanged$: Observable<Antenna> = this.antennaSubject.asObservable();
 
-  constructor(private httpClient: HttpClient) {
+  constructor() {
   }
 
   selectDecal(decal: Decal) {

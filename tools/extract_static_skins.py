@@ -4,7 +4,6 @@ import subprocess
 import shutil
 from multiprocessing.pool import ThreadPool
 from functools import partial
-from PIL import Image
 
 
 def umodel_extract(path, file):

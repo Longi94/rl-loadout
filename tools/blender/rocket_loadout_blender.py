@@ -1,6 +1,5 @@
 # noinspection PyUnresolvedReferences
 import bpy
-import os
 import re
 import math
 import csv

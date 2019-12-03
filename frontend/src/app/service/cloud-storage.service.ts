@@ -65,10 +65,6 @@ export class CloudStorageService {
   }
 }
 
-function sortByDate(a, b) {
-  return (a.updated < b.updated) ? 1 : ((a.updated > b.updated) ? -1 : 0);
-}
-
 class ObjectsResponse {
   kind: string;
   items: CloudObject[];
