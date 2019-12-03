@@ -6,10 +6,10 @@
     </mat-option>
   </mat-autocomplete>
   <mat-form-field>
-    <input matInput placeholder="ID" type="number" [(ngModel)]="item.id">
+    <input matInput placeholder="ID" type="number" [(ngModel)]="item.id" (ngModelChange)="onIdUpdate($event)">
   </mat-form-field>
   <mat-form-field>
-    <input matInput placeholder="Name" [(ngModel)]="item.name">
+    <input matInput placeholder="Name" [(ngModel)]="item.name" disabled>
   </mat-form-field>
   <mat-form-field>
     <mat-label>Quality</mat-label>
@@ -25,7 +25,7 @@
   </mat-form-field>
   <mat-form-field>
     <mat-label>Product</mat-label>
-    <mat-select (selectionChange)="selectProduct($event)">
+    <mat-select [(ngModel)]="selectedProduct" (ngModelChange)="selectProduct($event)">
       <mat-option *ngFor="let obj of filteredProducts" [value]="obj">
         {{obj}}
       </mat-option>

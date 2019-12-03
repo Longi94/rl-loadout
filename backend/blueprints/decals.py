@@ -15,12 +15,12 @@ body_dao = BodyDao()
 def get_decals():
     body_id = request.args.get('body', default=None)
     decals = decal_dao.get_all_for_body(body_id)
-    return jsonify([item.to_dict() for item in decals])
+    return jsonify([item.Decal.product_joined_to_dict(item.Product) for item in decals])
 
 
 @decals_blueprint.route('', methods=['POST'])
 @jwt_required
-@json_required_params(['name', 'icon', 'quality', 'paintable', 'id', 'rgba_map'])
+@json_required_params(['icon', 'quality', 'paintable', 'id', 'rgba_map'])
 def add_decal():
     decal = Decal()
     decal.apply_dict(request.json)

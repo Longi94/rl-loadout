@@ -7,6 +7,7 @@ from .toppers import toppers_blueprint
 from .decals import decals_blueprint
 from .antenna_sticks import antenna_sticks_blueprint
 from .antennas import antennas_blueprint
+from .product import products_blueprint
 
 blueprints = [
     api_blueprint,
@@ -17,5 +18,6 @@ blueprints = [
     toppers_blueprint,
     decals_blueprint,
     antennas_blueprint,
-    antenna_sticks_blueprint
+    antenna_sticks_blueprint,
+    products_blueprint
 ]

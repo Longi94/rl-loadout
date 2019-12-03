@@ -8,3 +8,4 @@ bcrypt==3.1.7
 connexion==2.3.0
 connexion[swagger-ui]
 numpy==1.17.0
+pandas=0.25.3

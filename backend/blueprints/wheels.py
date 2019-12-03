@@ -12,13 +12,13 @@ wheel_dao = WheelDao()
 
 @wheels_blueprint.route('', methods=['GET'])
 def get_wheels():
-    wheels = wheel_dao.get_all()
-    return jsonify([item.to_dict() for item in wheels])
+    wheels = wheel_dao.get_all_join_product()
+    return jsonify([item.Wheel.product_joined_to_dict(item.Product) for item in wheels])
 
 
 @wheels_blueprint.route('', methods=['POST'])
 @jwt_required
-@json_required_params(['id', 'name', 'icon', 'quality', 'paintable', 'model'])
+@json_required_params(['id', 'icon', 'quality', 'paintable', 'model'])
 def add_wheel():
     wheel = Wheel()
     wheel.apply_dict(request.json)

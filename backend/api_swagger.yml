@@ -247,7 +247,6 @@ components:
       type: object
       required:
         - id
-        - name
         - quality
         - icon
         - paintable
@@ -256,10 +255,6 @@ components:
           type: integer
           description: 'ID of the item'
           example: 23
-        name:
-          type: string
-          description: 'Name of the item.'
-          example: 'Octane'
         quality:
           type: integer
           description: 'Quality of the item. See https://github.com/Longi94/rl-loadout/blob/master/backend/rocket/quality.py'

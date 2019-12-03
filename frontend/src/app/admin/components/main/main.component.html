@@ -2,7 +2,8 @@
   <mat-toolbar class="mat-elevation-z6" color="primary">
     <span class="title">Admin</span>
     <button mat-button [matMenuTriggerFor]="itemsMenu">Items <mat-icon>arrow_drop_down</mat-icon></button>
-    <button mat-button (click)="router.navigate(['admin/api-keys']).then()">API Keys</button>
+    <button mat-button routerLink="/admin/api-keys">API Keys</button>
+    <button mat-button routerLink="/admin/product-upload">Product Upload</button>
     <span class="flex-spacer"></span>
     <button mat-button [matMenuTriggerFor]="profileMenu">
       {{ username }} <mat-icon>arrow_drop_down</mat-icon>

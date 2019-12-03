@@ -1,6 +1,6 @@
-from .dao import BaseDao
+from .item import BaseItemDao
 from entity import Topper
 
 
-class TopperDao(BaseDao):
+class TopperDao(BaseItemDao):
     T = Topper

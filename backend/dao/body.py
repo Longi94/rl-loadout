@@ -1,13 +1,6 @@
-from .dao import BaseDao
+from .item import BaseItemDao
 from entity import Body
 
 
-class BodyDao(BaseDao):
+class BodyDao(BaseItemDao):
     T = Body
-
-    def get_default(self) -> Body:
-        """
-        :return: the default body (Octane)
-        """
-        session = self.Session()
-        return session.query(Body).get(23)

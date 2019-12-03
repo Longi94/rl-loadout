@@ -1,0 +1,7 @@
+<div class="container">
+  <input #csvInput hidden type="file" onclick="this.value=null" (change)="handleFileInput($event.target.files)"
+         accept=".csv"/>
+  <button mat-flat-button color="primary" (click)="csvInput.click()">Upload items.csv</button>
+  <mat-spinner diameter="30" *ngIf="isLoading"></mat-spinner>
+  <span>{{message}}</span>
+</div>

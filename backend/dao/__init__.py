@@ -5,3 +5,4 @@ from .topper import TopperDao
 from .decal import DecalDao
 from .antenna import AntennaDao
 from .user import UserDao
+from .product import ProductDao

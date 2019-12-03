@@ -1,0 +1,10 @@
+ALTER TABLE antenna
+    DROP COLUMN name;
+ALTER TABLE body
+    DROP COLUMN name;
+ALTER TABLE decal
+    DROP COLUMN name;
+ALTER TABLE topper
+    DROP COLUMN name;
+ALTER TABLE wheel
+    DROP COLUMN name;
