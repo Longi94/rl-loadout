@@ -68,7 +68,11 @@ export class ColorSelectorComponent implements OnInit {
   }
 
   colorChanged(color: string, type: string) {
-    this.colors[type].textColor = getTextColor(new Color(color));
+    if (color) {
+      this.colors[type].textColor = getTextColor(new Color(color));
+    } else {
+      this.colors[type].textColor = 'white';
+    }
     this.loadoutService.setPaint(type, color);
   }
 
