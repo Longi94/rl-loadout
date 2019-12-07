@@ -57,10 +57,10 @@ export class CreateDecalComponent extends CreateDialog<Decal> implements OnInit 
     // if it's a body specific decal, pre fill it
     if (product.name.includes(':')) {
       const bodyName = product.name.split(':')[0].toLowerCase();
-      const body = this.bodies.find(body => body.name.toLowerCase() === bodyName);
+      const decalBody = this.bodies.find(body => body.name.toLowerCase() === bodyName);
 
-      if (body != undefined) {
-        this.item.body_id = body.id;
+      if (decalBody != undefined) {
+        this.item.body_id = decalBody.id;
       }
     }
 
