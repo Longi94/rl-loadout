@@ -56,6 +56,9 @@ export class LoadoutService {
   }
 
   selectDecal(decal: Decal) {
+    if (this.decal === decal) {
+      return;
+    }
     this.decal = decal;
     this.decalSubject.next(decal);
   }
@@ -67,11 +70,17 @@ export class LoadoutService {
   }
 
   selectWheel(wheel: Wheel) {
+    if (this.wheel === wheel) {
+      return;
+    }
     this.wheel = wheel;
     this.wheelSubject.next(wheel);
   }
 
   selectBody(body: Body) {
+    if (this.body === body) {
+      return;
+    }
     this.body = body;
     this.decal = Decal.NONE;
 
@@ -86,11 +95,17 @@ export class LoadoutService {
   }
 
   selectTopper(topper: Topper) {
+    if (this.topper === topper) {
+      return;
+    }
     this.topper = topper;
     this.topperSubject.next(topper);
   }
 
   selectAntenna(antenna: Antenna) {
+    if (this.antenna === antenna) {
+      return;
+    }
     this.antenna = antenna;
     this.antennaSubject.next(antenna);
   }
