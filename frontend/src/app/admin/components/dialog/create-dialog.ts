@@ -56,8 +56,8 @@ export abstract class CreateDialog<T> implements OnInit {
 
   save() {
     if (this.isNew) {
-      this.itemService.add(this.item).subscribe(newItem => {
-        this.dialogRef.close(newItem);
+      this.itemService.add(this.item).subscribe(() => {
+        this.dialogRef.close(this.item);
       }, error => handleErrorSnackbar(error, this.snackBar));
     } else {
       // @ts-ignore
