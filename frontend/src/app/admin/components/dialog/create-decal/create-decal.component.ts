@@ -7,6 +7,7 @@ import { CreateDialog } from '../create-dialog';
 import { DecalsService } from '../../../../service/items/decals.service';
 import { BodiesService } from '../../../../service/items/bodies.service';
 import { ProductService } from '../../../../service/product.service';
+import { Product } from '../../../../model/product';
 
 @Component({
   selector: 'app-create-decal',
@@ -48,6 +49,32 @@ export class CreateDecalComponent extends CreateDialog<Decal> implements OnInit 
       });
       this.filteredBodies = this.bodies;
     });
+  }
+
+  onProduct(product: Product) {
+    super.onProduct(product);
+
+    // if it's a body specific decal, pre fill it
+    if (product.name.includes(':')) {
+      const bodyName = product.name.split(':')[0].toLowerCase();
+      const body = this.bodies.find(body => body.name.toLowerCase() === bodyName);
+
+      if (body != undefined) {
+        this.item.body_id = body.id;
+      }
+    }
+
+    // if there is only one tga file, pre fill the map
+    const tgaCount = this.selectedObjects.reduce((n, val) => {
+      if (val.endsWith('.tga')) {
+        return n + 1;
+      }
+      return n;
+    }, 0);
+
+    if (tgaCount === 1) {
+      this.item.rgba_map = this.selectedObjects.find(value => value.endsWith('.tga'));
+    }
   }
 
   filterBodies($event: string) {
