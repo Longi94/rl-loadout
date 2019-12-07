@@ -18,6 +18,7 @@ export class CreateDecalComponent extends CreateDialog<Decal> implements OnInit 
   productType = 'decal';
 
   bodies: Body[];
+  filteredBodies: Body[];
 
   constructor(dialogRef: MatDialogRef<CreateDecalComponent>,
               cloudService: CloudStorageService,
@@ -34,7 +35,22 @@ export class CreateDecalComponent extends CreateDialog<Decal> implements OnInit 
 
   ngOnInit() {
     super.ngOnInit();
-    this.bodiesService.getAll().subscribe(bodies => this.bodies = bodies);
+    this.bodiesService.getAll().subscribe(bodies => {
+      this.bodies = bodies;
+      this.bodies.sort((a, b) => {
+        if (a.name < b.name) {
+          return -1;
+        }
+        if (a.name > b.name) {
+          return 1;
+        }
+        return 0;
+      });
+      this.filteredBodies = this.bodies;
+    });
   }
 
+  filterBodies($event: string) {
+    this.filteredBodies = this.bodies.filter(body => body.name.toLowerCase().includes($event.toLowerCase()));
+  }
 }

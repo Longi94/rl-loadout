@@ -44,8 +44,12 @@
   <mat-form-field>
     <mat-label>Body</mat-label>
     <mat-select [(ngModel)]="item.body_id">
+      <mat-option>
+        <ngx-mat-select-search ngModel (ngModelChange)="filterBodies($event)"
+                               placeholderLabel="Search"></ngx-mat-select-search>
+      </mat-option>
       <mat-option [value]="undefined">None</mat-option>
-      <mat-option *ngFor="let obj of bodies" [value]="obj.id">
+      <mat-option *ngFor="let obj of filteredBodies" [value]="obj.id">
         {{obj.name}}
       </mat-option>
     </mat-select>
