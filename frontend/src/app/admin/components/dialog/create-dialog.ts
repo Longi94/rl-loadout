@@ -72,9 +72,16 @@ export abstract class CreateDialog<T> implements OnInit {
   }
 
   selectProduct($event: string) {
-    this.selectedObjects = this.objects[this.productType][$event];
+    this.selectedObjects = [];
 
-    if (this.selectedObjects == undefined) {
+    if ($event in this.objects[this.productType]) {
+      this.selectedObjects = this.selectedObjects.concat(this.objects[this.productType][$event]);
+    }
+    if ('shared' in this.objects[this.productType]) {
+      this.selectedObjects = this.selectedObjects.concat(this.objects[this.productType]['shared']);
+    }
+
+    if (this.selectedObjects.length === 0) {
       return;
     }
 
