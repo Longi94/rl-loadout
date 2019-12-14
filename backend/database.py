@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine.url import URL
 from sqlalchemy.orm import sessionmaker, scoped_session
 from config import config
-from entity import *
+from entity import Base
 
 log = logging.getLogger(__name__)
 

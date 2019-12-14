@@ -1,13 +1,11 @@
 import { Component, Inject } from '@angular/core';
 import { Body, Quality } from 'rl-loadout-lib';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { MatSelectChange } from '@angular/material/select';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { CloudStorageService } from '../../../../service/cloud-storage.service';
 import { CreateDialog } from '../create-dialog';
 import { BodiesService } from '../../../../service/items/bodies.service';
 import { ProductService } from '../../../../service/product.service';
-import { Product } from '../../../../model/product';
 
 @Component({
   selector: 'app-create-body',
