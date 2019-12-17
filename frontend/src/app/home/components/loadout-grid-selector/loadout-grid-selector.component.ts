@@ -1,6 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { Item } from '../../../model/item';
-import { Quality } from '../../../model/quality';
+import { Component, OnInit } from '@angular/core';
+import { Item, Quality } from 'rl-loadout-lib';
 import { environment } from '../../../../environments/environment';
 
 @Component({
@@ -12,13 +11,12 @@ export class LoadoutGridSelectorComponent implements OnInit {
 
   assetHost = environment.assetHost;
 
-  @Input('items')
   items: Item[];
 
-  @Input('onSelect')
   onSelect: (item: Item) => void;
 
   qCommon = Quality.COMMON;
+  qUncommon = Quality.UNCOMMON;
   qRare = Quality.RARE;
   qVeryRare = Quality.VERY_RARE;
   qImport = Quality.IMPORT;
@@ -27,8 +25,9 @@ export class LoadoutGridSelectorComponent implements OnInit {
   qLimited = Quality.LIMITED;
   qPremium = Quality.PREMIUM;
 
-  @Input('selectedItem')
   selectedItem: Item = new Item(0, '', '', 0, false);
+
+  filter: string;
 
   constructor() { }
 

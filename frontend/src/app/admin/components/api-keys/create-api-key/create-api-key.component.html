@@ -1,0 +1,14 @@
+<h1 mat-dialog-title>Edit Antenna</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <input matInput placeholder="Name" [(ngModel)]="apiKey.name">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Description" [(ngModel)]="apiKey.description">
+  </mat-form-field>
+  <mat-checkbox [(ngModel)]="apiKey.active">Active</mat-checkbox>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-button (click)="save()">Save</button>
+</div>

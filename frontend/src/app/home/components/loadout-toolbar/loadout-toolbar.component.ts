@@ -1,14 +1,14 @@
 import { Component, ComponentFactoryResolver, ComponentRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
-import { MatSnackBar } from "@angular/material";
-import { LoadoutGridSelectorComponent } from "../loadout-grid-selector/loadout-grid-selector.component";
-import { Decal } from "../../../model/decal";
-import { LoadoutService } from "../../../service/loadout.service";
-import { ColorSelectorComponent } from "../color-selector/color-selector.component";
-import { Wheel } from "../../../model/wheel";
-import { LoadoutStoreService } from "../../../service/loadout-store.service";
-import { Body } from "../../../model/body";
-import { Topper } from "../../../model/topper";
-import { Antenna } from "../../../model/antenna";
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { LoadoutGridSelectorComponent } from '../loadout-grid-selector/loadout-grid-selector.component';
+import { Decal, Wheel, Body, Topper, Antenna } from 'rl-loadout-lib';
+import { LoadoutService } from '../../../service/loadout.service';
+import { ColorSelectorComponent } from '../color-selector/color-selector.component';
+import { LoadoutStoreService } from '../../../service/loadout-store.service';
+
+enum Toolbar {
+  BODY, DECAL, PAINT, WHEEL, BOOST, TOPPER, ANTENNA, TRAIL
+}
 
 @Component({
   selector: 'app-loadout-toolbar',
@@ -64,7 +64,7 @@ export class LoadoutToolbarComponent implements OnInit {
     img: 'assets/icons/Trail_garage_icon.png'
   }];
 
-  constructor(private _snackBar: MatSnackBar,
+  constructor(private snackBar: MatSnackBar,
               private componentFactoryResolver: ComponentFactoryResolver,
               private loadoutService: LoadoutService,
               private loadoutStore: LoadoutStoreService) {
@@ -74,7 +74,7 @@ export class LoadoutToolbarComponent implements OnInit {
   }
 
   showUnsupported(type: string) {
-    this._snackBar.open(`${type} are not currently supported.`, undefined, {duration: 2000});
+    this.snackBar.open(`${type} are not currently supported.`, undefined, {duration: 2000});
   }
 
   createNewGRidSelector(toolbar: Toolbar): ComponentRef<LoadoutGridSelectorComponent> {
@@ -95,7 +95,7 @@ export class LoadoutToolbarComponent implements OnInit {
     }
     component.instance.items = this.loadoutStore.bodies;
     component.instance.selectedItem = this.loadoutService.body;
-    component.instance.onSelect = item => this.loadoutService.selectBody(<Body>item);
+    component.instance.onSelect = item => this.loadoutService.selectBody(item as Body);
   }
 
   openDecalsComponent() {
@@ -106,7 +106,7 @@ export class LoadoutToolbarComponent implements OnInit {
     component.instance.items = this.loadoutStore.decals.slice();
     component.instance.items.unshift(Decal.NONE);
     component.instance.selectedItem = this.loadoutService.decal;
-    component.instance.onSelect = item => this.loadoutService.selectDecal(<Decal>item);
+    component.instance.onSelect = item => this.loadoutService.selectDecal(item as Decal);
   }
 
   openWheelComponent() {
@@ -116,7 +116,7 @@ export class LoadoutToolbarComponent implements OnInit {
     }
     component.instance.items = this.loadoutStore.wheels;
     component.instance.selectedItem = this.loadoutService.wheel;
-    component.instance.onSelect = item => this.loadoutService.selectWheel(<Wheel>item);
+    component.instance.onSelect = item => this.loadoutService.selectWheel(item as Wheel);
   }
 
   openTopperComponent() {
@@ -127,7 +127,7 @@ export class LoadoutToolbarComponent implements OnInit {
     component.instance.items = this.loadoutStore.toppers.slice();
     component.instance.items.unshift(Topper.NONE);
     component.instance.selectedItem = this.loadoutService.topper;
-    component.instance.onSelect = item => this.loadoutService.selectTopper(<Topper>item);
+    component.instance.onSelect = item => this.loadoutService.selectTopper(item as Topper);
   }
 
   openAntennaComponent() {
@@ -138,7 +138,7 @@ export class LoadoutToolbarComponent implements OnInit {
     component.instance.items = this.loadoutStore.antennas.slice();
     component.instance.items.unshift(Antenna.NONE);
     component.instance.selectedItem = this.loadoutService.antenna;
-    component.instance.onSelect = item => this.loadoutService.selectAntenna(<Antenna>item);
+    component.instance.onSelect = item => this.loadoutService.selectAntenna(item as Antenna);
   }
 
   openPaintsComponent() {
@@ -155,8 +155,4 @@ export class LoadoutToolbarComponent implements OnInit {
   closeDropDown() {
     this.loadoutDropdown.clear();
   }
-}
-
-enum Toolbar {
-  BODY, DECAL, PAINT, WHEEL, BOOST, TOPPER, ANTENNA, TRAIL
 }

@@ -1,23 +1,34 @@
 import { Injectable } from '@angular/core';
-import { Decal } from "../model/decal";
-import { Observable, Subject } from "rxjs";
-import { Wheel } from "../model/wheel";
-import { Body } from "../model/body";
-import { HttpClient } from "@angular/common/http";
-import { environment } from "../../environments/environment";
-import { Item } from "../model/item";
-import { DEFAULT_ACCENT, DEFAULT_BLUE_TEAM } from "../utils/color";
-import { Topper } from "../model/topper";
-import { Antenna } from "../model/antenna";
+import {
+  Antenna,
+  Body,
+  Decal,
+  Topper,
+  Wheel,
+  COLOR_MAPLE_BLUE,
+  DEFAULT_ACCENT,
+  DEFAULT_BLUE_TEAM,
+  BODY_MAPLE_ID,
+  BODY_SLIME_ID
+} from 'rl-loadout-lib';
+import { Observable, Subject } from 'rxjs';
+import { Color } from 'three';
 
-const HOST = `${environment.backend}/api`;
+export class PaintConfig {
+  primary: Color = new Color(DEFAULT_BLUE_TEAM);
+  accent: Color = new Color(DEFAULT_ACCENT);
+  body: Color;
+  decal: Color;
+  wheel: Color;
+  topper: Color;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class LoadoutService {
 
-  body: Body;
+  body: Body = Body.DEFAULT;
   private bodySubject: Subject<Body> = new Subject<Body>();
   bodyChanged$: Observable<Body> = this.bodySubject.asObservable();
 
@@ -25,18 +36,11 @@ export class LoadoutService {
   private decalSubject: Subject<Decal> = new Subject<Decal>();
   decalChanged$: Observable<Decal> = this.decalSubject.asObservable();
 
-  paints = {
-    primary: DEFAULT_BLUE_TEAM,
-    accent: DEFAULT_ACCENT,
-    body: undefined,
-    decal: undefined,
-    wheel: undefined,
-    topper: undefined
-  };
+  paints = new PaintConfig();
   private paintSubject: Subject<any> = new Subject();
   paintChanged$: Observable<any> = this.paintSubject.asObservable();
 
-  wheel: Wheel;
+  wheel: Wheel = Wheel.DEFAULT;
   private wheelSubject: Subject<Wheel> = new Subject<Wheel>();
   wheelChanged$: Observable<Wheel> = this.wheelSubject.asObservable();
 
@@ -48,50 +52,61 @@ export class LoadoutService {
   private antennaSubject: Subject<Antenna> = new Subject<Antenna>();
   antennaChanged$: Observable<Antenna> = this.antennaSubject.asObservable();
 
-  constructor(private httpClient: HttpClient) {
+  constructor() {
   }
 
   selectDecal(decal: Decal) {
+    if (this.decal === decal) {
+      return;
+    }
     this.decal = decal;
     this.decalSubject.next(decal);
   }
 
-  setPaint(type: string, color: string) {
+  setPaint(type: string, colorStr: string) {
+    const color = colorStr == undefined ? undefined : new Color(colorStr);
     this.paints[type] = color;
-    this.paintSubject.next({
-      type: type,
-      color: color
-    })
+    this.paintSubject.next({type, color});
   }
 
   selectWheel(wheel: Wheel) {
+    if (this.wheel === wheel) {
+      return;
+    }
     this.wheel = wheel;
     this.wheelSubject.next(wheel);
   }
 
   selectBody(body: Body) {
+    if (this.body === body) {
+      return;
+    }
     this.body = body;
     this.decal = Decal.NONE;
+
+    switch (body.id) {
+      case BODY_MAPLE_ID:
+      case BODY_SLIME_ID:
+        this.paints.primary = new Color(COLOR_MAPLE_BLUE);
+        break;
+    }
+
     this.bodySubject.next(body);
   }
 
   selectTopper(topper: Topper) {
+    if (this.topper === topper) {
+      return;
+    }
     this.topper = topper;
     this.topperSubject.next(topper);
   }
 
   selectAntenna(antenna: Antenna) {
+    if (this.antenna === antenna) {
+      return;
+    }
     this.antenna = antenna;
     this.antennaSubject.next(antenna);
-  }
-
-  loadDefaults(): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
-      this.httpClient.get<{ [type: string]: Item }>(`${HOST}/defaults`).subscribe(defaults => {
-        this.body = <Body>defaults['body'];
-        this.wheel = <Wheel>defaults['wheel'];
-        resolve();
-      }, reject);
-    });
   }
 }

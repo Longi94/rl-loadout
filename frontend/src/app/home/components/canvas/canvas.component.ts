@@ -1,36 +1,62 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import {
+  AmbientLight,
+  Color,
+  DefaultLoadingManager,
+  MeshStandardMaterial,
   PerspectiveCamera,
   Scene,
-  WebGLRenderer,
-  MeshStandardMaterial,
-  Color,
   SpotLight,
-  TextureLoader,
   Texture,
+  TextureLoader,
+  WebGLRenderer,
   WebGLRenderTarget,
-  AmbientLight
-} from "three";
-import { StaticSkin } from "../../../3d/static-skin";
-import { LoadoutService } from "../../../service/loadout.service";
-import { Decal } from "../../../model/decal";
-import { BodyModel } from "../../../3d/body-model";
-import { WheelsModel } from "../../../3d/wheels-model";
-import { Wheel } from "../../../model/wheel";
-import { promiseProgress } from "../../../utils/promise";
-import { LoadoutStoreService } from "../../../service/loadout-store.service";
-import { Body } from "../../../model/body";
-import { getAssetUrl } from "../../../utils/network";
-import { EquirectangularToCubeGenerator } from "three/examples/jsm/loaders/EquirectangularToCubeGenerator";
-import { PromiseLoader } from "../../../utils/loader";
-import { PMREMGenerator } from "three/examples/jsm/pmrem/PMREMGenerator";
-import { PMREMCubeUVPacker } from "three/examples/jsm/pmrem/PMREMCubeUVPacker";
-import { TextureService } from "../../../service/texture.service";
-import { Topper } from "../../../model/topper";
-import { TopperModel } from "../../../3d/topper-model";
-import { AntennaModel } from "../../../3d/antenna-model";
-import { Antenna } from "../../../model/antenna";
+  WebGLRenderTargetCube
+} from 'three';
+import { LoadoutService } from '../../../service/loadout.service';
+import { LoadoutStoreService } from '../../../service/loadout-store.service';
+import { PMREMGenerator } from 'three/examples/jsm/pmrem/PMREMGenerator';
+import { PMREMCubeUVPacker } from 'three/examples/jsm/pmrem/PMREMCubeUVPacker';
+import { TextureService } from '../../../service/texture.service';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+import { getHitboxModel, HitboxModel } from '../../../3d/hitbox-model';
+import { GUI } from 'dat-gui';
+import * as dat from 'dat.gui';
+import { NotifierService } from 'angular-notifier';
+import * as Stats from 'stats.js';
+import {
+  Antenna,
+  AntennaModel,
+  Body,
+  BodyModel,
+  createBodyModel,
+  Decal,
+  PromiseLoader,
+  RocketConfig,
+  TextureFormat,
+  Topper,
+  TopperModel,
+  Wheel,
+  WheelsModel,
+  MAX_WHEEL_YAW
+} from 'rl-loadout-lib';
+import { environment } from '../../../../environments/environment';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+
+const dracoLoader = new DRACOLoader();
+dracoLoader.setDecoderPath('/assets/draco/');
+const gltfLoader = new GLTFLoader();
+gltfLoader.setDRACOLoader(dracoLoader);
+
+const ROCKET_CONFIG = new RocketConfig({
+  backendHost: environment.backend,
+  assetHost: environment.assetHost,
+  loadingManager: DefaultLoadingManager,
+  textureFormat: TextureFormat.PNG,
+  useCompressedModels: true,
+  gltfLoader
+});
 
 @Component({
   selector: 'app-canvas',
@@ -45,6 +71,9 @@ export class CanvasComponent implements OnInit {
   @ViewChild('canvasContainer', {static: true})
   canvasContainer: ElementRef;
 
+  @ViewChild('dgContainer', {static: true})
+  dgContainer: ElementRef;
+
   private camera: PerspectiveCamera;
   private scene: Scene;
   private renderer: WebGLRenderer;
@@ -58,13 +87,15 @@ export class CanvasComponent implements OnInit {
   private topper: TopperModel;
   private antenna: AntennaModel;
 
-  // colors
-  private skin: StaticSkin;
-
   // Loading stuff
   mathRound = Math.round;
   initializing = true;
-  initProgress = 0;
+  progress = {
+    percent: 0,
+    start: 0,
+    total: 0,
+    current: 0
+  };
   loading = {
     body: false,
     decal: false,
@@ -73,9 +104,23 @@ export class CanvasComponent implements OnInit {
     antenna: false
   };
 
+  private wheelsConfig = {
+    visible: true,
+    yaw: 0.00001,
+    roll: 0.00001
+  };
+
+  // hitbox
+  private hitboxConfig = {enabled: false};
+  private hitbox: HitboxModel = new HitboxModel();
+
+  // stats
+  private stats = new Stats();
+
   constructor(private loadoutService: LoadoutService,
               private loadoutStore: LoadoutStoreService,
-              private textureService: TextureService) {
+              private textureService: TextureService,
+              private notifierService: NotifierService) {
     this.loadoutService.decalChanged$.subscribe(decal => this.changeDecal(decal));
     this.loadoutService.paintChanged$.subscribe(paint => this.changePaint(paint));
     this.loadoutService.wheelChanged$.subscribe(wheel => this.changeWheel(wheel));
@@ -89,6 +134,14 @@ export class CanvasComponent implements OnInit {
   }
 
   ngOnInit() {
+    DefaultLoadingManager.onProgress = (item, loaded, total) => {
+      this.progress.total = total;
+      this.progress.current = loaded;
+
+      this.progress.percent = 100 * (this.progress.current - this.progress.start) /
+        (this.progress.total - this.progress.start);
+    };
+
     const width = this.canvasContainer.nativeElement.offsetWidth;
     const height = this.canvasContainer.nativeElement.offsetHeight;
     this.camera = new PerspectiveCamera(70, width / height, 0.01, 400);
@@ -99,7 +152,7 @@ export class CanvasComponent implements OnInit {
     this.scene = new Scene();
     this.scene.background = new Color('#AAAAAA');
 
-    this.renderer = new WebGLRenderer({canvas: this.canvas.nativeElement, antialias: true});
+    this.renderer = new WebGLRenderer({canvas: this.canvas.nativeElement, antialias: true, logarithmicDepthBuffer: true});
     this.renderer.setSize(width, height);
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -109,38 +162,79 @@ export class CanvasComponent implements OnInit {
     this.controls.update();
 
     this.addLights();
+    this.addControls();
 
     this.animate();
 
-    const textureLoader = new PromiseLoader(new TextureLoader());
+    const textureLoader = new PromiseLoader(new TextureLoader(DefaultLoadingManager));
 
-    this.loadoutService.loadDefaults().then(() => {
-      this.body = new BodyModel(this.loadoutService.body, this.loadoutService.paints);
-      this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints);
-      this.skin = new StaticSkin(this.loadoutService.decal, this.loadoutService.paints);
+    this.body = createBodyModel(this.loadoutService.body, this.loadoutService.decal, this.loadoutService.paints, ROCKET_CONFIG);
+    this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints, ROCKET_CONFIG);
 
-      let promises = [
-        textureLoader.load('assets/mannfield_equirectangular.jpg'),
-        this.body.load(),
-        this.skin.load(),
-        this.wheels.load(),
-        this.loadoutStore.initAll(this.loadoutService.body.id)
-      ];
+    const promises = [
+      textureLoader.load('assets/mannfield_equirectangular.jpg'),
+      this.body.load(),
+      this.wheels.load(),
+      this.loadoutStore.initAll(this.loadoutService.body.id)
+    ];
 
-      promiseProgress(promises, progress => {
-        this.initProgress = 100 * (progress + 1) / (promises.length + 1)
-      }).then(values => {
-        this.processBackground(values[0]);
-        this.applySkin();
-        this.applyBodyModel();
-        this.applyWheelModel();
-        this.updateTextureService();
-        this.initializing = false;
-      }).catch(console.error);
-    }).catch(console.error);
+    Promise.all(promises).then(values => {
+      this.processBackground(values[0]);
+      this.applyBodyModel();
+      this.applyWheelModel();
+      this.applyHitbox();
+      this.updateTextureService();
+      this.initializing = false;
+    }).catch(error => {
+      console.error(error);
+      this.notifierService.notify('error', 'Failed to initialize.');
+    });
   }
 
-  addLights() {
+  private resetProgress() {
+    this.progress.start = this.progress.current;
+    this.progress.percent = 0;
+  }
+
+  private addControls() {
+    const gui: GUI = new dat.GUI({autoPlace: false, closed: true});
+
+    // hitbox
+    const hitboxFolder = gui.addFolder('hitbox');
+    hitboxFolder.add(this.hitboxConfig, 'enabled').onChange(value => {
+      if (value) {
+        this.hitbox.addToScene(this.scene);
+      } else {
+        this.hitbox.removeFromScene(this.scene);
+      }
+    });
+
+    // wheels
+    const wheelsFolder = gui.addFolder('wheels');
+    wheelsFolder.add(this.wheelsConfig, 'visible').onChange(value => {
+      this.wheels.visible(value);
+    });
+    wheelsFolder.add(this.wheelsConfig, 'roll', 0, Math.PI * 2).onChange(value => {
+      this.wheels.setRoll(value);
+    });
+    wheelsFolder.add(this.wheelsConfig, 'yaw', -MAX_WHEEL_YAW, MAX_WHEEL_YAW).onChange(value => {
+      this.body.setFrontWheelYaw(value);
+    });
+
+    // performance
+    const perfFolder = gui.addFolder('performance');
+    const perfLi = document.createElement('li');
+    this.stats.dom.style.position = 'static';
+    perfLi.appendChild(this.stats.dom);
+    perfLi.classList.add('stats');
+    // @ts-ignore
+    perfFolder.__ul.appendChild(perfLi);
+
+    gui.close();
+    this.dgContainer.nativeElement.appendChild(gui.domElement);
+  }
+
+  private addLights() {
     const INTENSITY = 0.6;
     const ANGLE = Math.PI / 4;
 
@@ -166,37 +260,14 @@ export class CanvasComponent implements OnInit {
     light3.position.set(-100, 60, -100);
     light3.lookAt(0, 0, 0);
     this.scene.add(light3);
-
-    const light4 = new SpotLight(0xFFFFFF, INTENSITY, 300, ANGLE); // soft white light
-    light4.position.set(0, -100, 0);
-    light4.lookAt(0, 0, 0);
-    this.scene.add(light4);
-
-    // const light5 = new SpotLight(0xFFFFFF, INTENSITY, 300, ANGLE); // soft white light
-    // light5.position.set(0, 160, 0);
-    // light5.lookAt(0, 0, 0);
-    // this.scene.add(light5);
-
-    // const helper0 = new SpotLightHelper(light0, new Color(1, 1, 1));
-    // this.scene.add(helper0);
-    // const helper1 = new SpotLightHelper(light1, new Color(0, 1, 1));
-    // this.scene.add(helper1);
-    // const helper2 = new SpotLightHelper(light2, new Color(1, 0, 1));
-    // this.scene.add(helper2);
-    // const helper3 = new SpotLightHelper(light3, new Color(1, 1, 0));
-    // this.scene.add(helper3);
-    // const helper4 = new SpotLightHelper(light4, new Color(0, 1, 0));
-    // this.scene.add(helper4);
   }
 
   private processBackground(backgroundTexture: Texture) {
-    const generator = new EquirectangularToCubeGenerator(backgroundTexture);
-    const cubeMapTexture = generator.update(this.renderer);
+    // @ts-ignore
+    this.scene.background = new WebGLRenderTargetCube(1024, 1024).fromEquirectangularTexture(this.renderer, backgroundTexture);
 
     // @ts-ignore
-    this.scene.background = generator.renderTarget;
-
-    const pmremGenerator = new PMREMGenerator(cubeMapTexture);
+    const pmremGenerator = new PMREMGenerator(this.scene.background.texture);
     pmremGenerator.update(this.renderer);
     const pmremCubeUVPacker = new PMREMCubeUVPacker(pmremGenerator.cubeLods);
     pmremCubeUVPacker.update(this.renderer);
@@ -210,6 +281,8 @@ export class CanvasComponent implements OnInit {
 
   private animate() {
     requestAnimationFrame(() => this.animate());
+
+    this.stats.update();
 
     this.resizeCanvas();
     this.renderer.render(this.scene, this.camera);
@@ -231,27 +304,26 @@ export class CanvasComponent implements OnInit {
     this.body.removeFromScene(this.scene);
     this.body.dispose();
 
-    this.body = new BodyModel(body, this.loadoutService.paints);
+    this.body = createBodyModel(body, this.loadoutService.decal, this.loadoutService.paints, ROCKET_CONFIG);
 
-    this.clearSkin(this.loadoutService.decal);
+    this.resetProgress();
 
     Promise.all([
       this.body.load(),
-      this.loadoutStore.loadDecals(body.id),
-      this.skin.load()
+      this.loadoutStore.loadDecals(body.id)
     ]).then(() => {
-      this.applySkin();
-      this.wheels.applyWheelPositions(this.body.getWheelPositions());
+      this.body.addWheelsModel(this.wheels);
 
       if (this.topper) {
-        this.topper.applyAnchor(this.body.topperAnchor);
+        this.body.addTopperModel(this.topper);
       }
 
       if (this.antenna) {
-        this.antenna.applyAnchor(this.body.antennaAnchor);
+        this.body.addAntennaModel(this.antenna);
       }
 
       this.applyBodyModel();
+      this.applyHitbox();
       this.updateTextureService();
       this.loading.body = false;
     });
@@ -259,32 +331,19 @@ export class CanvasComponent implements OnInit {
 
   private changeDecal(decal: Decal) {
     this.loading.decal = true;
-    this.clearSkin(decal);
-    this.skin.load().then(() => {
-      this.applySkin();
-      this.updateTextureService();
+    this.resetProgress();
+    this.body.changeDecal(decal, this.loadoutService.paints, ROCKET_CONFIG).then(() => {
       this.loading.decal = false;
+      this.updateTextureService();
     });
-  }
-
-  private clearSkin(newDecal: Decal) {
-    this.skin.clear();
-    this.skin.baseUrl = getAssetUrl(newDecal.base_texture);
-    this.skin.rgbaMapUrl = getAssetUrl(newDecal.rgba_map);
-  }
-
-  private applySkin() {
-    this.skin.blankSkinMap = this.body.blankSkinMap;
-    this.skin.baseSkinMap = this.body.baseSkinMap;
-    this.refreshSkin();
-    this.body.applyBodyTexture(this.skin.texture);
   }
 
   private changeWheel(wheel: Wheel) {
     this.loading.wheel = true;
-    this.wheels.removeFromScene(this.scene);
+    this.body.clearWheelsModel();
     this.wheels.dispose();
-    this.wheels = new WheelsModel(wheel, this.loadoutService.paints);
+    this.resetProgress();
+    this.wheels = new WheelsModel(wheel, this.loadoutService.paints, ROCKET_CONFIG);
     this.wheels.load().then(() => {
       this.applyWheelModel();
       this.updateTextureService();
@@ -293,44 +352,38 @@ export class CanvasComponent implements OnInit {
   }
 
   private applyWheelModel() {
-    this.wheels.applyWheelPositions(this.body.getWheelPositions());
     this.wheels.setEnvMap(this.envMap);
-    this.wheels.addToScene(this.scene);
+    this.body.addWheelsModel(this.wheels);
+    this.wheels.setRoll(this.wheelsConfig.roll);
   }
 
   private applyBodyModel() {
+    this.validateBody();
     this.body.setEnvMap(this.envMap);
     this.body.addToScene(this.scene);
+    this.body.setFrontWheelYaw(this.wheelsConfig.yaw);
   }
 
   private changePaint(paint) {
-    const color = paint.color != undefined ? new Color(paint.color) : undefined;
     switch (paint.type) {
       case 'primary':
-        this.skin.primary = color;
-        this.refreshSkin();
+        this.body.setPrimaryColor(paint.color);
         break;
       case 'accent':
-        this.skin.accent = color;
-        this.refreshSkin();
+        this.body.setAccentColor(paint.color);
         break;
       case 'body':
-        this.skin.bodyPaint = color;
-        this.body.setPaint(color);
-        this.refreshSkin();
+        this.body.setPaintColor(paint.color);
         break;
       case 'decal':
-        this.skin.paint = color;
-        this.refreshSkin();
+        this.body.setDecalPaintColor(paint.color);
         break;
       case 'wheel':
-        this.wheels.setPaint(color);
-        this.wheels.refresh();
+        this.wheels.setPaintColor(paint.color);
         break;
       case 'topper':
         if (this.topper) {
-          this.topper.setPaint(color);
-          this.topper.refresh();
+          this.topper.setPaintColor(paint.color);
         }
         break;
       default:
@@ -338,11 +391,6 @@ export class CanvasComponent implements OnInit {
         return;
     }
     this.updateTextureService();
-  }
-
-  private refreshSkin() {
-    this.skin.update();
-    (<MeshStandardMaterial>this.body.bodyMaterial).needsUpdate = true;
   }
 
   private updateTextureService() {
@@ -353,6 +401,7 @@ export class CanvasComponent implements OnInit {
         textureService.set(key, undefined);
       }
     }
+
     addTexture(this.textureService, 'body', this.body.bodyMaterial);
     addTexture(this.textureService, 'chassis', this.body.chassisMaterial);
     addTexture(this.textureService, 'rim', this.wheels.rimMaterial);
@@ -366,7 +415,7 @@ export class CanvasComponent implements OnInit {
 
   private changeTopper(topper: Topper) {
     if (this.topper) {
-      this.topper.removeFromScene(this.scene);
+      this.body.clearTopperModel();
       this.topper.dispose();
       this.topper = undefined;
     }
@@ -376,23 +425,19 @@ export class CanvasComponent implements OnInit {
     }
 
     this.loading.topper = true;
-    this.topper = new TopperModel(topper, this.loadoutService.paints);
+    this.topper = new TopperModel(topper, this.loadoutService.paints, ROCKET_CONFIG);
+    this.resetProgress();
     this.topper.load().then(() => {
-      this.applyTopperModel();
+      this.body.addTopperModel(this.topper);
+      this.topper.setEnvMap(this.envMap);
       this.updateTextureService();
       this.loading.topper = false;
     });
   }
 
-  private applyTopperModel() {
-    this.topper.setEnvMap(this.envMap);
-    this.topper.applyAnchor(this.body.topperAnchor);
-    this.topper.addToScene(this.scene);
-  }
-
   private changeAntenna(antenna: Antenna) {
     if (this.antenna) {
-      this.antenna.removeFromScene(this.scene);
+      this.body.clearAntennaModel();
       this.antenna.dispose();
       this.antenna = undefined;
     }
@@ -402,17 +447,54 @@ export class CanvasComponent implements OnInit {
     }
 
     this.loading.antenna = true;
-    this.antenna = new AntennaModel(antenna, this.loadoutService.paints);
+    this.antenna = new AntennaModel(antenna, this.loadoutService.paints, ROCKET_CONFIG);
+    this.resetProgress();
     this.antenna.load().then(() => {
-      this.applyAntennaModel();
+      this.body.addAntennaModel(this.antenna);
+      this.antenna.setEnvMap(this.envMap);
+      this.validateAntenna();
       this.updateTextureService();
       this.loading.antenna = false;
     });
   }
 
-  private applyAntennaModel() {
-    this.antenna.setEnvMap(this.envMap);
-    this.antenna.applyAnchor(this.body.antennaAnchor);
-    this.antenna.addToScene(this.scene);
+  private applyHitbox() {
+    this.hitbox.applyBody(this.body);
+  }
+
+  private validateBody() {
+    const body = this.loadoutService.body;
+
+    if (this.body.antennaSocket == undefined) {
+      console.warn(`Body ${body.name} has no antenna anchor.`);
+      this.notifierService.notify('warning', `Antenna position of ${body.name} is unknown.`);
+    }
+
+    if (this.body.hatSocket == undefined) {
+      console.warn(`Body ${body.name} has no topper anchor.`);
+      this.notifierService.notify('warning', `Topper position of ${body.name} is unknown.`);
+    }
+
+    if (this.body.hitboxConfig == undefined || getHitboxModel(this.body.hitboxConfig.preset) == undefined) {
+      console.warn(`The hitbox of body ${body.name} is unknown.`);
+      this.notifierService.notify('warning', `Hitbox of ${body.name} is unknown.`);
+    } else {
+      if (this.body.hitboxConfig.translationX == undefined || this.body.hitboxConfig.translationZ == undefined) {
+        console.warn(`Body ${body.name} missing hitbox translate values.`);
+        this.notifierService.notify('warning', `${body.name} has incomplete hitbox data. Hitbox won't be accurate.`);
+      }
+    }
+
+    if (this.body.wheelSettings == undefined) {
+      console.warn(`${body.name} has no wheelSettings attribute`);
+      this.notifierService.notify('warning', `Size of wheels are unknown for ${body.name}.`);
+    }
+  }
+
+  validateAntenna() {
+    if (this.antenna.socket == undefined) {
+      console.warn(`${this.antenna.antennaUrl} has no topper socket.`);
+      this.notifierService.notify('warning', `The antenna stick has no socket.`);
+    }
   }
 }

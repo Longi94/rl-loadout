@@ -27,13 +27,13 @@ canvas {
   align-items: center;
 }
 
-.full-overlay > span {
+.full-overlay > span, .loading-overlay > span {
   font-size: 20px;
   margin-bottom: 16px;
 }
 
-.full-overlay > mat-progress-bar {
-  max-width: 500px;
+.full-overlay > mat-progress-bar, .loading-overlay > mat-progress-bar {
+  max-width: 300px;
 }
 
 .loading-overlay {
@@ -48,4 +48,10 @@ canvas {
   justify-content: center;
   align-items: center;
   background-color: rgba(0, 0, 0, 0.5);
+}
+
+.canvas-container > .dg-container {
+  z-index: 100;
+  position: absolute;
+  right: 1em;
 }

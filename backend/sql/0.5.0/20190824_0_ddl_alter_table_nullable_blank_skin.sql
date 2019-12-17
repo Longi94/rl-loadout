@@ -1,0 +1,1 @@
+ALTER TABLE public.body ALTER COLUMN blank_skin DROP NOT NULL;

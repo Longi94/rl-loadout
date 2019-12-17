@@ -4,6 +4,7 @@
   box-shadow: -12px 0px 35px 15px rgba(0, 0, 0, 0.4);
   position: relative;
   z-index: 50;
+  box-sizing: border-box;
 }
 
 .color-label {
@@ -23,7 +24,6 @@
   flex-flow: row;
   flex-wrap: wrap;
   width: 260px;
-  justify-content: center;
 }
 
 .paint-color-container {

@@ -2,6 +2,8 @@
   <mat-toolbar class="mat-elevation-z6" color="primary">
     <span class="title">Admin</span>
     <button mat-button [matMenuTriggerFor]="itemsMenu">Items <mat-icon>arrow_drop_down</mat-icon></button>
+    <button mat-button routerLink="/admin/api-keys">API Keys</button>
+    <button mat-button routerLink="/admin/product-upload">Product Upload</button>
     <span class="flex-spacer"></span>
     <button mat-button [matMenuTriggerFor]="profileMenu">
       {{ username }} <mat-icon>arrow_drop_down</mat-icon>
@@ -19,7 +21,6 @@
   <button mat-menu-item (click)="router.navigate(['admin/antenna-sticks']).then()">Antenna sticks</button>
   <button mat-menu-item (click)="router.navigate(['admin/bodies']).then()">Bodies</button>
   <button mat-menu-item (click)="router.navigate(['admin/decals']).then()">Decals</button>
-  <button mat-menu-item (click)="router.navigate(['admin/decal-details']).then()">Decal details</button>
   <button mat-menu-item (click)="router.navigate(['admin/toppers']).then()">Toppers</button>
   <button mat-menu-item (click)="router.navigate(['admin/wheels']).then()">Wheels</button>
 </mat-menu>

@@ -1,19 +1,11 @@
-import { environment } from "../../environments/environment";
-import { MatSnackBar } from "@angular/material";
-
-export function getAssetUrl(asset: string) {
-  if (asset == undefined || asset.length == 0) {
-    return undefined;
-  }
-  return `${environment.assetHost}/${asset}`;
-}
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 export function handleErrorSnackbar(error, snackBar: MatSnackBar, msg?: string) {
-  let message = undefined;
+  let message;
   if (msg) {
     message = msg;
-  } else if ('msg' in error.error) {
-    message = error.error.msg;
+  } else if ('detail' in error.error) {
+    message = error.error.detail;
   } else {
     message = error.statusText;
   }
@@ -23,8 +15,7 @@ export function handleErrorSnackbar(error, snackBar: MatSnackBar, msg?: string) 
 export function parseJwt(token: string) {
   const base64Url = token.split('.')[1];
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
-    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(''));
+  const jsonPayload = decodeURIComponent(atob(base64).split('')
+    .map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
   return JSON.parse(jsonPayload);
 }

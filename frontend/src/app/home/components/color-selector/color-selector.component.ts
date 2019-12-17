@@ -1,12 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadoutService } from '../../../service/loadout.service';
-import {
-  ACCENT_COLORS,
-  BLUE_PRIMARY_COLORS,
-  getTextColor,
-  ORANGE_PRIMARY_COLORS,
-  PAINT_COLORS
-} from '../../../utils/color';
+import { ACCENT_COLORS, getColorsForBody, PAINT_COLORS } from 'rl-loadout-lib';
+import { Color } from 'three';
+import { getTextColor } from '../../../utils/color';
 
 @Component({
   selector: 'app-color-selector',
@@ -15,8 +11,8 @@ import {
 })
 export class ColorSelectorComponent implements OnInit {
 
-  blueColors = BLUE_PRIMARY_COLORS;
-  orangeColors = ORANGE_PRIMARY_COLORS;
+  blueColors: string[];
+  orangeColors: string[];
   accentColors = ACCENT_COLORS;
 
   colors = {
@@ -60,14 +56,23 @@ export class ColorSelectorComponent implements OnInit {
   }
 
   ngOnInit() {
-    for (let key of Object.keys(this.loadoutService.paints)) {
-      this.colors[key].value = this.loadoutService.paints[key];
-      this.colors[key].textColor = getTextColor(this.colors[key].value);
+    const primaryColors = getColorsForBody(this.loadoutService.body);
+
+    this.orangeColors = primaryColors.orange;
+    this.blueColors = primaryColors.blue;
+
+    for (const key of Object.keys(this.loadoutService.paints)) {
+      this.colors[key].value = `#${this.loadoutService.paints[key].getHexString()}`;
+      this.colors[key].textColor = getTextColor(this.loadoutService.paints[key]);
     }
   }
 
   colorChanged(color: string, type: string) {
-    this.colors[type].textColor = getTextColor(color);
+    if (color) {
+      this.colors[type].textColor = getTextColor(new Color(color));
+    } else {
+      this.colors[type].textColor = 'white';
+    }
     this.loadoutService.setPaint(type, color);
   }
 

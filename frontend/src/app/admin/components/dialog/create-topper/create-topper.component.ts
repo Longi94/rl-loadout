@@ -1,33 +1,39 @@
-import { Component } from '@angular/core';
-import { Topper } from "../../../../model/topper";
-import { Quality } from "../../../../model/quality";
-import { MatDialogRef, MatSnackBar } from "@angular/material";
-import { CloudStorageService } from "../../../../service/cloud-storage.service";
-import { ItemService } from "../../../../service/item.service";
-import { handleErrorSnackbar } from "../../../../utils/network";
-import { CreateDialog } from "../create-dialog";
+import { Component, Inject } from '@angular/core';
+import { Topper, Quality } from 'rl-loadout-lib';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { CloudStorageService } from '../../../../service/cloud-storage.service';
+import { CreateDialog } from '../create-dialog';
+import { ToppersService } from '../../../../service/items/toppers.service';
+import { ProductService } from '../../../../service/product.service';
 
 @Component({
   selector: 'app-create-topper',
   templateUrl: './create-topper.component.html',
   styleUrls: ['./create-topper.component.scss']
 })
-export class CreateTopperComponent extends CreateDialog {
+export class CreateTopperComponent extends CreateDialog<Topper> {
 
-  topper: Topper = new Topper(
-    undefined, undefined, '', Quality.COMMON, false, undefined, undefined, undefined
-  );
+  productType = 'topper';
 
   constructor(dialogRef: MatDialogRef<CreateTopperComponent>,
               cloudService: CloudStorageService,
-              private itemService: ItemService,
-              private snackBar: MatSnackBar) {
-    super(dialogRef, cloudService)
+              toppersService: ToppersService,
+              snackBar: MatSnackBar,
+              productService: ProductService,
+              @Inject(MAT_DIALOG_DATA) data: Topper) {
+    super(dialogRef, cloudService, snackBar, data, productService, toppersService);
+    this.item = new Topper(
+      undefined, undefined, '', Quality.COMMON, false, undefined, undefined, undefined
+    );
   }
 
-  save() {
-    this.itemService.addTopper(this.topper).subscribe(newItem => {
-      this.dialogRef.close(newItem);
-    }, error => handleErrorSnackbar(error, this.snackBar));
+  selectProduct($event: string) {
+    super.selectProduct($event);
+
+    const model = this.selectedObjects.find(value => !value.endsWith('draco.glb') && value.endsWith('.glb'));
+    if (model != undefined) {
+      this.item.model = model;
+    }
   }
 }

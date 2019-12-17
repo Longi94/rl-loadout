@@ -1,40 +1,48 @@
-import { Component } from '@angular/core';
-import { Quality } from "../../../../model/quality";
-import { MatDialogRef, MatSnackBar } from "@angular/material";
-import { CloudStorageService } from "../../../../service/cloud-storage.service";
-import { ItemService } from "../../../../service/item.service";
-import { handleErrorSnackbar } from "../../../../utils/network";
-import { Antenna, AntennaStick } from "../../../../model/antenna";
-import { CreateDialog } from "../create-dialog";
+import { Component, Inject, OnInit } from '@angular/core';
+import { Quality, Antenna, AntennaStick } from 'rl-loadout-lib';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { CloudStorageService } from '../../../../service/cloud-storage.service';
+import { CreateDialog } from '../create-dialog';
+import { AntennasService } from '../../../../service/items/antennas.service';
+import { AntennaSticksService } from '../../../../service/items/antenna-sticks.service';
+import { ProductService } from '../../../../service/product.service';
 
 @Component({
   selector: 'app-create-antenna',
   templateUrl: './create-antenna.component.html',
   styleUrls: ['./create-antenna.component.scss']
 })
-export class CreateAntennaComponent extends CreateDialog {
+export class CreateAntennaComponent extends CreateDialog<Antenna> implements OnInit {
 
-  antenna: Antenna = new Antenna(
-    undefined, undefined, '', Quality.COMMON, false, undefined, undefined, undefined, undefined
-  );
+  productType = 'antenna';
 
   sticks: AntennaStick[];
 
   constructor(dialogRef: MatDialogRef<CreateAntennaComponent>,
               cloudService: CloudStorageService,
-              private itemService: ItemService,
-              private snackBar: MatSnackBar) {
-    super(dialogRef, cloudService)
+              antennasService: AntennasService,
+              private antennaSticksService: AntennaSticksService,
+              productService: ProductService,
+              snackBar: MatSnackBar,
+              @Inject(MAT_DIALOG_DATA) data: Antenna) {
+    super(dialogRef, cloudService, snackBar, data, productService, antennasService);
+    this.item = new Antenna(
+      undefined, undefined, '', Quality.COMMON, false
+    );
   }
 
   ngOnInit() {
     super.ngOnInit();
-    this.itemService.getAntennaSticks().subscribe(sticks => this.sticks = sticks);
+    this.antennaSticksService.getAll().subscribe(sticks => this.sticks = sticks);
   }
 
-  save() {
-    this.itemService.addAntenna(this.antenna).subscribe(newItem => {
-      this.dialogRef.close(newItem);
-    }, error => handleErrorSnackbar(error, this.snackBar));
+  selectProduct($event: string) {
+    super.selectProduct($event);
+
+    const model = this.selectedObjects.find(value => !value.endsWith('draco.glb') && value.endsWith('.glb'));
+    if (model != undefined) {
+      this.item.model = model;
+    }
   }
 }

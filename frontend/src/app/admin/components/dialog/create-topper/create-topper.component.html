@@ -1,50 +1,51 @@
-<h1 mat-dialog-title>Edit Topper</h1>
+<h1 mat-dialog-title>Edit item</h1>
 <div mat-dialog-content>
+  <mat-autocomplete #auto="matAutocomplete">
+    <mat-option *ngFor="let obj of selectedObjects" [value]="obj">
+      {{obj}}
+    </mat-option>
+  </mat-autocomplete>
   <mat-form-field>
-    <input matInput placeholder="Name" [(ngModel)]="topper.name">
+    <input matInput placeholder="ID" type="number" [(ngModel)]="item.id" (ngModelChange)="onIdUpdate($event)">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Name" [(ngModel)]="item.name" disabled>
   </mat-form-field>
   <mat-form-field>
     <mat-label>Quality</mat-label>
-    <mat-select [(ngModel)]="topper.quality">
+    <mat-select [(ngModel)]="item.quality">
       <mat-option *ngFor="let obj of qualities" [value]="obj.value">
         {{obj.name}}
       </mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field>
-    <mat-label>Icon</mat-label>
-    <mat-select [(ngModel)]="topper.icon">
-      <mat-option *ngFor="let obj of objects.icons" [value]="obj.name">
-        {{obj.name}}
+    <mat-label>Product</mat-label>
+    <mat-select [(ngModel)]="selectedProduct" (ngModelChange)="selectProduct($event)">
+      <mat-option>
+        <ngx-mat-select-search ngModel (ngModelChange)="filterProducts($event)"
+                               placeholderLabel="Search"></ngx-mat-select-search>
       </mat-option>
-    </mat-select>
-  </mat-form-field>
-  <mat-checkbox [(ngModel)]="topper.paintable">Paintable</mat-checkbox>
-  <mat-form-field>
-    <mat-label>Model</mat-label>
-    <mat-select [(ngModel)]="topper.model">
-      <mat-option *ngFor="let obj of objects.models" [value]="obj.name">
-        {{obj.name}}
+      <mat-option *ngFor="let obj of filteredProducts" [value]="obj">
+        {{obj}}
       </mat-option>
     </mat-select>
   </mat-form-field>
   <mat-form-field>
-    <mat-label>Base texture</mat-label>
-    <mat-select [(ngModel)]="topper.base_texture">
-      <mat-option [value]="undefined">None</mat-option>
-      <mat-option *ngFor="let obj of objects.textures" [value]="obj.name">
-        {{obj.name}}
-      </mat-option>
-    </mat-select>
+    <input matInput placeholder="Icon" [(ngModel)]="item.icon" [matAutocomplete]="auto">
+  </mat-form-field>
+  <mat-checkbox [(ngModel)]="item.paintable">Paintable</mat-checkbox>
+  <mat-form-field>
+    <input matInput placeholder="Model" [(ngModel)]="item.model" [matAutocomplete]="auto">
   </mat-form-field>
   <mat-form-field>
-    <mat-label>RGBA map</mat-label>
-    <mat-select [(ngModel)]="topper.rgba_map">
-      <mat-option [value]="undefined">None</mat-option>
-      <mat-option *ngFor="let obj of objects.textures" [value]="obj.name">
-        {{obj.name}}
-      </mat-option>
-    </mat-select>
+    <input matInput placeholder="Base texture" [(ngModel)]="item.base_texture" [matAutocomplete]="auto">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="RGBA map" [(ngModel)]="item.rgba_map" [matAutocomplete]="auto">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput placeholder="Normal map" [(ngModel)]="item.normal_map" [matAutocomplete]="auto">
   </mat-form-field>
 </div>
 <div mat-dialog-actions>

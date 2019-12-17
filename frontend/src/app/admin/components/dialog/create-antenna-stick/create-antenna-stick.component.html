@@ -1,12 +1,12 @@
 <h1 mat-dialog-title>Edit Antenna Stick</h1>
 <div mat-dialog-content>
+  <mat-autocomplete #auto="matAutocomplete">
+    <mat-option *ngFor="let obj of selectedObjects" [value]="obj">
+      {{obj}}
+    </mat-option>
+  </mat-autocomplete>
   <mat-form-field>
-    <mat-label>Model</mat-label>
-    <mat-select [(ngModel)]="antennaStick.model">
-      <mat-option *ngFor="let obj of objects.models" [value]="obj.name">
-        {{obj.name}}
-      </mat-option>
-    </mat-select>
+    <input matInput placeholder="Model" [(ngModel)]="item.model" [matAutocomplete]="auto">
   </mat-form-field>
 </div>
 <div mat-dialog-actions>

@@ -1,4 +1,5 @@
 @import "theme.scss";
+@import "~angular-notifier/styles.scss";
 
 html, body {
   width: 100%;
@@ -14,4 +15,8 @@ body {
 
 .flex-spacer {
   flex-grow: 1;
+}
+
+.dg li:not(.folder).stats {
+  height: auto;
 }
