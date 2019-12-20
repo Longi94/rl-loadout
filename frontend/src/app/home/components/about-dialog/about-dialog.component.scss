@@ -3,3 +3,14 @@
 a, a:visited, a:hover, a:active {
   color: map-get($app-primary, 300);
 }
+
+.about-logo {
+  width: 200px;
+}
+
+.title-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: column;
+}
