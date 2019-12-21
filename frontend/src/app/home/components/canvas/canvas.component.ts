@@ -31,6 +31,7 @@ import {
   Body,
   BodyModel,
   createBodyModel,
+  createWheelsModel,
   Decal,
   PromiseLoader,
   RocketConfig,
@@ -164,12 +165,12 @@ export class CanvasComponent implements OnInit {
     this.addLights();
     this.addControls();
 
-    this.animate();
+    requestAnimationFrame(t => this.animate(t));
 
     const textureLoader = new PromiseLoader(new TextureLoader(DefaultLoadingManager));
 
     this.body = createBodyModel(this.loadoutService.body, this.loadoutService.decal, this.loadoutService.paints, ROCKET_CONFIG);
-    this.wheels = new WheelsModel(this.loadoutService.wheel, this.loadoutService.paints, ROCKET_CONFIG);
+    this.wheels = createWheelsModel(this.loadoutService.wheel, this.loadoutService.paints, ROCKET_CONFIG);
 
     const promises = [
       textureLoader.load('assets/mannfield_equirectangular.jpg'),
@@ -279,8 +280,12 @@ export class CanvasComponent implements OnInit {
     pmremCubeUVPacker.dispose();
   }
 
-  private animate() {
-    requestAnimationFrame(() => this.animate());
+  private animate(t: number) {
+    requestAnimationFrame(t => this.animate(t));
+
+    if (this.wheels != undefined) {
+      this.wheels.animate(t);
+    }
 
     this.stats.update();
 
@@ -343,7 +348,7 @@ export class CanvasComponent implements OnInit {
     this.body.clearWheelsModel();
     this.wheels.dispose();
     this.resetProgress();
-    this.wheels = new WheelsModel(wheel, this.loadoutService.paints, ROCKET_CONFIG);
+    this.wheels = createWheelsModel(wheel, this.loadoutService.paints, ROCKET_CONFIG);
     this.wheels.load().then(() => {
       this.applyWheelModel();
       this.updateTextureService();
