@@ -497,8 +497,9 @@ export class CanvasComponent implements OnInit {
   }
 
   validateAntenna() {
+    const antenna = this.loadoutService.antenna;
     if (this.antenna.socket == undefined) {
-      console.warn(`${this.antenna.antennaUrl} has no topper socket.`);
+      console.warn(`${antenna.stick} has no topper socket.`);
       this.notifierService.notify('warning', `The antenna stick has no socket.`);
     }
   }
