@@ -292,7 +292,7 @@ components:
               example: 'body/Body_Octane/Chasis_Pepe_D.tga'
             chassis_n:
               type: string
-              description: 'Normal map of the chassis. This normally null. Only not null if the normal map has a RGBA map inside it, mainly for body paints.'
+              description: 'Normal map of the chassis. May act as the RGBA map for painting the chassis.'
               example: 'body/Body_Octane/Chasis_Pepe_N.tga'
             chassis_paintable:
               type: boolean
