@@ -6,7 +6,7 @@ describe('ApiKeysService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: ApiKeysService = TestBed.get(ApiKeysService);
+    const service: ApiKeysService = TestBed.inject(ApiKeysService);
     expect(service).toBeTruthy();
   });
 });

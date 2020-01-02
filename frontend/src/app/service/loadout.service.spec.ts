@@ -6,7 +6,7 @@ describe('LoadoutService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: LoadoutService = TestBed.get(LoadoutService);
+    const service: LoadoutService = TestBed.inject(LoadoutService);
     expect(service).toBeTruthy();
   });
 });

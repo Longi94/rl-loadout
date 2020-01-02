@@ -280,11 +280,11 @@ export class CanvasComponent implements OnInit {
     pmremCubeUVPacker.dispose();
   }
 
-  private animate(t: number) {
+  private animate(time: number) {
     requestAnimationFrame(t => this.animate(t));
 
     if (this.wheels != undefined) {
-      this.wheels.animate(t);
+      this.wheels.animate(time);
     }
 
     this.stats.update();

@@ -6,7 +6,7 @@ describe('CloudStorageService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: CloudStorageService = TestBed.get(CloudStorageService);
+    const service: CloudStorageService = TestBed.inject(CloudStorageService);
     expect(service).toBeTruthy();
   });
 });

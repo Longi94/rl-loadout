@@ -6,7 +6,7 @@ describe('AntennaSticksService', () => {
   beforeEach(() => TestBed.configureTestingModule({}));
 
   it('should be created', () => {
-    const service: AntennaSticksService = TestBed.get(AntennaSticksService);
+    const service: AntennaSticksService = TestBed.inject(AntennaSticksService);
     expect(service).toBeTruthy();
   });
 });
