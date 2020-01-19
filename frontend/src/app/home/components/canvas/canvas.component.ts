@@ -410,6 +410,7 @@ export class CanvasComponent implements OnInit {
     addTexture(this.textureService, 'body', this.body.bodyMaterial);
     addTexture(this.textureService, 'chassis', this.body.chassisMaterial);
     addTexture(this.textureService, 'rim', this.wheels.rimMaterial);
+    addTexture(this.textureService, 'tire', this.wheels.tireMaterial);
 
     if (this.topper) {
       addTexture(this.textureService, 'topper', this.topper.material);
