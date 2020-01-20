@@ -8,8 +8,7 @@ import {
   COLOR_MAPLE_BLUE,
   DEFAULT_ACCENT,
   DEFAULT_BLUE_TEAM,
-  BODY_MAPLE_ID,
-  BODY_SLIME_ID
+  ProductID
 } from 'rl-loadout-lib';
 import { Observable, Subject } from 'rxjs';
 import { Color } from 'three';
@@ -85,8 +84,8 @@ export class LoadoutService {
     this.decal = Decal.NONE;
 
     switch (body.id) {
-      case BODY_MAPLE_ID:
-      case BODY_SLIME_ID:
+      case ProductID.BODY_MAPLE:
+      case ProductID.BODY_SLIME:
         this.paints.primary = new Color(COLOR_MAPLE_BLUE);
         break;
     }
