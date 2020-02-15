@@ -191,13 +191,19 @@ export class CanvasComponent implements OnInit {
     Promise.all(promises).then(values => {
       this.processBackground(values[0]);
 
-      this.body = createBodyModel(this.loadoutService.body, this.loadoutService.decal, values[1], values[2], this.loadoutService.paints);
-      this.wheels = createWheelsModel(this.loadoutService.wheel, values[3], this.loadoutService.paints);
+      this.body = createBodyModel(this.loadoutService.body, this.loadoutService.decal, values[1], values[2], this.loadoutService.paints,
+        true);
+      this.wheels = createWheelsModel(this.loadoutService.wheel, values[3], this.loadoutService.paints, true);
 
       this.applyBodyModel();
       this.applyWheelModel();
       this.applyHitbox();
       this.updateTextureService();
+
+      this.body.removeFromScene(this.scene);
+      this.body = this.body.clone();
+      this.body.addToScene(this.scene);
+      this.wheels = this.body.wheelsModel;
       this.initializing = false;
     }).catch(error => {
       console.error(error);
@@ -332,7 +338,8 @@ export class CanvasComponent implements OnInit {
       decalLoader.load(this.loadoutService.body, this.loadoutService.decal, imageLoader, ROCKET_CONFIG),
       this.loadoutStore.loadDecals(body.id)
     ]).then(values => {
-      this.body = createBodyModel(this.loadoutService.body, this.loadoutService.decal, values[0], values[1], this.loadoutService.paints);
+      this.body = createBodyModel(this.loadoutService.body, this.loadoutService.decal, values[0], values[1], this.loadoutService.paints,
+        true);
       this.body.addWheelsModel(this.wheels);
 
       if (this.topper) {
@@ -367,7 +374,7 @@ export class CanvasComponent implements OnInit {
     this.resetProgress();
     const loader = getWheelLoader(wheel.id);
     loader.load(wheel, modelLoader, imageLoader, ROCKET_CONFIG).then(wheelsAssets => {
-      this.wheels = createWheelsModel(wheel, wheelsAssets, this.loadoutService.paints);
+      this.wheels = createWheelsModel(wheel, wheelsAssets, this.loadoutService.paints, true);
       this.applyWheelModel();
       this.updateTextureService();
       this.loading.wheel = false;
