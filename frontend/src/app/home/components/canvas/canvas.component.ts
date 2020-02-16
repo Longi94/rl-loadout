@@ -200,10 +200,6 @@ export class CanvasComponent implements OnInit {
       this.applyHitbox();
       this.updateTextureService();
 
-      this.body.removeFromScene(this.scene);
-      this.body = this.body.clone();
-      this.body.addToScene(this.scene);
-      this.wheels = this.body.wheelsModel;
       this.initializing = false;
     }).catch(error => {
       console.error(error);
@@ -235,7 +231,7 @@ export class CanvasComponent implements OnInit {
       this.wheels.visible(value);
     });
     wheelsFolder.add(this.wheelsConfig, 'roll', 0, Math.PI * 2).onChange(value => {
-      this.wheels.setRoll(value);
+      this.body.setWheelRoll(value);
     });
     wheelsFolder.add(this.wheelsConfig, 'yaw', -MAX_WHEEL_YAW, MAX_WHEEL_YAW).onChange(value => {
       this.body.setFrontWheelYaw(value);
@@ -302,8 +298,8 @@ export class CanvasComponent implements OnInit {
   private animate(time: number) {
     requestAnimationFrame(t => this.animate(t));
 
-    if (this.wheels != undefined) {
-      this.wheels.animate(time);
+    if (this.body != undefined) {
+      this.body.animate(time);
     }
 
     this.stats.update();
@@ -384,7 +380,7 @@ export class CanvasComponent implements OnInit {
   private applyWheelModel() {
     this.wheels.setEnvMap(this.envMap);
     this.body.addWheelsModel(this.wheels);
-    this.wheels.setRoll(this.wheelsConfig.roll);
+    this.body.setWheelRoll(this.wheelsConfig.roll);
   }
 
   private applyBodyModel() {
