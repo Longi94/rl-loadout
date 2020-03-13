@@ -3,7 +3,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import {
   AmbientLight,
   Color,
-  DefaultLoadingManager,
+  DefaultLoadingManager, Material,
   MeshStandardMaterial,
   PerspectiveCamera,
   Scene,
@@ -420,8 +420,9 @@ export class CanvasComponent implements OnInit {
   }
 
   private updateTextureService() {
-    function addTexture(textureService: TextureService, key: string, material: MeshStandardMaterial) {
-      if (material != undefined) {
+    function addTexture(textureService: TextureService, key: string, material: Material) {
+      if (material != undefined && 'map' in material) {
+        // @ts-ignore
         textureService.set(key, material.map);
       } else {
         textureService.set(key, undefined);
