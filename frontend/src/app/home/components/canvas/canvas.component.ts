@@ -3,8 +3,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import {
   AmbientLight,
   Color,
-  DefaultLoadingManager, Material,
-  MeshStandardMaterial,
+  DefaultLoadingManager,
+  Material,
   PerspectiveCamera,
   Scene,
   SpotLight,
@@ -33,6 +33,7 @@ import {
   createBodyModel,
   createWheelsModel,
   Decal,
+  DefaultTopperLoader,
   getBodyLoader,
   getWheelLoader,
   MAX_WHEEL_YAW,
@@ -191,9 +192,8 @@ export class CanvasComponent implements OnInit {
     Promise.all(promises).then(values => {
       this.processBackground(values[0]);
 
-      this.body = createBodyModel(this.loadoutService.body, this.loadoutService.decal, values[1], values[2], this.loadoutService.paints,
-        true);
-      this.wheels = createWheelsModel(this.loadoutService.wheel, values[3], this.loadoutService.paints, true);
+      this.body = createBodyModel(this.loadoutService.body, this.loadoutService.decal, values[1], values[2], this.loadoutService.paints);
+      this.wheels = createWheelsModel(this.loadoutService.wheel, values[3], this.loadoutService.paints);
 
       this.applyBodyModel();
       this.applyWheelModel();
@@ -334,8 +334,7 @@ export class CanvasComponent implements OnInit {
       decalLoader.load(this.loadoutService.body, this.loadoutService.decal, imageLoader, ROCKET_CONFIG),
       this.loadoutStore.loadDecals(body.id)
     ]).then(values => {
-      this.body = createBodyModel(this.loadoutService.body, this.loadoutService.decal, values[0], values[1], this.loadoutService.paints,
-        true);
+      this.body = createBodyModel(this.loadoutService.body, this.loadoutService.decal, values[0], values[1], this.loadoutService.paints);
       this.body.addWheelsModel(this.wheels);
 
       if (this.topper) {
@@ -356,8 +355,8 @@ export class CanvasComponent implements OnInit {
   private changeDecal(decal: Decal) {
     this.loading.decal = true;
     this.resetProgress();
-    StaticDecalLoader.load(this.loadoutService.body, this.loadoutService.decal, imageLoader, ROCKET_CONFIG).then(decalAssets => {
-      this.body.changeDecal(decal, decalAssets, this.loadoutService.paints);
+    StaticDecalLoader.load(this.loadoutService.body, decal, imageLoader, ROCKET_CONFIG).then(decalAssets => {
+      this.body.changeDecal(decalAssets, this.loadoutService.paints);
       this.loading.decal = false;
       this.updateTextureService();
     });
@@ -370,7 +369,7 @@ export class CanvasComponent implements OnInit {
     this.resetProgress();
     const loader = getWheelLoader(wheel.id);
     loader.load(wheel, modelLoader, imageLoader, ROCKET_CONFIG).then(wheelsAssets => {
-      this.wheels = createWheelsModel(wheel, wheelsAssets, this.loadoutService.paints, true);
+      this.wheels = createWheelsModel(wheel, wheelsAssets, this.loadoutService.paints);
       this.applyWheelModel();
       this.updateTextureService();
       this.loading.wheel = false;
@@ -452,16 +451,15 @@ export class CanvasComponent implements OnInit {
       return;
     }
 
-    // TODO topper loading
-    // this.loading.topper = true;
-    // this.topper = new TopperModel(topper, this.loadoutService.paints, ROCKET_CONFIG);
-    // this.resetProgress();
-    // this.topper.load().then(() => {
-    //   this.body.addTopperModel(this.topper);
-    //   this.topper.setEnvMap(this.envMap);
-    //   this.updateTextureService();
-    //   this.loading.topper = false;
-    // });
+    this.loading.topper = true;
+    this.resetProgress();
+    DefaultTopperLoader.load(topper, modelLoader, imageLoader, ROCKET_CONFIG).then(topperAssets => {
+      this.topper = new TopperModel(topper, topperAssets, this.loadoutService.paints);
+      this.topper.setEnvMap(this.envMap);
+      this.body.addTopperModel(this.topper);
+      this.loading.topper = false;
+      this.updateTextureService();
+    });
   }
 
   private changeAntenna(antenna: Antenna) {
