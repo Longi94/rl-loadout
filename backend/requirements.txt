@@ -7,5 +7,5 @@ flask-jwt-extended==3.24.1
 bcrypt==3.1.7
 connexion==2.6.0
 connexion[swagger-ui]
-numpy==1.18.1
+numpy==1.22.0
 pandas==1.0.1
